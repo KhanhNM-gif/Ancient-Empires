@@ -35,7 +35,6 @@ public class MovePlate : MonoBehaviour
 
         reference.GetComponent<Unit>().SetXMap(matrixX);
         reference.GetComponent<Unit>().SetYMap(matrixY);
-        reference.GetComponent<Unit>().SetCoords();
 
         controller.GetComponent<Game>().SetPosition(reference);
 
@@ -54,9 +53,5 @@ public class MovePlate : MonoBehaviour
     public GameObject GetReference()
     {
         return reference;
-    }
-    void Update()
-    {
-
     }
 }
