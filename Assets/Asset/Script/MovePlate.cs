@@ -15,34 +15,34 @@ public class MovePlate : MonoBehaviour
 
     public void Start()
     {
-        if(attack)
+        if (attack)
         {
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f,0.0f,0.0f,1.0f);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
     }
 
     public void OnMouseDown()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
-        if(attack)
+        if (attack)
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
 
             Destroy(cp);
         }
 
-        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(),reference.GetComponent<Unit>().GetYMap());   
+        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());
 
         reference.GetComponent<Unit>().SetXMap(matrixX);
-        reference.GetComponent<Unit>().SetYMap(matrixY); 
-        reference.GetComponent<Unit>().SetCoords();   
+        reference.GetComponent<Unit>().SetYMap(matrixY);
+        reference.GetComponent<Unit>().SetCoords();
 
         controller.GetComponent<Game>().SetPosition(reference);
 
         reference.GetComponent<Unit>().DestroyMovePlate();
     }
 
-    public void SetCoords(int x,int y)
+    public void SetCoords(int x, int y)
     {
         matrixX = x;
         matrixY = y;
@@ -54,5 +54,9 @@ public class MovePlate : MonoBehaviour
     public GameObject GetReference()
     {
         return reference;
+    }
+    void Update()
+    {
+
     }
 }

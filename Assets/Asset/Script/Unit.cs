@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-
     public GameObject controller;
     public GameObject movePlates;
 
@@ -90,7 +89,7 @@ public class Unit : MonoBehaviour
                 {
                     yDistance = -yDistance;
                 }
-                if (xDistance + yDistance <= move)
+                if (xDistance + yDistance <= move && !(i == xMap && j == yMap))
                 {
                     MovePlateSpawn(i, j);
                 }
