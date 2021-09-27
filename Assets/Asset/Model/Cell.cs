@@ -21,6 +21,7 @@ namespace Assets.Asset.Model
         public bool isCome { get; set; }
         public int x { get; set; }
         public int y { get; set; }
+        public int ammo { get; set; }
         //public float Width { get; set; }
         //public float Height { get; set; }
 

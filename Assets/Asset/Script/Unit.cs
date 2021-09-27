@@ -14,7 +14,7 @@ public class Unit : MonoBehaviour
     public int yMap = -1;
     private int move = 4;
     public int moveSpeed = 2;
-    private Queue<Cell> QueueMove;
+    private Stack<Cell> StackMove;
     private Vector3 vectorFrom;
     private Vector3 vectorTo;
     private Vector3 change;
@@ -27,11 +27,11 @@ public class Unit : MonoBehaviour
 
     public void Start()
     {
-        myRigidbody = GetComponent<Rigidbody2D>();
     }
     public void Activate()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
+        myRigidbody = GetComponent<Rigidbody2D>();
         GetPositon();
 
         switch (this.name)
@@ -59,6 +59,10 @@ public class Unit : MonoBehaviour
     public void SetYMap(int y)
     {
         yMap = y;
+    }
+    public void SetStackMove(Stack<Cell> stack)
+    {
+        StackMove = stack;
     }
 
     public void OnMouseDown()
@@ -94,10 +98,10 @@ public class Unit : MonoBehaviour
         while (queue.Count > 0)
         {
             Tuple<Tuple<Cell, int>, Tuple<Cell, int>> tuple = queue.Dequeue();
-            t.Add(new Tuple<Cell, Cell>(tuple.Item1.Item1, tuple.Item2.Item1));
+            Tuple<Cell, Cell> newItem = new Tuple<Cell, Cell>(tuple.Item1.Item1, tuple.Item2.Item1);
+            t.Add(newItem);
 
             c = tuple.Item2;
-
 
             if (c.Item2 > move)
             {
@@ -105,7 +109,11 @@ public class Unit : MonoBehaviour
                 return;
             }
             if (c.Item2 > 0)
-                MovePlateSpawn(c.Item1.x, c.Item1.y);
+            {
+                Stack<Cell> way = new Stack<Cell>();
+                PrintWay(t, newItem, GridManger.map.arrCell[xMap, yMap],out way);
+                MovePlateSpawn(c.Item1.x, c.Item1.y, way);
+            }
 
             if (c.Item1.x + 1 < GridManger.map.Size && GridManger.map.arrCell[c.Item1.x + 1, c.Item1.y].isCome && !visit[c.Item1.x + 1, c.Item1.y])
             {
@@ -133,27 +141,37 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public string PrintWayToFile(List<Tuple<Cell, Cell>> l, Tuple<Cell, Cell> t, Cell s, Cell k)
+    public void PrintWay(List<Tuple<Cell, Cell>> l, Tuple<Cell, Cell> t, Cell s,out Stack<Cell> way)
     {
-        if (s.x != t.Item1.x || s.y != t.Item1.y) return PrintWayToFile(l, l.Where(x => x.Item2 == t.Item1).FirstOrDefault(), s, k) + $" -> ({t.Item2.x }-{t.Item2.y})";
-        else return $" ({t.Item1.x }-{t.Item1.y}) -> ({t.Item2.x }-{t.Item2.y})";
+        if (s.x != t.Item1.x || s.y != t.Item1.y)
+        {
+            PrintWay(l, l.Where(x => x.Item2.x == t.Item1.x && x.Item2.y == t.Item1.y).FirstOrDefault(), s,out way);
+            way.Push(t.Item2);
+        }
+        else{
+            way = new Stack<Cell>();
+            way.Push(t.Item2);
+        }
+            
     }
 
-    public void MovePlateSpawn(int matrixX, int matrixY)
+    public void MovePlateSpawn(int matrixX, int matrixY,Stack<Cell> stack)
     {
         GameObject mp = Instantiate(movePlates, Map.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
-        mpScript.SetReference(gameObject);
+        mpScript.SetReference(this);
         mpScript.SetCoords(matrixX, matrixY);
+        mpScript.SetStackWay(stack);
+        mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
     void Update()
     {
-        if (QueueMove != null && QueueMove.Count > 0 && !IsMoving)
+        if (StackMove != null && StackMove.Count > 0 && !IsMoving)
         {
             if (!IsMoving)
             {
-                Cell cell = QueueMove.Dequeue();
+                Cell cell = StackMove.Pop();
                 vectorFrom = transform.position;
                 vectorTo = Map.GridWordPosition(cell.x, cell.y);
 
