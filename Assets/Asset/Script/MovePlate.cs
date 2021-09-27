@@ -1,3 +1,5 @@
+using Assets.Asset.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +8,11 @@ public class MovePlate : MonoBehaviour
 {
     public GameObject controller;
 
-    GameObject reference = null;
+    Unit reference = null;
 
     int matrixX;
     int matrixY;
+    Stack<Cell> stackWay;
 
     public bool attack = false;
 
@@ -19,27 +22,28 @@ public class MovePlate : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
+        stackWay = new Stack<Cell>();
     }
 
     public void OnMouseDown()
     {
-        controller = GameObject.FindGameObjectWithTag("GameController");
+        /*controller = GameObject.FindGameObjectWithTag("GameController");
         if (attack)
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
 
             Destroy(cp);
-        }
+        }*/
 
-        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());
+        //controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());
 
-        reference.GetComponent<Unit>().SetXMap(matrixX);
-        reference.GetComponent<Unit>().SetYMap(matrixY);
-        reference.GetComponent<Unit>().SetCoords();
+        reference.SetXMap(matrixX);
+        reference.SetXMap(matrixY);
+        reference.SetStackMove(stackWay);
 
-        controller.GetComponent<Game>().SetPosition(reference);
+        //controller.GetComponent<Game>().SetPosition(reference);
 
-        reference.GetComponent<Unit>().DestroyMovePlate();
+//        reference.DestroyMovePlate();
     }
 
     public void SetCoords(int x, int y)
@@ -47,16 +51,16 @@ public class MovePlate : MonoBehaviour
         matrixX = x;
         matrixY = y;
     }
-    public void SetReference(GameObject obj)
+    public void SetReference(Unit obj)
     {
         reference = obj;
     }
-    public GameObject GetReference()
+    public void SetStackWay(Stack<Cell> stack)
+    {
+        stackWay = stack;
+    }
+    public Unit GetReference()
     {
         return reference;
-    }
-    void Update()
-    {
-
     }
 }
