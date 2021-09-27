@@ -12,7 +12,7 @@ public class MovePlate : MonoBehaviour
 
     int matrixX;
     int matrixY;
-    Stack<Cell> stackWay;
+    Queue<Cell> queueWay;
 
     public bool attack = false;
 
@@ -22,7 +22,6 @@ public class MovePlate : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
-        stackWay = new Stack<Cell>();
     }
 
     public void OnMouseDown()
@@ -38,12 +37,10 @@ public class MovePlate : MonoBehaviour
         //controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());
 
         reference.SetXMap(matrixX);
-        reference.SetXMap(matrixY);
-        reference.SetStackMove(stackWay);
+        reference.SetYMap(matrixY);
+        reference.SetStackMove(queueWay);
 
-        //controller.GetComponent<Game>().SetPosition(reference);
-
-//        reference.DestroyMovePlate();
+        reference.DestroyMovePlate();
     }
 
     public void SetCoords(int x, int y)
@@ -55,9 +52,9 @@ public class MovePlate : MonoBehaviour
     {
         reference = obj;
     }
-    public void SetStackWay(Stack<Cell> stack)
+    public void SetStackWay(Queue<Cell> queue)
     {
-        stackWay = stack;
+        queueWay = queue;
     }
     public Unit GetReference()
     {

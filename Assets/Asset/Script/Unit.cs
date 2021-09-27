@@ -14,13 +14,9 @@ public class Unit : MonoBehaviour
     public int yMap = -1;
     private int move = 4;
     public int moveSpeed = 2;
-    private Stack<Cell> StackMove;
-    private Vector3 vectorFrom;
+    private Queue<Cell> queueMove;
     private Vector3 vectorTo;
-    private Vector3 change;
     private bool IsMoving;
-    Rigidbody2D myRigidbody;
-
     public string player;
 
     public Sprite unit_sheet_1_0;
@@ -31,7 +27,6 @@ public class Unit : MonoBehaviour
     public void Activate()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
-        myRigidbody = GetComponent<Rigidbody2D>();
         GetPositon();
 
         switch (this.name)
@@ -60,9 +55,9 @@ public class Unit : MonoBehaviour
     {
         yMap = y;
     }
-    public void SetStackMove(Stack<Cell> stack)
+    public void SetStackMove(Queue<Cell> queue)
     {
-        StackMove = stack;
+        queueMove = queue;
     }
 
     public void OnMouseDown()
@@ -110,8 +105,7 @@ public class Unit : MonoBehaviour
             }
             if (c.Item2 > 0)
             {
-                Stack<Cell> way = new Stack<Cell>();
-                PrintWay(t, newItem, GridManger.map.arrCell[xMap, yMap],out way);
+                PrintWay(t, newItem, GridManger.map.arrCell[xMap, yMap], out Queue<Cell> way);
                 MovePlateSpawn(c.Item1.x, c.Item1.y, way);
             }
 
@@ -129,7 +123,6 @@ public class Unit : MonoBehaviour
             {
                 queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x, c.Item1.y + 1], c.Item2 + 1)));
                 visit[c.Item1.x, c.Item1.y + 1] = true;
-
             }
             if (c.Item1.y - 1 >= 0 && GridManger.map.arrCell[c.Item1.x, c.Item1.y - 1].isCome && !visit[c.Item1.x, c.Item1.y - 1])
             {
@@ -141,46 +134,32 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void PrintWay(List<Tuple<Cell, Cell>> l, Tuple<Cell, Cell> t, Cell s,out Stack<Cell> way)
+    public void PrintWay(List<Tuple<Cell, Cell>> l, Tuple<Cell, Cell> t, Cell s, out Queue<Cell> way)
     {
-        if (s.x != t.Item1.x || s.y != t.Item1.y)
-        {
-            PrintWay(l, l.Where(x => x.Item2.x == t.Item1.x && x.Item2.y == t.Item1.y).FirstOrDefault(), s,out way);
-            way.Push(t.Item2);
-        }
-        else{
-            way = new Stack<Cell>();
-            way.Push(t.Item2);
-        }
-            
+        if (s.x != t.Item1.x || s.y != t.Item1.y) PrintWay(l, l.Where(x => x.Item2.x == t.Item1.x && x.Item2.y == t.Item1.y).FirstOrDefault(), s, out way);
+        else way = new Queue<Cell>();
+
+        way.Enqueue(t.Item2);
     }
 
-    public void MovePlateSpawn(int matrixX, int matrixY,Stack<Cell> stack)
+    public void MovePlateSpawn(int matrixX, int matrixY, Queue<Cell> queue)
     {
         GameObject mp = Instantiate(movePlates, Map.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
         mpScript.SetReference(this);
         mpScript.SetCoords(matrixX, matrixY);
-        mpScript.SetStackWay(stack);
+        mpScript.SetStackWay(queue);
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
     void Update()
     {
-        if (StackMove != null && StackMove.Count > 0 && !IsMoving)
+        if (queueMove != null && queueMove.Count > 0)
         {
             if (!IsMoving)
             {
-                Cell cell = StackMove.Pop();
-                vectorFrom = transform.position;
+                Cell cell = queueMove.Peek();
                 vectorTo = Map.GridWordPosition(cell.x, cell.y);
-
-                float x = vectorTo.x - vectorFrom.x;
-                float y = vectorTo.y - vectorFrom.y;
-
-                float distanceMax = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
-                change.x = x / distanceMax;
-                change.y = y / distanceMax;
 
                 IsMoving = true;
             }
@@ -188,10 +167,15 @@ public class Unit : MonoBehaviour
         }
 
     }
-    public void Move()
+    private void Move()
     {
-        Vector3 vector3 = transform.position + change * moveSpeed * Time.deltaTime;
-        myRigidbody.MovePosition(vector3);
-        if (vector3 == vectorTo) IsMoving = false;
+        float step = moveSpeed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, vectorTo, step);
+
+        if (Vector3.SqrMagnitude(transform.position - vectorTo) == 0)
+        {
+            IsMoving = false;
+            queueMove.Dequeue();
+        }
     }
 }
