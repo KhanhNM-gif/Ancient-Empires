@@ -10,7 +10,6 @@ public class ArrowFly : Projectile
     private Vector3 vectorTo;
     private Vector3 vectorFrom;
     private bool isFlying;
-    private float detalTime;
     float distanceMax;
 
 
@@ -20,7 +19,6 @@ public class ArrowFly : Projectile
         myRigidbody = GetComponent<Rigidbody2D>();
         isFlying = false;
         Application.targetFrameRate = Const.frame;
-        detalTime = 1.0f / Const.frame;
     }
 
 
@@ -31,6 +29,7 @@ public class ArrowFly : Projectile
         {
             Vector3 mouse = Input.mousePosition;
             vectorTo = Camera.main.ScreenToWorldPoint(mouse);
+            vectorTo.z = transform.position.z;
             vectorFrom = transform.position;
             float x = vectorTo.x - vectorFrom.x;
             float y = vectorTo.y - vectorFrom.y;
@@ -38,7 +37,7 @@ public class ArrowFly : Projectile
             change.x = x / distanceMax;
             change.y = y / distanceMax;
 
-            //float Z= AngleVectorOx(change);
+            //float Z= AngleVectorOx(change);*/
             myRigidbody.transform.Rotate(0, 0, AngleVectorOx(change) - transform.rotation.eulerAngles.z);
 
             isFlying = true;
@@ -49,9 +48,11 @@ public class ArrowFly : Projectile
 
     void Move()
     {
-        Vector3 vector3 = transform.position + change * speed * detalTime * distanceMax;
-        myRigidbody.MovePosition(vector3);
-        if (Mathf.Abs(vector3.x - vectorFrom.x) >= Mathf.Abs(vectorTo.x - vectorFrom.x)) isFlying = false;
+        float step =  speed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, vectorTo, step);
+
+        float distanse= Vector3.SqrMagnitude(transform.position - vectorTo);
+        if (distanse < 0.5) isFlying = false;
     }
 
     float AngleVectorOx(Vector3 vector) => (vectorTo.y - vectorFrom.y < 0 ? 1 : -1) * Mathf.Acos(vector.x * -1 / Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y)) * 180 / Mathf.PI;

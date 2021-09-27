@@ -1,3 +1,4 @@
+using Assets.Asset.Model;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class Game : MonoBehaviour
     {
         player = new GameObject[]
         {
-            Create("player_Soldier",0,0)
+            Create("player_Soldier",4,4)
         };
         for (int i = 0; i < player.Length; i++)
         {
