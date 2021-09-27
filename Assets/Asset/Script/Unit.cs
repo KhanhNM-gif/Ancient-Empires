@@ -14,11 +14,21 @@ public class Unit : MonoBehaviour
     public int yMap = -1;
     private int move = 4;
     public int moveSpeed = 2;
+    private Queue<Cell> QueueMove;
+    private Vector3 vectorFrom;
+    private Vector3 vectorTo;
+    private Vector3 change;
+    private bool IsMoving;
+    Rigidbody2D myRigidbody;
 
     public string player;
 
     public Sprite unit_sheet_1_0;
 
+    public void Start()
+    {
+        myRigidbody = GetComponent<Rigidbody2D>();
+    }
     public void Activate()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
@@ -94,7 +104,7 @@ public class Unit : MonoBehaviour
                 string str = string.Join(", ", t.Select(x => $"({x.Item2.x};{x.Item2.y})").ToArray());
                 return;
             }
-            if(c.Item2 > 0)
+            if (c.Item2 > 0)
                 MovePlateSpawn(c.Item1.x, c.Item1.y);
 
             if (c.Item1.x + 1 < GridManger.map.Size && GridManger.map.arrCell[c.Item1.x + 1, c.Item1.y].isCome && !visit[c.Item1.x + 1, c.Item1.y])
@@ -131,13 +141,39 @@ public class Unit : MonoBehaviour
 
     public void MovePlateSpawn(int matrixX, int matrixY)
     {
-        float x = matrixX;
-        float y = matrixY;
-
-        GameObject mp = Instantiate(movePlates, Map.GridWordPosition(matrixX, matrixY,-1), Quaternion.identity);
+        GameObject mp = Instantiate(movePlates, Map.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(matrixX, matrixY);
+    }
+    void Update()
+    {
+        if (QueueMove != null && QueueMove.Count > 0 && !IsMoving)
+        {
+            if (!IsMoving)
+            {
+                Cell cell = QueueMove.Dequeue();
+                vectorFrom = transform.position;
+                vectorTo = Map.GridWordPosition(cell.x, cell.y);
+
+                float x = vectorTo.x - vectorFrom.x;
+                float y = vectorTo.y - vectorFrom.y;
+
+                float distanceMax = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
+                change.x = x / distanceMax;
+                change.y = y / distanceMax;
+
+                IsMoving = true;
+            }
+            else Move();
+        }
+
+    }
+    public void Move()
+    {
+        Vector3 vector3 = transform.position + change * moveSpeed * Time.deltaTime;
+        myRigidbody.MovePosition(vector3);
+        if (vector3 == vectorTo) IsMoving = false;
     }
 }

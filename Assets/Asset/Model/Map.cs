@@ -38,7 +38,7 @@ namespace Assets.Asset.Model
         }
         public static Vector3 GridWordPosition(int x, int y, int z = 0)
         {
-            return new Vector3(x - 0.5f, y - 0.5f, z);
+            return new Vector3(x - 0.5f, 8 - 1.5f - y, z);
         }
     }
 }

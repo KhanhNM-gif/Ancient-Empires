@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 class Const
 {
-    public const int frame = 24;
+    public const int frame = 60;
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class MovePlate : MonoBehaviour
 
     int matrixX;
     int matrixY;
+    Queue<Tuple<int,int>> queueWay;
 
     public bool attack = false;
 
@@ -19,11 +21,12 @@ public class MovePlate : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
+        queueWay = new Queue<Tuple<int, int>>();
     }
 
     public void OnMouseDown()
     {
-        controller = GameObject.FindGameObjectWithTag("GameController");
+        /*controller = GameObject.FindGameObjectWithTag("GameController");
         if (attack)
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
@@ -31,10 +34,9 @@ public class MovePlate : MonoBehaviour
             Destroy(cp);
         }
 
-        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());
+        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());*/
 
         reference.GetComponent<Unit>().SetXMap(matrixX);
-        reference.GetComponent<Unit>().SetYMap(matrixY);
 
         controller.GetComponent<Game>().SetPosition(reference);
 
