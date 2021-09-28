@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Castle : MonoBehaviour
+public class Castle : BaseTile
 {
+
     // Start is called before the first frame update
     void Start()
     {
