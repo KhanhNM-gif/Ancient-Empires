@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Way : MonoBehaviour
+public class Way : BaseTile
 {
     [SerializeField] private Sprite[] sprites;
     // Start is called before the first frame update
@@ -34,6 +34,9 @@ public class Way : MonoBehaviour
             case "12":
                 this.GetComponent<SpriteRenderer>().sprite = sprites[4];
                 break;
+            case "13":
+                this.GetComponent<SpriteRenderer>().sprite = sprites[7];
+            break;
         }
     }
 }

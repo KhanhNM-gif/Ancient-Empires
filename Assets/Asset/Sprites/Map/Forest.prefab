@@ -95,6 +95,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674d845221d7efe458235b496d6feed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Ammor: 10
+  ShootingRange: 0
+  MoveRange: -2
+  Heal: 0
+  MoveAble: 1
+  IsHouse: 0
+  IsCastle: 0
   sprites:
   - {fileID: 21300000, guid: 791dde4a18f9539469916a0399103c04, type: 3}
   - {fileID: 21300000, guid: cabc50b7f8eaae643be6f9a7863e1f26, type: 3}
