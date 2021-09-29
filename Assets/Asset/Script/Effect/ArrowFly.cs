@@ -18,7 +18,7 @@ public class ArrowFly : Projectile
     {
         myRigidbody = GetComponent<Rigidbody2D>();
         isFlying = false;
-        Application.targetFrameRate = Const.frame;
+        Application.targetFrameRate = Const.ConstGame.FRAME;
     }
 
 

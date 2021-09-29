@@ -1,8 +1,9 @@
+using Assets.Asset.Model;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseTile : MonoBehaviour
+public class BaseTile : MonoBehaviour , MatrixCoordi
 {
     public int x { get; set; }
     public int y { get; set; }
