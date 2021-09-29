@@ -95,3 +95,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c89772c39dffe840bdaca21a6dcab59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Ammor: 10
+  ShootingRange: 0
+  MoveRange: -1
+  Heal: 0
+  MoveAble: 1
+  IsHouse: 0
+  IsCastle: 0

@@ -6,7 +6,6 @@ using UnityEngine;
 public class MapManager : MonoBehaviour
 {
 
-    [SerializeField] private int width, height;
     [SerializeField] private ThickSnow tsnow;
     [SerializeField] private ThinSnow snow;
     [SerializeField] private BorderMap border;
@@ -15,7 +14,9 @@ public class MapManager : MonoBehaviour
     [SerializeField] private Mountain mountain;
     [SerializeField] private Forest forest;
     [SerializeField] private Way way;
-    private string path = "Assets/Asset/Map/map12x12.txt";
+    private string pathMap = "Assets/Asset/Map/map12x12.txt";
+    public static MapTile map;
+    private int width, height;
 
 
     [SerializeField] private Transform cam;
@@ -29,12 +30,21 @@ public class MapManager : MonoBehaviour
     public void ReadAndAddMap()
     {
         //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(path);
+        StreamReader reader = new StreamReader(pathMap);
         String line = "";
-        int y = height;
+        int y = 0;
         while ((line = reader.ReadLine()) != null)
         {
             String[] pos = line.Split(' ');
+            if (line.Length < 10)
+            {
+                height = int.Parse(pos[1]);
+                width = int.Parse(pos[0]);
+                y = height;
+                map = new MapTile(width, height);
+                continue;
+            }
+
             int x = 0;
             foreach (String s in pos)
             {
@@ -45,7 +55,6 @@ public class MapManager : MonoBehaviour
         }
         reader.Close();
 
-        addBorderMap();
 
         cam.transform.position = new Vector3((float)width / 2 - 0.5f, (float)height / 2 - 0.5f, -10);
     }
@@ -57,53 +66,59 @@ public class MapManager : MonoBehaviour
         switch (value)
         {
             case "01": //ThickSnow
+                tsnow.x = i;
+                tsnow.y = j;
+                map.arrTile[i, j] = tsnow;
                 Instantiate(tsnow, new Vector3(i, j), Quaternion.identity);
                 break;
             case "02": //rung cay
                 forest.updateForest();
+                forest.x = i;
+                forest.y = j;
+                map.arrTile[i, j] = forest;
                 Instantiate(forest, new Vector3(i, j), Quaternion.identity);
                 break;
             case "03"://nui
+                mountain.x = i;
+                mountain.y = j;
+                map.arrTile[i, j] = mountain;
                 Instantiate(mountain, new Vector3(i, j), Quaternion.identity);
                 break;
             case "04"://nha dan
+                house.x = i;
+                house.y = j;
+                map.arrTile[i, j] = house;
                 Instantiate(house, new Vector3(i, j), Quaternion.identity);
                 break;
             case "05":// thanh chinh
+                castle.x = i;
+                castle.y = j;
+                map.arrTile[i, j] = castle;
                 Instantiate(castle, new Vector3(i, j), Quaternion.identity);
                 break;
-            case "13": //vien map
+            case "99": //vien map
+                border.x = i;
+                border.y = j;
+                map.arrTile[i, j] = border;
                 Instantiate(border, new Vector3(i, j), Quaternion.identity);
                 break;
             case "00"://Snow
+                snow.x = i;
+                snow.y = j;
+                map.arrTile[i, j] = snow;
                 Instantiate(snow, new Vector3(i, j), Quaternion.identity);
                 break;
             default: // duong di
+                way.x = i;
+                way.y = j;
+                map.arrTile[i, j] = way;
                 way.changeSprite(value);
                 Instantiate(way, new Vector3(i, j), Quaternion.identity);
                 break;
         }
     }
 
-    //Them vien cho map
-    private void addBorderMap()
-    {
-        for (int i = -1; i <= width; i++)
-        {
-            for (int j = -1; j <= height + 1; j++)
-            {
-                if ((i == -1 && j >= 0) || (j == 0 && i >= 0) || (i == width && j >= 0) || (j == height + 1 && i >= 0))
-                {
-                    addMap("13", i, j);
-                }
-            }
-        }
-    }
 
-    //private T getItemAtPos<T>(Vector2 pos)
-    //{
-    //    if(snow.TryGetComponent)
-    //}
 
 
 
