@@ -4,60 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovePlate : MonoBehaviour
+public class MovePlate : MonoBehaviour, MatrixCoordi
 {
     public GameObject controller;
-
     Unit reference = null;
+    private Queue<MatrixCoordi> queueWay;
+    public int x { get; set; }
+    public int y { get; set; }
 
-    int matrixX;
-    int matrixY;
-    Queue<Cell> queueWay;
-
-    public bool attack = false;
-
-    public void Start()
-    {
-        if (attack)
-        {
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-        }
-    }
+    public void Start() { }
 
     public void OnMouseDown()
     {
-        /*controller = GameObject.FindGameObjectWithTag("GameController");
-        if (attack)
-        {
-            GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
-
-            Destroy(cp);
-        }*/
-
-        //controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Unit>().GetXMap(), reference.GetComponent<Unit>().GetYMap());
-
-        reference.SetXMap(matrixX);
-        reference.SetYMap(matrixY);
+        reference.x = this.x;
+        reference.y = this.y;
         reference.SetStackMove(queueWay);
-
         reference.DestroyMovePlate();
     }
 
     public void SetCoords(int x, int y)
     {
-        matrixX = x;
-        matrixY = y;
+        this.x = x;
+        this.y = y;
     }
-    public void SetReference(Unit obj)
-    {
-        reference = obj;
-    }
-    public void SetStackWay(Queue<Cell> queue)
-    {
-        queueWay = queue;
-    }
-    public Unit GetReference()
-    {
-        return reference;
-    }
+    public void SetReference(Unit obj) => reference = obj;
+    public void SetStackWay(Queue<MatrixCoordi> queue) => queueWay = queue;
+    public Unit GetReference() => reference;
 }

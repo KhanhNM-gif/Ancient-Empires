@@ -22,7 +22,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] private Transform cam;
     // Start is called before the first frame update
     void Start()
-    { 
+    {
         ReadAndAddMap();
     }
 
@@ -40,7 +40,7 @@ public class MapManager : MonoBehaviour
             {
                 height = int.Parse(pos[1]);
                 width = int.Parse(pos[0]);
-                y = height;
+                y = height-1;
                 map = new MapTile(width, height);
                 continue;
             }
@@ -66,54 +66,69 @@ public class MapManager : MonoBehaviour
         switch (value)
         {
             case "01": //ThickSnow
-                tsnow.x = i;
-                tsnow.y = j;
-                map.arrTile[i, j] = tsnow;
-                Instantiate(tsnow, new Vector3(i, j), Quaternion.identity);
+                ThickSnow cloneThickSnow = Instantiate(tsnow, new Vector3(i, j), Quaternion.identity);
+                cloneThickSnow.x = i;
+                cloneThickSnow.y = j;
+                cloneThickSnow.name = $"tile({i},{j})";
+                map.arrTile[i, j] = cloneThickSnow;
                 break;
             case "02": //rung cay
-                forest.updateForest();
-                forest.x = i;
-                forest.y = j;
-                map.arrTile[i, j] = forest;
-                Instantiate(forest, new Vector3(i, j), Quaternion.identity);
+                Forest cloneForest = Instantiate(forest, new Vector3(i, j), Quaternion.identity);
+                cloneForest.updateForest();
+                cloneForest.x = i;
+                cloneForest.y = j;
+                cloneForest.name = $"tile({i},{j})";
+
+                map.arrTile[i, j] = cloneForest;
                 break;
             case "03"://nui
-                mountain.x = i;
-                mountain.y = j;
-                map.arrTile[i, j] = mountain;
-                Instantiate(mountain, new Vector3(i, j), Quaternion.identity);
+                Mountain cloneMountain = Instantiate(mountain, new Vector3(i, j), Quaternion.identity);
+                cloneMountain.x = i;
+                cloneMountain.y = j;
+                cloneMountain.name = $"tile({i},{j})";
+
+                map.arrTile[i, j] = cloneMountain;
                 break;
             case "04"://nha dan
-                house.x = i;
-                house.y = j;
-                map.arrTile[i, j] = house;
-                Instantiate(house, new Vector3(i, j), Quaternion.identity);
+                House cloneHouse = Instantiate(house, new Vector3(i, j), Quaternion.identity);
+                cloneHouse.x = i;
+                cloneHouse.y = j;
+                cloneHouse.name = $"tile({i},{j})";
+
+                map.arrTile[i, j] = cloneHouse;
                 break;
             case "05":// thanh chinh
-                castle.x = i;
-                castle.y = j;
-                map.arrTile[i, j] = castle;
-                Instantiate(castle, new Vector3(i, j), Quaternion.identity);
+                Castle cloneCastle = Instantiate(castle, new Vector3(i, j), Quaternion.identity);
+                cloneCastle.x = i;
+                cloneCastle.y = j;
+                cloneCastle.name = $"tile({i},{j})";
+
+                map.arrTile[i, j] = cloneCastle;
                 break;
             case "99": //vien map
-                border.x = i;
-                border.y = j;
-                map.arrTile[i, j] = border;
-                Instantiate(border, new Vector3(i, j), Quaternion.identity);
+                BorderMap cloneBorderMap = Instantiate(border, new Vector3(i, j), Quaternion.identity);
+                cloneBorderMap.x = i;
+                cloneBorderMap.y = j;
+                cloneBorderMap.name = $"tile({i},{j})";
+
+                map.arrTile[i, j] = cloneBorderMap;
                 break;
             case "00"://Snow
-                snow.x = i;
-                snow.y = j;
-                map.arrTile[i, j] = snow;
-                Instantiate(snow, new Vector3(i, j), Quaternion.identity);
+                ThinSnow cloneThinSnow = Instantiate(snow, new Vector3(i, j), Quaternion.identity);
+                cloneThinSnow.x = i;
+                cloneThinSnow.y = j;
+                cloneThinSnow.name = $"tile({i},{j})";
+
+                map.arrTile[i, j] = cloneThinSnow;
                 break;
             default: // duong di
-                way.x = i;
-                way.y = j;
-                map.arrTile[i, j] = way;
-                way.changeSprite(value);
-                Instantiate(way, new Vector3(i, j), Quaternion.identity);
+                Way cloneWay = Instantiate(way, new Vector3(i, j), Quaternion.identity);
+                cloneWay.x = i;
+                cloneWay.y = j;
+                cloneWay.name = $"tile({i},{j})";
+                cloneWay.changeSprite(value);
+
+                map.arrTile[i, j] = cloneWay;
                 break;
         }
     }

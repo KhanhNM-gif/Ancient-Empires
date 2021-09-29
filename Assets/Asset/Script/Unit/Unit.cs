@@ -1,64 +1,43 @@
 using Assets.Asset.Model;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public class Unit : MonoBehaviour, MatrixCoordi
 {
-    public GameObject controller;
-    public GameObject movePlates;
+    //public GameObject controller;
+    //private string player;
+    //public Sprite unit_sheet_1_0;
 
-    public int xMap = -1;
-    public int yMap = -1;
-    private int move = 4;
+    public GameObject movePlates;
+    public int move = 3;
     public int moveSpeed = 2;
-    private Queue<Cell> queueMove;
+
+    private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
-    public string player;
+    public int x { get; set; }
+    public int y { get; set; }
 
-    public Sprite unit_sheet_1_0;
-
-    public void Start()
-    {
-    }
+    public void Start() { }
     public void Activate()
     {
-        controller = GameObject.FindGameObjectWithTag("GameController");
-        GetPositon();
+        //controller = GameObject.FindGameObjectWithTag("GameController");
+        SetWordPositon();
 
-        switch (this.name)
+        /*switch (this.name)
         {
             case "player_Soldier":
-                this.GetComponent<SpriteRenderer>().sprite = unit_sheet_1_0; player = "player";
+                this.GetComponent<SpriteRenderer>().sprite = unit_sheet_1_0;
                 break;
-        }
+        }*/
     }
 
-    public void GetPositon() => transform.position = Map.GridWordPosition(xMap, yMap);
-
-    public int GetXMap()
-    {
-        return xMap;
-    }
-    public int GetYMap()
-    {
-        return yMap;
-    }
-    public void SetXMap(int x)
-    {
-        xMap = x;
-    }
-    public void SetYMap(int y)
-    {
-        yMap = y;
-    }
-    public void SetStackMove(Queue<Cell> queue)
-    {
-        queueMove = queue;
-    }
+    public void SetWordPositon() => transform.position = MapTile.GridWordPosition(x, y, -1);
+    public void SetStackMove(Queue<MatrixCoordi> queue) => queueMove = queue;
 
     public void OnMouseDown()
     {
@@ -69,82 +48,63 @@ public class Unit : MonoBehaviour
     public void DestroyMovePlate()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
-        for (int i = 0; i < movePlates.Length; i++)
-        {
-            Destroy(movePlates[i]);
-        }
+
+        for (int i = 0; i < movePlates.Length; i++) Destroy(movePlates[i]);
     }
 
     public void InitiateMovePlates()
     {
-        BFS();
-    }
-    public void BFS()
-    {
-        Tuple<Cell, int> c;
-        bool[,] visit = new bool[GridManger.map.Size, GridManger.map.Size];
-        visit[xMap, yMap] = true;
+        MatrixCoordi matrixCoordi;
+        int deep;
+        bool[,] visit = new bool[MapManager.map.Width, MapManager.map.Height];
+        Queue<Tuple<MatrixCoordi, int>> queue = new Queue<Tuple<MatrixCoordi, int>>();
+        ConcurrentDictionary<MatrixCoordi, MatrixCoordi> wayDictionary = new ConcurrentDictionary<MatrixCoordi, MatrixCoordi>();
 
-        Queue<Tuple<Tuple<Cell, int>, Tuple<Cell, int>>> queue = new Queue<Tuple<Tuple<Cell, int>, Tuple<Cell, int>>>();
-        List<Tuple<Cell, Cell>> t = new List<Tuple<Cell, Cell>>();
-
-        queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(new Tuple<Cell, int>(GridManger.map.arrCell[xMap, yMap], 0), new Tuple<Cell, int>(GridManger.map.arrCell[xMap, yMap], 0)));
+        visit[x, y] = true;
+        wayDictionary[MapManager.map.arrTile[x, y]] = null;
+        queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], 0));
 
         while (queue.Count > 0)
         {
-            Tuple<Tuple<Cell, int>, Tuple<Cell, int>> tuple = queue.Dequeue();
-            Tuple<Cell, Cell> newItem = new Tuple<Cell, Cell>(tuple.Item1.Item1, tuple.Item2.Item1);
-            t.Add(newItem);
+            Tuple<MatrixCoordi, int> s = queue.Dequeue();
+            matrixCoordi = s.Item1; deep = s.Item2;
 
-            c = tuple.Item2;
+            if (deep > move) return;
 
-            if (c.Item2 > move)
+            if (deep > 0)
             {
-                string str = string.Join(", ", t.Select(x => $"({x.Item2.x};{x.Item2.y})").ToArray());
-                return;
-            }
-            if (c.Item2 > 0)
-            {
-                PrintWay(t, newItem, GridManger.map.arrCell[xMap, yMap], out Queue<Cell> way);
-                MovePlateSpawn(c.Item1.x, c.Item1.y, way);
+                GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
+                MovePlateSpawn(matrixCoordi.x, matrixCoordi.y, way);
             }
 
-            if (c.Item1.x + 1 < GridManger.map.Size && GridManger.map.arrCell[c.Item1.x + 1, c.Item1.y].isCome && !visit[c.Item1.x + 1, c.Item1.y])
+            foreach (var item in Const.Unit.STEP_MOVE)
             {
-                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x + 1, c.Item1.y], c.Item2 + 1)));
-                visit[c.Item1.x + 1, c.Item1.y] = true;
-            }
-            if (c.Item1.x - 1 >= 0 && GridManger.map.arrCell[c.Item1.x - 1, c.Item1.y].isCome && !visit[c.Item1.x - 1, c.Item1.y])
-            {
-                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x - 1, c.Item1.y], c.Item2 + 1)));
-                visit[c.Item1.x - 1, c.Item1.y] = true;
-            }
-            if (c.Item1.y + 1 < GridManger.map.Size && GridManger.map.arrCell[c.Item1.x, c.Item1.y + 1].isCome && !visit[c.Item1.x, c.Item1.y + 1])
-            {
-                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x, c.Item1.y + 1], c.Item2 + 1)));
-                visit[c.Item1.x, c.Item1.y + 1] = true;
-            }
-            if (c.Item1.y - 1 >= 0 && GridManger.map.arrCell[c.Item1.x, c.Item1.y - 1].isCome && !visit[c.Item1.x, c.Item1.y - 1])
-            {
-                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x, c.Item1.y - 1], c.Item2 + 1)));
-                visit[c.Item1.x, c.Item1.y - 1] = true;
-            }
+                int x = matrixCoordi.x + item.Item1;
+                int y = matrixCoordi.y + item.Item2;
 
-
+                if (x < MapManager.map.Width && x >= 0 && y < MapManager.map.Height && y >= 0 && MapManager.map.arrTile[x, y].MoveAble && !visit[x, y])
+                {
+                    queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], deep + 1));
+                    wayDictionary[MapManager.map.arrTile[x, y]] = matrixCoordi;
+                    visit[x, y] = true;
+                }
+            }
         }
     }
 
-    public void PrintWay(List<Tuple<Cell, Cell>> l, Tuple<Cell, Cell> t, Cell s, out Queue<Cell> way)
+    public void GetQueueWay(ConcurrentDictionary<MatrixCoordi, MatrixCoordi> dictionnary, MatrixCoordi p, MatrixCoordi e, out Queue<MatrixCoordi> way)
     {
-        if (s.x != t.Item1.x || s.y != t.Item1.y) PrintWay(l, l.Where(x => x.Item2.x == t.Item1.x && x.Item2.y == t.Item1.y).FirstOrDefault(), s, out way);
-        else way = new Queue<Cell>();
-
-        way.Enqueue(t.Item2);
+        if (dictionnary[p] != null)
+        {
+            GetQueueWay(dictionnary, dictionnary[p], e, out way);
+            way.Enqueue(p);
+        }
+        else way = new Queue<MatrixCoordi>();
     }
 
-    public void MovePlateSpawn(int matrixX, int matrixY, Queue<Cell> queue)
+    public void MovePlateSpawn(int matrixX, int matrixY, Queue<MatrixCoordi> queue)
     {
-        GameObject mp = Instantiate(movePlates, Map.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
+        GameObject mp = Instantiate(movePlates, MapTile.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
         mpScript.SetReference(this);
@@ -158,8 +118,8 @@ public class Unit : MonoBehaviour
         {
             if (!IsMoving)
             {
-                Cell cell = queueMove.Peek();
-                vectorTo = Map.GridWordPosition(cell.x, cell.y);
+                MatrixCoordi matrixCoordi = queueMove.Peek();
+                vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y,-1);
 
                 IsMoving = true;
             }
