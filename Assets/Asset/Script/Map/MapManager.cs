@@ -16,14 +16,19 @@ public class MapManager : MonoBehaviour
     [SerializeField] private Way way;
     private string pathMap = "Assets/Asset/Map/map12x12.txt";
     public static MapTile map;
-    private int width, height;
+    private static int width, height;
+    private static int size =1;
 
 
-    [SerializeField] private Transform cam;
+    //[SerializeField] private Transform cam;
+
+    public int GetWidth() => width;
+    public int GetHeight() => height;
+    public int GetSize() => size;
     // Start is called before the first frame update
     void Start()
     {
-        ReadAndAddMap();
+     //   ReadAndAddMap();
     }
 
     //Doc map tu file text va render map
@@ -56,7 +61,7 @@ public class MapManager : MonoBehaviour
         reader.Close();
 
 
-        cam.transform.position = new Vector3((float)width / 2 - 0.5f, (float)height / 2 - 0.5f, -10);
+        //cam.transform.position = new Vector3((float)width / 2 - 0.5f, (float)height / 2 - 0.5f, -10);
     }
 
 
