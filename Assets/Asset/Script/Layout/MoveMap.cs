@@ -8,7 +8,7 @@ public class MoveMap : MonoBehaviour
     private Camera cam;
 
     [SerializeField]
-    private SpriteRenderer map;
+    private MapManager map;
 
     private float mapMinX, mapMaxX, mapMinY, mapMaxY;
 
@@ -16,11 +16,17 @@ public class MoveMap : MonoBehaviour
 
     private void Awake()
     {
-        mapMinX = map.transform.position.x - map.bounds.size.x / 2f;
-        mapMaxX = map.transform.position.x + map.bounds.size.x / 2f;
+        MapManager swapMap = Instantiate(map, new Vector3(0, 0), Quaternion.identity);
+        swapMap.name = name;
+        swapMap.ReadAndAddMap();
 
-        mapMinY = map.transform.position.y - map.bounds.size.y / 2f;
-        mapMaxY = map.transform.position.y + map.bounds.size.y / 2f;
+        mapMinX = swapMap.transform.position.x - 0.5f;
+        mapMaxX = swapMap.transform.position.x + swapMap.GetWidth() - 0.5f;
+
+        mapMinY = swapMap.transform.position.y - 0.5f;
+        mapMaxY = swapMap.transform.position.y + swapMap.GetHeight() - 0.5f;
+
+        gameObject.transform.position = new Vector3(swapMap.GetWidth() / 2f - 0.5f, swapMap.GetHeight() / 2f - 0.5f, -10);
     }
 
     private void Update()
@@ -35,9 +41,7 @@ public class MoveMap : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            Vector3 difference = dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
-
-            print("origin " + dragOrigin + " newPosition " + cam.ScreenToWorldPoint(Input.mousePosition) + " =difference" + difference);
+            Vector3 difference = dragOrigin - GetWorldPostion(-10f);
 
             cam.transform.position = Clampcamera(cam.transform.position + difference);
         }
@@ -53,9 +57,25 @@ public class MoveMap : MonoBehaviour
         float minY = mapMinY + camH;
         float maxY = mapMaxY - camH;
 
-        float newX = Mathf.Clamp(target.x, minX, maxX);
-        float newY = Mathf.Clamp(target.y, minY, maxY);
+        float newX; float newY;
+
+        if (2f * camW > mapMaxX - mapMinX) newX = cam.transform.position.x;
+        else newX = Mathf.Clamp(target.x, minX, maxX);
+
+        if (2f * camH > mapMaxY - mapMinY) newY = cam.transform.position.y;
+        else newY = Mathf.Clamp(target.y, minY, maxY);
 
         return new Vector3(newX, newY, target.z);
+    }
+
+    private Vector3 GetWorldPostion(float z)
+    {
+        Ray mousePos = cam.ScreenPointToRay(Input.mousePosition);
+        Plane group = new Plane(Vector3.forward, new Vector3(0, 0, z));
+
+        float distance;
+        group.Raycast(mousePos, out distance);
+
+        return mousePos.GetPoint(distance);
     }
 }
