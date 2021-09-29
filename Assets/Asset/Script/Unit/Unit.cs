@@ -1,5 +1,8 @@
+using Assets.Asset.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -11,16 +14,20 @@ public class Unit : MonoBehaviour
     public int yMap = -1;
     private int move = 4;
     public int moveSpeed = 2;
-
+    private Queue<Cell> queueMove;
+    private Vector3 vectorTo;
+    private bool IsMoving;
     public string player;
 
     public Sprite unit_sheet_1_0;
 
+    public void Start()
+    {
+    }
     public void Activate()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
-
-        SetCoords();
+        GetPositon();
 
         switch (this.name)
         {
@@ -30,16 +37,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void SetCoords()
-    {
-        float x = xMap;
-        float y = yMap;
-
-        x += 0.5f;
-        y += 0.5f;
-
-        this.transform.position = new Vector3(x, y, -1.0f);
-    }
+    public void GetPositon() => transform.position = Map.GridWordPosition(xMap, yMap);
 
     public int GetXMap()
     {
@@ -56,6 +54,10 @@ public class Unit : MonoBehaviour
     public void SetYMap(int y)
     {
         yMap = y;
+    }
+    public void SetStackMove(Queue<Cell> queue)
+    {
+        queueMove = queue;
     }
 
     public void OnMouseDown()
@@ -75,40 +77,105 @@ public class Unit : MonoBehaviour
 
     public void InitiateMovePlates()
     {
-        for (int i = xMap - move; i <= xMap + move; i++)
+        BFS();
+    }
+    public void BFS()
+    {
+        Tuple<Cell, int> c;
+        bool[,] visit = new bool[GridManger.map.Size, GridManger.map.Size];
+        visit[xMap, yMap] = true;
+
+        Queue<Tuple<Tuple<Cell, int>, Tuple<Cell, int>>> queue = new Queue<Tuple<Tuple<Cell, int>, Tuple<Cell, int>>>();
+        List<Tuple<Cell, Cell>> t = new List<Tuple<Cell, Cell>>();
+
+        queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(new Tuple<Cell, int>(GridManger.map.arrCell[xMap, yMap], 0), new Tuple<Cell, int>(GridManger.map.arrCell[xMap, yMap], 0)));
+
+        while (queue.Count > 0)
         {
-            for (int j = yMap - move; j <= yMap + move; j++)
+            Tuple<Tuple<Cell, int>, Tuple<Cell, int>> tuple = queue.Dequeue();
+            Tuple<Cell, Cell> newItem = new Tuple<Cell, Cell>(tuple.Item1.Item1, tuple.Item2.Item1);
+            t.Add(newItem);
+
+            c = tuple.Item2;
+
+            if (c.Item2 > move)
             {
-                int xDistance = i - xMap;
-                int yDistance = j - yMap;
-                if (xDistance < 0)
-                {
-                    xDistance = -xDistance;
-                }
-                if (yDistance < 0)
-                {
-                    yDistance = -yDistance;
-                }
-                if (xDistance + yDistance <= move && !(i == xMap && j == yMap))
-                {
-                    MovePlateSpawn(i, j);
-                }
+                string str = string.Join(", ", t.Select(x => $"({x.Item2.x};{x.Item2.y})").ToArray());
+                return;
             }
+            if (c.Item2 > 0)
+            {
+                PrintWay(t, newItem, GridManger.map.arrCell[xMap, yMap], out Queue<Cell> way);
+                MovePlateSpawn(c.Item1.x, c.Item1.y, way);
+            }
+
+            if (c.Item1.x + 1 < GridManger.map.Size && GridManger.map.arrCell[c.Item1.x + 1, c.Item1.y].isCome && !visit[c.Item1.x + 1, c.Item1.y])
+            {
+                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x + 1, c.Item1.y], c.Item2 + 1)));
+                visit[c.Item1.x + 1, c.Item1.y] = true;
+            }
+            if (c.Item1.x - 1 >= 0 && GridManger.map.arrCell[c.Item1.x - 1, c.Item1.y].isCome && !visit[c.Item1.x - 1, c.Item1.y])
+            {
+                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x - 1, c.Item1.y], c.Item2 + 1)));
+                visit[c.Item1.x - 1, c.Item1.y] = true;
+            }
+            if (c.Item1.y + 1 < GridManger.map.Size && GridManger.map.arrCell[c.Item1.x, c.Item1.y + 1].isCome && !visit[c.Item1.x, c.Item1.y + 1])
+            {
+                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x, c.Item1.y + 1], c.Item2 + 1)));
+                visit[c.Item1.x, c.Item1.y + 1] = true;
+            }
+            if (c.Item1.y - 1 >= 0 && GridManger.map.arrCell[c.Item1.x, c.Item1.y - 1].isCome && !visit[c.Item1.x, c.Item1.y - 1])
+            {
+                queue.Enqueue(new Tuple<Tuple<Cell, int>, Tuple<Cell, int>>(c, new Tuple<Cell, int>(GridManger.map.arrCell[c.Item1.x, c.Item1.y - 1], c.Item2 + 1)));
+                visit[c.Item1.x, c.Item1.y - 1] = true;
+            }
+
+
         }
     }
 
-    public void MovePlateSpawn(int matrixX, int matrixY)
+    public void PrintWay(List<Tuple<Cell, Cell>> l, Tuple<Cell, Cell> t, Cell s, out Queue<Cell> way)
     {
-        float x = matrixX;
-        float y = matrixY;
+        if (s.x != t.Item1.x || s.y != t.Item1.y) PrintWay(l, l.Where(x => x.Item2.x == t.Item1.x && x.Item2.y == t.Item1.y).FirstOrDefault(), s, out way);
+        else way = new Queue<Cell>();
 
-        x += 0.5f;
-        y += 0.5f;
+        way.Enqueue(t.Item2);
+    }
 
-        GameObject mp = Instantiate(movePlates, new Vector3(x, y, -3.0f), Quaternion.identity);
+    public void MovePlateSpawn(int matrixX, int matrixY, Queue<Cell> queue)
+    {
+        GameObject mp = Instantiate(movePlates, Map.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
-        mpScript.SetReference(gameObject);
+        mpScript.SetReference(this);
         mpScript.SetCoords(matrixX, matrixY);
+        mpScript.SetStackWay(queue);
+        mpScript.name = $"MovePlate({matrixX},{matrixY})";
+    }
+    void Update()
+    {
+        if (queueMove != null && queueMove.Count > 0)
+        {
+            if (!IsMoving)
+            {
+                Cell cell = queueMove.Peek();
+                vectorTo = Map.GridWordPosition(cell.x, cell.y);
+
+                IsMoving = true;
+            }
+            else Move();
+        }
+
+    }
+    private void Move()
+    {
+        float step = moveSpeed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, vectorTo, step);
+
+        if (Vector3.SqrMagnitude(transform.position - vectorTo) == 0)
+        {
+            IsMoving = false;
+            queueMove.Dequeue();
+        }
     }
 }

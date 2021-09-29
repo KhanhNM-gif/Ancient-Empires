@@ -159,7 +159,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.49803925, g: 0.49803925, b: 0.49803925, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -249,8 +249,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f94d0317905a5984a8377f9aa32af887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 12
-  height: 12
   tsnow: {fileID: 6665554199080190496, guid: a1286b5d918f79244b904c84160fd090, type: 3}
   snow: {fileID: 6407976803252246428, guid: ca181316ad401514b92d7679678d6c14, type: 3}
   border: {fileID: 901956919074486629, guid: 341cdc43e4063ba4a877af8636682628, type: 3}
