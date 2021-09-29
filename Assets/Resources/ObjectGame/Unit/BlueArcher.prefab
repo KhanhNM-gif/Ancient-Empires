@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
-  move: 4
+  move: 2
   moveSpeed: 3
 --- !u!61 &5679220076914277648
 BoxCollider2D:

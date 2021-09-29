@@ -99,6 +99,6 @@ MonoBehaviour:
   ShootingRange: 2
   MoveRange: -3
   Heal: 0
-  MoveAble: 1
+  MoveAble: 0
   IsHouse: 0
   IsCastle: 0
