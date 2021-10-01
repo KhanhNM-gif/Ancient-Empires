@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Unit : MonoBehaviour, MatrixCoordi
+public class Unit : MonoBehaviour, MatrixCoordi, IUnit
 {
     //public GameObject controller;
     //private string player;
@@ -119,7 +119,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             if (!IsMoving)
             {
                 MatrixCoordi matrixCoordi = queueMove.Peek();
-                vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y,-1);
+                vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
 
                 IsMoving = true;
             }
