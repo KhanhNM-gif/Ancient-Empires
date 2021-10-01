@@ -7,21 +7,21 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    private ConcurrentDictionary<string, GameObject> UnitDictionary;
+    private ConcurrentDictionary<string, Unit> UnitDictionary;
 
-    private GameObject[,] PositionUnit = new GameObject[100, 100];
-    private GameObject[] Unit = new GameObject[8];
+    private Unit[,] PositionUnit = new Unit[100, 100];
+    private Unit[] Unit = new Unit[8];
 
     // Start is called before the first frame update
     void Start()
     {
-        UnitDictionary = new ConcurrentDictionary<string, GameObject>();
+        UnitDictionary = new ConcurrentDictionary<string, Unit>();
 
-        GameObject[] arrUnit = Resources.LoadAll<GameObject>(@"ObjectGame/Unit");
+        Unit[] arrUnit = Resources.LoadAll<Unit>(@"ObjectGame/Unit");
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
-        Unit = new GameObject[]
+        Unit = new Unit[]
         {
             Create(Const.NameUnit.BLUE_ARCHER,4,4)
         };
@@ -30,11 +30,11 @@ public class Game : MonoBehaviour
             SetPosition(Unit[i]);
         }
     }
-    public GameObject Create(string name, int x, int y)
+    public Unit Create(string name, int x, int y)
     {
-        if (UnitDictionary.TryGetValue(name, out GameObject outGameObject))
+        if (UnitDictionary.TryGetValue(name, out Unit outGameObject))
         {
-            GameObject obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
+            Unit obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
             Unit un = obj.GetComponent<Unit>();
             un.name = name;
             un.x = x;
@@ -46,7 +46,7 @@ public class Game : MonoBehaviour
         return null;
     }
 
-    public void SetPosition(GameObject obj)
+    public void SetPosition(Unit obj)
     {
         Unit unit = obj.GetComponent<Unit>();
         int x = unit.x;
@@ -63,7 +63,7 @@ public class Game : MonoBehaviour
         PositionUnit[x, y] = null;
     }
 
-    public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
+    public Unit GetPosition(int x, int y) => PositionUnit[x, y];
 
     void Update(){ }
 }

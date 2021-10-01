@@ -6,40 +6,39 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Unit : MonoBehaviour, MatrixCoordi, IUnit
+public class Unit : MonoBehaviour, MatrixCoordi
 {
     //public GameObject controller;
     //private string player;
     //public Sprite unit_sheet_1_0;
 
+    public int x { get; set; }
+    public int y { get; set; }
+
+    public float CurrentHP;
+    public float HP;
+    public float Attack;
+    public float Armor;
+    public int Range;
+    public int Move;
+    public int MoveSpeed;
     public GameObject movePlates;
-    public int move = 3;
-    public int moveSpeed = 2;
 
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
-    public int x { get; set; }
-    public int y { get; set; }
+    
 
     public void Start() { }
     public void Activate()
     {
-        //controller = GameObject.FindGameObjectWithTag("GameController");
         SetWordPositon();
-
-        /*switch (this.name)
-        {
-            case "player_Soldier":
-                this.GetComponent<SpriteRenderer>().sprite = unit_sheet_1_0;
-                break;
-        }*/
     }
 
     public void SetWordPositon() => transform.position = MapTile.GridWordPosition(x, y, -1);
     public void SetStackMove(Queue<MatrixCoordi> queue) => queueMove = queue;
 
-    public void OnMouseDown()
+    private void OnMouseDown()
     {
         DestroyMovePlate();
         InitiateMovePlates();
@@ -69,7 +68,7 @@ public class Unit : MonoBehaviour, MatrixCoordi, IUnit
             Tuple<MatrixCoordi, int> s = queue.Dequeue();
             matrixCoordi = s.Item1; deep = s.Item2;
 
-            if (deep > move) return;
+            if (deep > Move) return;
 
             if (deep > 0)
             {
@@ -112,7 +111,12 @@ public class Unit : MonoBehaviour, MatrixCoordi, IUnit
         mpScript.SetStackWay(queue);
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
-    void Update()
+    public virtual void Update()
+    {
+        UpdatePossion();
+    }
+
+    protected void UpdatePossion()
     {
         if (queueMove != null && queueMove.Count > 0)
         {
@@ -123,13 +127,12 @@ public class Unit : MonoBehaviour, MatrixCoordi, IUnit
 
                 IsMoving = true;
             }
-            else Move();
+            else MoveMap();
         }
-
     }
-    private void Move()
+    protected void MoveMap()
     {
-        float step = moveSpeed * Time.deltaTime;
+        float step = MoveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, vectorTo, step);
 
         if (Vector3.SqrMagnitude(transform.position - vectorTo) == 0)
