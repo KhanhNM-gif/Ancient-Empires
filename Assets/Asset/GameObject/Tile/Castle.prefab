@@ -97,11 +97,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ammor: 15
   ShootingRange: 0
-  MoveRange: 0
+  MoveRange: 1
   Heal: 20
   MoveAble: 1
   IsHouse: 0
   IsCastle: 1
-  sprites:
-  - {fileID: 21300000, guid: b928117bc1602ce4f934ea55a637c310, type: 3}
-  - {fileID: 21300000, guid: 3e36516e8cb205644b33f505a1d30b9d, type: 3}

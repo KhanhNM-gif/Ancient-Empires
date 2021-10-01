@@ -27,7 +27,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
-    
+
 
     public void Start() { }
     public void Activate()
@@ -54,23 +54,18 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public void InitiateMovePlates()
     {
         MatrixCoordi matrixCoordi;
-        int deep;
-        bool[,] visit = new bool[MapManager.map.Width, MapManager.map.Height];
+        int cost;
         Queue<Tuple<MatrixCoordi, int>> queue = new Queue<Tuple<MatrixCoordi, int>>();
-        ConcurrentDictionary<MatrixCoordi, MatrixCoordi> wayDictionary = new ConcurrentDictionary<MatrixCoordi, MatrixCoordi>();
+        ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>> wayDictionary = new ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>>();
 
-        visit[x, y] = true;
-        wayDictionary[MapManager.map.arrTile[x, y]] = null;
         queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], 0));
 
         while (queue.Count > 0)
         {
             Tuple<MatrixCoordi, int> s = queue.Dequeue();
-            matrixCoordi = s.Item1; deep = s.Item2;
+            matrixCoordi = s.Item1; cost = s.Item2;
 
-            if (deep > Move) return;
-
-            if (deep > 0)
+            if (cost > 0)
             {
                 GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
                 MovePlateSpawn(matrixCoordi.x, matrixCoordi.y, way);
@@ -81,21 +76,25 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 int x = matrixCoordi.x + item.Item1;
                 int y = matrixCoordi.y + item.Item2;
 
-                if (x < MapManager.map.Width && x >= 0 && y < MapManager.map.Height && y >= 0 && MapManager.map.arrTile[x, y].MoveAble && !visit[x, y])
+                if (x >= MapManager.map.Width || x < 0 || y >= MapManager.map.Height || y < 0) continue;
+
+                int newCost = cost + MapManager.map.arrTile[x, y].MoveRange;
+                BaseTile tile = MapManager.map.arrTile[x, y];
+
+                if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
                 {
-                    queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], deep + 1));
-                    wayDictionary[MapManager.map.arrTile[x, y]] = matrixCoordi;
-                    visit[x, y] = true;
+                    queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], newCost));
+                    wayDictionary[tile] = new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
                 }
             }
         }
     }
 
-    public void GetQueueWay(ConcurrentDictionary<MatrixCoordi, MatrixCoordi> dictionnary, MatrixCoordi p, MatrixCoordi e, out Queue<MatrixCoordi> way)
+    public void GetQueueWay(ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>> dictionnary, MatrixCoordi p, MatrixCoordi e, out Queue<MatrixCoordi> way)
     {
-        if (dictionnary[p] != null)
+        if (dictionnary.ContainsKey(p))
         {
-            GetQueueWay(dictionnary, dictionnary[p], e, out way);
+            GetQueueWay(dictionnary, dictionnary[p].Item1, e, out way);
             way.Enqueue(p);
         }
         else way = new Queue<MatrixCoordi>();
