@@ -7,34 +7,43 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    private ConcurrentDictionary<string, Unit> UnitDictionary;
+    private ConcurrentDictionary<string, GameObject> UnitDictionary;
 
-    private Unit[,] PositionUnit = new Unit[100, 100];
-    private Unit[] Unit = new Unit[8];
+    private GameObject[,] PositionUnit = new GameObject[100, 100];
+    private GameObject[] Unit = new GameObject[8];
+    public static Game Instance;
+    public Unit UnitSelected;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
-        UnitDictionary = new ConcurrentDictionary<string, Unit>();
+        UnitDictionary = new ConcurrentDictionary<string, GameObject>();
 
-        Unit[] arrUnit = Resources.LoadAll<Unit>(@"ObjectGame/Unit");
+        GameObject[] arrUnit = Resources.LoadAll<GameObject>(@"ObjectGame/Unit");
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
-        Unit = new Unit[]
+        Unit = new GameObject[]
         {
-            Create(Const.NameUnit.BLUE_ARCHER,4,4)
+            Create(Const.NameUnit.BLUE_ARCHER,5,4),
+            Create(Const.NameUnit.BLUE_ARCHER, 6, 6)
         };
         for (int i = 0; i < Unit.Length; i++)
         {
             SetPosition(Unit[i]);
         }
     }
-    public Unit Create(string name, int x, int y)
+    public GameObject Create(string name, int x, int y)
     {
-        if (UnitDictionary.TryGetValue(name, out Unit outGameObject))
+        if (UnitDictionary.TryGetValue(name, out GameObject outGameObject))
         {
-            Unit obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
+            GameObject obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
             Unit un = obj.GetComponent<Unit>();
             un.name = name;
             un.x = x;
@@ -46,7 +55,7 @@ public class Game : MonoBehaviour
         return null;
     }
 
-    public void SetPosition(Unit obj)
+    public void SetPosition(GameObject obj)
     {
         Unit unit = obj.GetComponent<Unit>();
         int x = unit.x;
@@ -63,7 +72,18 @@ public class Game : MonoBehaviour
         PositionUnit[x, y] = null;
     }
 
-    public Unit GetPosition(int x, int y) => PositionUnit[x, y];
+    public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
 
     void Update(){ }
+
+
+
+    public void updateMapMoveAble()
+    {
+        foreach(GameObject obj in Unit)
+        {
+            Unit unit = obj.GetComponent<Unit>();
+            MapManager.map.arrTile[unit.x, unit.y].MoveAble = false;
+        }
+    }
 }
