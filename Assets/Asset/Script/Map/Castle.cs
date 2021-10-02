@@ -14,8 +14,6 @@ public class Castle : BaseTile
     }
 
 
-
-    // Update is called once per frame
     public void changeOwner(int owner)
     {
         if(isOwnerBy == 0)

@@ -20,25 +20,25 @@ public class BorderMap : BaseTile
                 this.GetComponent<SpriteRenderer>().sprite = sprites[0];
                 break;
             case 2:
-                this.GetComponent<SpriteRenderer>().sprite = sprites[1];
+                this.GetComponent<SpriteRenderer>().sprite = sprites[5];
                 break;
             case 3:
-                this.GetComponent<SpriteRenderer>().sprite = sprites[2];
+                this.GetComponent<SpriteRenderer>().sprite = sprites[6];
                 break;
             case 4:
-                this.GetComponent<SpriteRenderer>().sprite = sprites[3];
+                this.GetComponent<SpriteRenderer>().sprite = sprites[7];
                 break;
             case 5:
                 this.GetComponent<SpriteRenderer>().sprite = sprites[4];
                 break;
             case 6:
-                this.GetComponent<SpriteRenderer>().sprite = sprites[5];
+                this.GetComponent<SpriteRenderer>().sprite = sprites[1];
                 break;
             case 7:
-                this.GetComponent<SpriteRenderer>().sprite = sprites[6];
+                this.GetComponent<SpriteRenderer>().sprite = sprites[2];
                 break;
             case 8:
-                this.GetComponent<SpriteRenderer>().sprite = sprites[7];
+                this.GetComponent<SpriteRenderer>().sprite = sprites[3];
                 break;
             default:
                 break;

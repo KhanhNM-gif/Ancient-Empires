@@ -29,7 +29,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private bool IsMoving;
 
 
-    public void Start() { }
+    public void Start() {
+        MapManager.map.arrTile[x, y].MoveAble = false;
+    }
     public void Activate()
     {
         SetWordPositon();
@@ -123,12 +125,14 @@ public class Unit : MonoBehaviour, MatrixCoordi
             {
                 MatrixCoordi matrixCoordi = queueMove.Peek();
                 vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
-
-                Game.Instance.updateMapMoveAble();
                 //BinhBH chiem Thanh
                 if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsCastle)
                 {
                     ((Castle)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
+                }
+                if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsHouse)
+                {
+                    ((House)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
                 }
                 IsMoving = true;
             }
