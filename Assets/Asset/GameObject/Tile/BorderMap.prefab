@@ -103,11 +103,11 @@ MonoBehaviour:
   IsHouse: 0
   IsCastle: 0
   sprites:
-  - {fileID: 21300000, guid: 1598731c7ffeeef4aad73c0c568407f4, type: 3}
+  - {fileID: 21300000, guid: 47618f96e78ac394886674e3516e2258, type: 3}
   - {fileID: 21300000, guid: e2e28f4bc325a344ebd662eebd3cd334, type: 3}
-  - {fileID: 21300000, guid: f69b55397a2bb7c4499bc5b12c9335aa, type: 3}
+  - {fileID: 21300000, guid: 7236eb29da2694d41ab934951837faef, type: 3}
   - {fileID: 21300000, guid: 505f29e8c6d5a664383c3e5262866eb9, type: 3}
-  - {fileID: 21300000, guid: 1169473a784fea446bf5a6796a929f5b, type: 3}
+  - {fileID: 21300000, guid: afe3dc3ae8000a34983108a8680ce608, type: 3}
   - {fileID: 21300000, guid: 6df3599ec76be3b4c8e99a603d1e8ba4, type: 3}
-  - {fileID: 21300000, guid: 11e2e5f6ddbb7b74ba4b07748e0b0fb3, type: 3}
+  - {fileID: 21300000, guid: a760c6fdc8f4d674b8979ef9a60ff8ad, type: 3}
   - {fileID: 21300000, guid: 3470a4152f5654e499f115b39ce41643, type: 3}
