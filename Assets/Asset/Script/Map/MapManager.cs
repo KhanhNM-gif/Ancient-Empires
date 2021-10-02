@@ -17,7 +17,7 @@ public class MapManager : MonoBehaviour
     private string pathMap = "Assets/Asset/Map/map12x12.txt";
     public static MapTile map;
     private static int width, height;
-    private static int size =1;
+    private static int size = 1;
 
 
     //[SerializeField] private Transform cam;
@@ -28,7 +28,7 @@ public class MapManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-     //   ReadAndAddMap();
+        //   ReadAndAddMap();
     }
 
     //Doc map tu file text va render map
@@ -45,7 +45,7 @@ public class MapManager : MonoBehaviour
             {
                 height = int.Parse(pos[1]);
                 width = int.Parse(pos[0]);
-                y = height-1;
+                y = height - 1;
                 map = new MapTile(width, height);
                 continue;
             }
@@ -115,7 +115,7 @@ public class MapManager : MonoBehaviour
                 cloneBorderMap.x = i;
                 cloneBorderMap.y = j;
                 cloneBorderMap.name = $"tile({i},{j})";
-
+                cloneBorderMap.changeBorderMap(i,j, width, height);
                 map.arrTile[i, j] = cloneBorderMap;
                 break;
             case "00"://Snow
@@ -137,6 +137,8 @@ public class MapManager : MonoBehaviour
                 break;
         }
     }
+
+
 
 
 
