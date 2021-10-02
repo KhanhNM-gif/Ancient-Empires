@@ -77,6 +77,7 @@ public class Game : MonoBehaviour
     void Update(){ }
 
 
+
     public void updateMapMoveAble()
     {
         foreach(GameObject obj in Unit)
