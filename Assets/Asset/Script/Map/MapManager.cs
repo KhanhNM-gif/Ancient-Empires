@@ -26,10 +26,10 @@ public class MapManager : MonoBehaviour
     public int GetHeight() => height;
     public int GetSize() => size;
     // Start is called before the first frame update
-    void Start()
+    /*void Awake()
     {
-     //   ReadAndAddMap();
-    }
+       ReadAndAddMap();
+    }*/
 
     //Doc map tu file text va render map
     public void ReadAndAddMap()

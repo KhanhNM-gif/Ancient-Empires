@@ -97,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ammor: 10
   ShootingRange: 0
-  MoveRange: -1
+  MoveRange: 2
   Heal: 0
   MoveAble: 1
   IsHouse: 0

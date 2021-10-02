@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6134926932188749195}
   - component: {fileID: 537309954411807924}
   - component: {fileID: 5658940135281294925}
-  - component: {fileID: 4086125298353105929}
   - component: {fileID: 5679220076914277648}
+  - component: {fileID: -8712774661975764518}
   m_Layer: 0
   m_Name: BlueArcher
   m_TagString: Untagged
@@ -104,21 +104,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4086125298353105929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5009340616018831074}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95dd85882d0f36640af4045d30f3a20c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
-  move: 2
-  moveSpeed: 3
 --- !u!61 &5679220076914277648
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -145,3 +130,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-8712774661975764518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009340616018831074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95c680793346609499de06c8ec85278c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentHP: 300
+  HP: 400
+  Attack: 40
+  Armor: 10
+  Range: 4
+  Move: 4
+  MoveSpeed: 3
+  movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
