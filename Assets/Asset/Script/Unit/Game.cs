@@ -11,6 +11,14 @@ public class Game : MonoBehaviour
 
     private GameObject[,] PositionUnit = new GameObject[100, 100];
     private GameObject[] Unit = new GameObject[8];
+    public static Game Instance;
+    public Unit UnitSelected;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +31,8 @@ public class Game : MonoBehaviour
 
         Unit = new GameObject[]
         {
-            Create(Const.NameUnit.BLUE_ARCHER,4,4)
+            Create(Const.NameUnit.BLUE_ARCHER,5,4),
+            Create(Const.NameUnit.BLUE_ARCHER, 6, 6)
         };
         for (int i = 0; i < Unit.Length; i++)
         {
@@ -66,4 +75,14 @@ public class Game : MonoBehaviour
     public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
 
     void Update(){ }
+
+
+    public void updateMapMoveAble()
+    {
+        foreach(GameObject obj in Unit)
+        {
+            Unit unit = obj.GetComponent<Unit>();
+            MapManager.map.arrTile[unit.x, unit.y].MoveAble = false;
+        }
+    }
 }

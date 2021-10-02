@@ -121,6 +121,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 MatrixCoordi matrixCoordi = queueMove.Peek();
                 vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y,-1);
 
+                Game.Instance.updateMapMoveAble();
+                //BinhBH chiem Thanh
+                if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsCastle)
+                {
+                    ((Castle)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
+                }
                 IsMoving = true;
             }
             else Move();
