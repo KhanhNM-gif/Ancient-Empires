@@ -102,3 +102,7 @@ MonoBehaviour:
   MoveAble: 1
   IsHouse: 1
   IsCastle: 0
+  isOwnerBy: 0
+  sprites:
+  - {fileID: 21300000, guid: 43f86ce47b028314bbd7e18bc7e12b57, type: 3}
+  - {fileID: 21300000, guid: 12d748b54712be340b21cada17b36093, type: 3}
