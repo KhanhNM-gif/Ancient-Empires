@@ -10,7 +10,18 @@ public class Game : MonoBehaviour
     private ConcurrentDictionary<string, GameObject> UnitDictionary;
 
     private GameObject[,] PositionUnit = new GameObject[100, 100];
-    private GameObject[] Unit = new GameObject[8];
+    private List<GameObject> arrListUnit = new List<GameObject>();
+    public static Game Instance;
+    public static Shop shop;
+    public Unit UnitSelected;
+
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -21,13 +32,11 @@ public class Game : MonoBehaviour
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
-        Unit = new GameObject[]
+        arrListUnit.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 4));
+        arrListUnit.Add(Create(Const.NameUnit.BLUE_ARCHER, 6, 4));
+        for (int i = 0; i < arrListUnit.Count; i++)
         {
-            Create(Const.NameUnit.BLUE_ARCHER,4,4)
-        };
-        for (int i = 0; i < Unit.Length; i++)
-        {
-            SetPosition(Unit[i]);
+            SetPosition(arrListUnit.ElementAt(i));
         }
     }
     public GameObject Create(string name, int x, int y)
@@ -66,4 +75,20 @@ public class Game : MonoBehaviour
     public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
 
     void Update(){ }
+
+    public void addUnit(string name, int x, int y)
+    {
+        if (arrListUnit.Count == Const.ConstGame.MAX_UNIT) return;
+        arrListUnit.Add(Create(name, x, y));
+        SetPosition(arrListUnit.ElementAt(arrListUnit.Count-1));
+    }
+
+    /// <summary>
+    /// BinhBH da co bao nhieu unit
+    /// </summary>
+    /// <returns></returns>
+    public int getNumberUnit()
+    {
+        return arrListUnit.Count;
+    }
 }

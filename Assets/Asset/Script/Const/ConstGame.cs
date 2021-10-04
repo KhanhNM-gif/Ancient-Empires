@@ -9,6 +9,7 @@ namespace Const
     public static class ConstGame
     {
         public const int FRAME = 60;
+        public const int MAX_UNIT = 8;
     }
     public static class NameUnit
     {

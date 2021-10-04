@@ -16,6 +16,11 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
 
     public void OnMouseDown()
     {
+        //BinhBh khi di chuyen den thi set vi tri day khong di chuyen dc nua de nhung unit khac khong di vao dc
+        //Khi di ra thi set co the di chuyen dc
+        MapManager.map.arrTile[reference.x, reference.y].MoveAble = true;
+        MapManager.map.arrTile[this.x, this.y].MoveAble = false;
+        //BinhBH end
         reference.x = this.x;
         reference.y = this.y;
         reference.SetStackMove(queueWay);
