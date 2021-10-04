@@ -6,22 +6,23 @@ using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
-{
-    private ConcurrentDictionary<string, GameObject> UnitDictionary;
-
-    private GameObject[,] PositionUnit = new GameObject[100, 100];
-    private GameObject[] Unit = new GameObject[8];
-    public static GameManager Instance;
-    public Unit UnitSelected;
-
-    public static eStatus Status = eStatus.Turn_Bot;
-
+{   
     public enum eStatus
     {
         Turn_Player,
         Turn_Bot
     }
 
+    private ConcurrentDictionary<string, GameObject> UnitDictionary;
+
+    private GameObject[,] PositionUnit = new GameObject[100, 100];
+    private List<GameObject> arrListUnit = new List<GameObject>();
+    public static GameManager Instance;
+    public Unit UnitSelected;
+    public static Shop shop;
+    public static eStatus Status = eStatus.Turn_Bot;
+
+    
     private void Awake()
     {
         Instance = this;
@@ -37,14 +38,11 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
-        Unit = new GameObject[]
+        arrListUnit.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 4));
+        arrListUnit.Add(Create(Const.NameUnit.BLUE_ARCHER, 6, 4));
+        for (int i = 0; i < arrListUnit.Count; i++)
         {
-            Create(Const.NameUnit.BLUE_ARCHER,5,4),
-            Create(Const.NameUnit.BLUE_ARCHER,6,6)
-        };
-        for (int i = 0; i < Unit.Length; i++)
-        {
-            SetPosition(Unit[i]);
+            SetPosition(arrListUnit.ElementAt(i));
         }
     }
     public GameObject Create(string name, int x, int y)
@@ -94,6 +92,21 @@ public class GameManager : MonoBehaviour
     {
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
+    }
+    public void addUnit(string name, int x, int y)
+    {
+        if (arrListUnit.Count == Const.ConstGame.MAX_UNIT) return;
+        arrListUnit.Add(Create(name, x, y));
+        SetPosition(arrListUnit.ElementAt(arrListUnit.Count-1));
+    }
+
+    /// <summary>
+    /// BinhBH da co bao nhieu unit
+    /// </summary>
+    /// <returns></returns>
+    public int getNumberUnit()
+    {
+        return arrListUnit.Count;
     }
 
     public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
