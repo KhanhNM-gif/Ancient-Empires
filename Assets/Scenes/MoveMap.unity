@@ -1214,7 +1214,7 @@ GameObject:
   - component: {fileID: 626163310}
   - component: {fileID: 626163309}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Shop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2578,7 +2578,7 @@ GameObject:
   - component: {fileID: 1743146632}
   - component: {fileID: 1743146631}
   m_Layer: 5
-  m_Name: Shop
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -34,4 +34,8 @@ namespace Const
             new Tuple<int, int>(0,-1),
          };
     }
+    public static class PlayerHandle
+    {
+        public const int NUMBER_UNIT_LIMIT = 8;
+    }
 }
