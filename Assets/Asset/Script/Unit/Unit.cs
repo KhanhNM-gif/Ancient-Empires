@@ -26,7 +26,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject movePlates;
     private bool isAttack = false;
     private bool isMove = false;
-    private bool isDisable=false;
+    private bool isDisable = false;
 
 
     private Queue<MatrixCoordi> queueMove;
@@ -52,8 +52,19 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
-        DestroyMovePlate();
-        InitiateMovePlates();
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
+        {
+            DestroyMovePlate();
+            InitiateMovePlates();
+            this.isMove = false;
+        }
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
+        {
+            //DestroyAttackPlate
+            //InitiateMovePlates tao o tan cong // x = 4-tầm đánh y = 4-tầm đánh x4 + tầm đánh y = 4 + tầm đánh  |xi-x||yi-y+| <= tầm đánh
+            this.isAttack = false;
+        }
+
     }
 
     public void DestroyMovePlate()
@@ -63,6 +74,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         for (int i = 0; i < movePlates.Length; i++) Destroy(movePlates[i]);
     }
 
+    /// <summary>
+    /// Tìm đường và Spawn ô di chuyển
+    /// </summary>
     public void InitiateMovePlates()
     {
         MatrixCoordi matrixCoordi;

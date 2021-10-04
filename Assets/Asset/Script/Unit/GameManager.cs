@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
     public static Shop shop;
     public static eStatus Status = eStatus.Turn_Bot;
 
-    
+    //x=4-tầm đánh y=4-tầm đánh x4+tầm đánh y=4+tầm đánh  |xi-x||yi-y+|<=tầm đánh
+
     private void Awake()
     {
         Instance = this;
