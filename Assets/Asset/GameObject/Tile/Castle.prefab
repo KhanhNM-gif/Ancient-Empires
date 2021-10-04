@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2629535725160134061}
   - component: {fileID: 2407491321081718687}
   - component: {fileID: 3150660231975898894}
+  - component: {fileID: 2334496479516933415}
   m_Layer: 0
   m_Name: Castle
   m_TagString: Untagged
@@ -106,3 +107,30 @@ MonoBehaviour:
   sprites:
   - {fileID: 21300000, guid: ad098185922512f419769e7b1c54dd9b, type: 3}
   - {fileID: 21300000, guid: fd660a7bf82129040a967783d5c682ac, type: 3}
+  dialog: {fileID: 524810819263199437, guid: efb1a37deb5beb547a5c2c1822586746, type: 3}
+--- !u!61 &2334496479516933415
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673678072489204409}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

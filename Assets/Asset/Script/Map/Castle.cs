@@ -32,4 +32,13 @@ public class Castle : BaseTile
 
     }
 
+    private void OnMouseDown()
+    {
+        if(isOwnerBy == 1)
+        {
+            Game.shop.showShop(x, y);
+        }
+        
+    }
+
 }
