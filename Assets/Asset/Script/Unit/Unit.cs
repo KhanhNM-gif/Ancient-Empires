@@ -42,6 +42,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
+        UIManager.Instance.ShowStatus(this);
+
         DestroyMovePlate();
         InitiateMovePlates();
     }

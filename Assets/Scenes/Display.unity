@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &134722914
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1277,7 +1277,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1190292738
 AudioListener:
   m_ObjectHideFlags: 0
@@ -2295,12 +2295,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBar: {fileID: 1917900085}
   HPText: {fileID: 152686267}
-  playerHealth: {fileID: 0}
   Damage: {fileID: 1932246084}
   Defense: {fileID: 1540607505}
-  Status: {fileID: 0}
   Gold: {fileID: 1194548188}
-  coin: {fileID: 0}
 --- !u!1 &1866735998
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,7 +2576,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -2.5, y: 0}
   m_SizeDelta: {x: 5, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

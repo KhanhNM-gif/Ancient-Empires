@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance;
 
     public Slider healthBar;
     public Text HPText;
-    public PlayerHealthManager playerHealth;
 
     public Text Damage;
     public Text Defense;
@@ -16,23 +16,25 @@ public class UIManager : MonoBehaviour
     public PlayerStatus Status;
 
     public Text Gold;
-    public Gold coin;
-    // Start is called before the first frame update
-    void Start()
+    private Gold gold;
+
+    private void Awake()
     {
-        
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ShowStatus(Unit unit)
     {
-        healthBar.maxValue = playerHealth.playerMaxHealth;
-        healthBar.value = playerHealth.playerCurrentHealth;
-        HPText.text = "" + playerHealth.playerCurrentHealth + "/" + playerHealth.playerMaxHealth;
+        healthBar.maxValue = unit.HP;
+        healthBar.value = unit.CurrentHP;
+        HPText.text = $"{unit.CurrentHP} / {unit.HP}";
 
-        Damage.text = "" + Status.damage ;
-        Defense.text = "" + Status.defense ;
+        Damage.text = unit.Attack.ToString();
+        Defense.text = unit.Armor.ToString();
+    }
 
-        Gold.text = "" + coin.gold ;
+    public void ShowStatus(Gold gold)
+    {
+        Gold.text = gold.ToString();
     }
 }
