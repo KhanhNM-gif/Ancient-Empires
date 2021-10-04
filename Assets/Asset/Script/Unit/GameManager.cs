@@ -5,14 +5,22 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Game : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     private ConcurrentDictionary<string, GameObject> UnitDictionary;
 
     private GameObject[,] PositionUnit = new GameObject[100, 100];
     private GameObject[] Unit = new GameObject[8];
-    public static Game Instance;
+    public static GameManager Instance;
     public Unit UnitSelected;
+
+    public static eStatus Status = eStatus.Turn_Bot;
+
+    public enum eStatus
+    {
+        Turn_Player,
+        Turn_Bot
+    }
 
     private void Awake()
     {
@@ -32,7 +40,7 @@ public class Game : MonoBehaviour
         Unit = new GameObject[]
         {
             Create(Const.NameUnit.BLUE_ARCHER,5,4),
-            Create(Const.NameUnit.BLUE_ARCHER, 6, 6)
+            Create(Const.NameUnit.BLUE_ARCHER,6,6)
         };
         for (int i = 0; i < Unit.Length; i++)
         {
@@ -66,6 +74,22 @@ public class Game : MonoBehaviour
         PositionUnit[x, y] = obj;
     }
 
+    public void EndTurn()
+    {
+        StartCoroutine(SetWaitForSeconds(5));
+    }
+
+
+    IEnumerator SetWaitForSeconds(float time)
+    {
+        yield return new WaitForSeconds(time);
+        SetStatus(eStatus.Turn_Player);
+        SkipTurn.Instance.Notification_Show("Your turn");
+    }
+
+    public eStatus GetStatus() => Status;
+    public void SetStatus(eStatus status) => Status = status;
+
     public void SetPositionEmpty(int x, int y)
     {
         if (x < 0 || y < 0) return;
@@ -74,16 +98,5 @@ public class Game : MonoBehaviour
 
     public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
 
-    void Update(){ }
-
-
-
-    public void updateMapMoveAble()
-    {
-        foreach(GameObject obj in Unit)
-        {
-            Unit unit = obj.GetComponent<Unit>();
-            MapManager.map.arrTile[unit.x, unit.y].MoveAble = false;
-        }
-    }
+    void Update() { }
 }

@@ -23,10 +23,15 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
         //BinhBH end
         reference.x = this.x;
         reference.y = this.y;
-        reference.SetStackMove(queueWay);
-        reference.DestroyMovePlate();
+        reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
+        reference.DestroyMovePlate();// bỏ đi những ô moveplate
     }
 
+    /// <summary>
+    /// Xét vị trí của ô moveplate(dung spawn o di chuyển)
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public void SetCoords(int x, int y)
     {
         this.x = x;
