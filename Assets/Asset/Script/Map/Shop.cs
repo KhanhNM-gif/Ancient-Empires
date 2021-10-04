@@ -28,7 +28,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     [SerializeField] private Button ButtonBuyCatapultr;
     private void Awake()
     {
-        Game.shop = this;
+        GameManager.shop = this;
     }
     
     /// <summary>
@@ -61,7 +61,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     /// </summary>
     private void showNumberOfUnit()
     {
-        TextUnit.text = Game.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
+        TextUnit.text = GameManager.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     public void Buy(string nameUnit)
     {
         showNumberOfUnit();
-        if (Game.Instance.getNumberUnit() == Const.ConstGame.MAX_UNIT)
+        if (GameManager.Instance.getNumberUnit() == Const.ConstGame.MAX_UNIT)
         {
             return;
         }
@@ -87,12 +87,12 @@ public class Shop : MonoBehaviour, MatrixCoordi
 
         if(MapManager.map.arrTile[x,y].MoveAble == true)
         {
-            Game.Instance.addUnit(nameUnit, x, y);
+            GameManager.Instance.addUnit(nameUnit, x, y);
             return;
         }
         else if (MapManager.map.arrTile[x, y-1].MoveAble == true)
         {
-            Game.Instance.addUnit(nameUnit, x, y-1);
+            GameManager.Instance.addUnit(nameUnit, x, y-1);
             return;
         }
         for (int i = x+1; i >= x - 1; i--)
@@ -101,7 +101,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
             {
                 if (MapManager.map.arrTile[i, j].MoveAble == true)
                 {
-                    Game.Instance.addUnit(nameUnit, i, j);
+                    GameManager.Instance.addUnit(nameUnit, i, j);
                     return;
                 }
             }
