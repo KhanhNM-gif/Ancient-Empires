@@ -215,7 +215,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: BlueArcher
+          m_StringArgument: BlueGeneral
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &11559207
@@ -1192,6 +1192,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PannelShop: {fileID: 0}
+  TextCountBuyArcher: {fileID: 0}
+  TextCountBuySolider: {fileID: 0}
+  TextCountBuyValadorn: {fileID: 0}
+  TextCountBuyCatapultr: {fileID: 0}
+  TextMonney: {fileID: 0}
+  TextUnit: {fileID: 0}
+  ButtonBuyArcher: {fileID: 0}
+  ButtonBuySolider: {fileID: 0}
+  ButtonBuyValadorn: {fileID: 0}
+  ButtonBuyCatapultr: {fileID: 0}
 --- !u!1 &626163307
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,7 +1644,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
-          m_StringArgument: BlueArcher
+          m_StringArgument: BlueSoldier
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1392540436
@@ -1969,7 +1979,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 3
           m_FloatArgument: 0
-          m_StringArgument: BlueArcher
+          m_StringArgument: BlueCatapult
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1420530133
@@ -2587,6 +2597,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PannelShop: {fileID: 626163307}
+  TextCountBuyArcher: {fileID: 1528470318}
+  TextCountBuySolider: {fileID: 120567439}
+  TextCountBuyValadorn: {fileID: 1732170811}
+  TextCountBuyCatapultr: {fileID: 108734102}
+  TextMonney: {fileID: 1765189033}
+  TextUnit: {fileID: 1066742096}
+  ButtonBuyArcher: {fileID: 130215121}
+  ButtonBuySolider: {fileID: 1392540435}
+  ButtonBuyValadorn: {fileID: 11559206}
+  ButtonBuyCatapultr: {fileID: 1420530132}
 --- !u!114 &1743146632
 MonoBehaviour:
   m_ObjectHideFlags: 0
