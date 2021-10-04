@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.Asset.Model;
 using UnityEngine.UI;
+using System;
 
 public class Shop : MonoBehaviour, MatrixCoordi
 {
@@ -11,10 +12,10 @@ public class Shop : MonoBehaviour, MatrixCoordi
     public int x { get; set; }
     public int y { get; set; }
 
-    private int CountArcher = 0; 
+    private int CountArcher = 0;
     private int CountValadorn = 0;
     private int CountSolider = 0;
-    private int CountCatapult= 0;
+    private int CountCatapult = 0;
     [SerializeField] private Text TextCountBuyArcher;
     [SerializeField] private Text TextCountBuySolider;
     [SerializeField] private Text TextCountBuyValadorn;
@@ -30,7 +31,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     {
         GameManager.shop = this;
     }
-    
+
     /// <summary>
     /// An shop
     /// </summary>
@@ -64,6 +65,15 @@ public class Shop : MonoBehaviour, MatrixCoordi
         TextUnit.text = GameManager.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
     }
 
+
+    public static Tuple<int, int>[] POSITION_SPAWN = new Tuple<int, int>[]
+         {
+            new Tuple<int, int>(0,0),
+            new Tuple<int, int>(1,0),
+            new Tuple<int, int>(0,1),
+            new Tuple<int, int>(-1,0),
+            new Tuple<int, int>(0,-1),
+         };
     /// <summary>
     /// BinhBH Mua quan xung quan vi tri thanh,
     /// uu tien vi tri trong thanh va ben duoi thanh
@@ -81,23 +91,39 @@ public class Shop : MonoBehaviour, MatrixCoordi
         {
             case Const.NameUnit.BLUE_ARCHER:
                 CountArcher++;
-                TextCountBuyArcher.text = "[" + CountArcher +"]";
+                TextCountBuyArcher.text = "[" + CountArcher + "]";
                 break;
         }
 
-        if(MapManager.map.arrTile[x,y].MoveAble == true)
+
+        PlayerHandle playerHandle;
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player) playerHandle = GameManager.Instance.player;
+        else playerHandle = GameManager.Instance.bot;
+
+        foreach (var item in POSITION_SPAWN)
+        {
+            if (MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble == true)
+            {
+                GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2);
+                //playerHandle-Gold
+                return;
+            }
+        }
+
+
+        /*if (MapManager.map.arrTile[x, y].MoveAble == true)
         {
             GameManager.Instance.addUnit(nameUnit, x, y);
             return;
         }
-        else if (MapManager.map.arrTile[x, y-1].MoveAble == true)
+        else if (MapManager.map.arrTile[x, y - 1].MoveAble == true)
         {
-            GameManager.Instance.addUnit(nameUnit, x, y-1);
+            GameManager.Instance.addUnit(nameUnit, x, y - 1);
             return;
         }
-        for (int i = x+1; i >= x - 1; i--)
+        for (int i = x + 1; i >= x - 1; i--)
         {
-            for (int j = y -1; j <= y + 1; j++)
+            for (int j = y - 1; j <= y + 1; j++)
             {
                 if (MapManager.map.arrTile[i, j].MoveAble == true)
                 {
@@ -105,7 +131,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
                     return;
                 }
             }
-        }
+        }*/
 
     }
 

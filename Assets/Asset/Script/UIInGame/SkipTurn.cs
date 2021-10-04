@@ -24,8 +24,8 @@ public class SkipTurn : MonoBehaviour
     }
     public void Notification_Show(string msg)
     {
-        GameObject Text = pnNotification.transform.GetChild(0).gameObject;
-        Text.GetComponent<TextMeshProUGUI>().text = msg;
+        GameObject nof = pnNotification.transform.GetChild(0).gameObject;
+        nof.GetComponent<UnityEngine.UI.Text>().text = msg;
         pnNotification.SetActive(true);
         StartCoroutine(WaitForSeconds(pnNotification, 2));
     }
