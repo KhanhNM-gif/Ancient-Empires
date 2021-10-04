@@ -5,18 +5,24 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Game : MonoBehaviour
-{
+public class GameManager : MonoBehaviour
+{   
+    public enum eStatus
+    {
+        Turn_Player,
+        Turn_Bot
+    }
+
     private ConcurrentDictionary<string, GameObject> UnitDictionary;
 
     private GameObject[,] PositionUnit = new GameObject[100, 100];
     private List<GameObject> arrListUnit = new List<GameObject>();
-    public static Game Instance;
-    public static Shop shop;
+    public static GameManager Instance;
     public Unit UnitSelected;
+    public static Shop shop;
+    public static eStatus Status = eStatus.Turn_Bot;
 
-
-
+    
     private void Awake()
     {
         Instance = this;
@@ -66,16 +72,27 @@ public class Game : MonoBehaviour
         PositionUnit[x, y] = obj;
     }
 
+    public void EndTurn()
+    {
+        StartCoroutine(SetWaitForSeconds(5));
+    }
+
+
+    IEnumerator SetWaitForSeconds(float time)
+    {
+        yield return new WaitForSeconds(time);
+        SetStatus(eStatus.Turn_Player);
+        SkipTurn.Instance.Notification_Show("Your turn");
+    }
+
+    public eStatus GetStatus() => Status;
+    public void SetStatus(eStatus status) => Status = status;
+
     public void SetPositionEmpty(int x, int y)
     {
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
     }
-
-    public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
-
-    void Update(){ }
-
     public void addUnit(string name, int x, int y)
     {
         if (arrListUnit.Count == Const.ConstGame.MAX_UNIT) return;
@@ -91,4 +108,8 @@ public class Game : MonoBehaviour
     {
         return arrListUnit.Count;
     }
+
+    public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
+
+    void Update() { }
 }
