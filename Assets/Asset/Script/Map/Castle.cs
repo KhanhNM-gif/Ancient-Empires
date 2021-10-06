@@ -36,7 +36,7 @@ public class Castle : BaseTile
     {
         if(isOwnerBy == 1)
         {
-            Game.shop.showShop(x, y);
+            GameManager.shop.showShop(x, y);
         }
         
     }

@@ -22,30 +22,57 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int Range;
     public int Move;
     public int MoveSpeed;
+    public int Lv;
+    public bool isEnemy;
     public GameObject movePlates;
+    private bool isAttack = false;
+    private bool isMove = true;
+    private bool isDisable = false;
+
 
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
 
 
-    public void Start() {
+    public void Start()
+    {
         MapManager.map.arrTile[x, y].MoveAble = false;
     }
     public void Activate()
     {
         SetWordPositon();
+        isAttack = false;
     }
 
     public void SetWordPositon() => transform.position = MapTile.GridWordPosition(x, y, -1);
-    public void SetStackMove(Queue<MatrixCoordi> queue) => queueMove = queue;
+    public void SetStackMove(Queue<MatrixCoordi> queue)
+    {
+        queueMove = queue;
+    }
 
     private void OnMouseDown()
     {
+<<<<<<< HEAD
         UIManager.Instance.ShowStatus(this);
 
         DestroyMovePlate();
         InitiateMovePlates();
+=======
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
+        {
+            DestroyMovePlate();
+            InitiateMovePlates();
+            this.isMove = false;
+        }
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
+        {
+            //DestroyAttackPlate
+            //InitiateMovePlates tao o tan cong // x = 4-tầm đánh y = 4-tầm đánh x4 + tầm đánh y = 4 + tầm đánh  |xi-x||yi-y+| <= tầm đánh
+            this.isAttack = false;
+        }
+
+>>>>>>> master
     }
 
     public void DestroyMovePlate()
@@ -55,6 +82,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         for (int i = 0; i < movePlates.Length; i++) Destroy(movePlates[i]);
     }
 
+    /// <summary>
+    /// Tìm đường và Spawn ô di chuyển
+    /// </summary>
     public void InitiateMovePlates()
     {
         MatrixCoordi matrixCoordi;
@@ -93,7 +123,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
             }
         }
     }
+    // tấn công
 
+    // chiếm thành
     public void GetQueueWay(ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>> dictionnary, MatrixCoordi p, MatrixCoordi e, out Queue<MatrixCoordi> way)
     {
         if (dictionnary.ContainsKey(p))
@@ -150,6 +182,31 @@ public class Unit : MonoBehaviour, MatrixCoordi
         {
             IsMoving = false;
             queueMove.Dequeue();
+            if (queueMove.Count == 0)
+            {
+                if (CheckDisable()) DisableUnit();
+            }
         }
     }
+
+    private bool CheckDisable() => !isAttack && !isMove;
+
+    private void DisableUnit()
+    {
+        isDisable = true;
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);
+    }
+    public void EnableUnit()
+    {
+        isDisable = false;
+        isAttack = isMove = true;
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(225, 225, 255);
+    }
+
+    public bool GetIsAttack() => isAttack;
+    public void SetIsAttack(bool isAttack) => this.isAttack = isAttack;
+    public bool GetIsMove() => isMove;
+    public void SetIsMove(bool isMove) => this.isMove = isMove;
+
+
 }

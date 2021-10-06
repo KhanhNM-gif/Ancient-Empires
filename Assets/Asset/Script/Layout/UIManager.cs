@@ -16,7 +16,8 @@ public class UIManager : MonoBehaviour
     public PlayerStatus Status;
 
     public Text Gold;
-    private Gold gold;
+
+    public Text Lv;
 
     private void Awake()
     {
@@ -31,6 +32,8 @@ public class UIManager : MonoBehaviour
 
         Damage.text = unit.Attack.ToString();
         Defense.text = unit.Armor.ToString();
+
+        Lv.text = unit.Lv.ToString();
     }
 
     public void ShowStatus(Gold gold)

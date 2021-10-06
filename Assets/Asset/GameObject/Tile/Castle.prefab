@@ -106,6 +106,7 @@ MonoBehaviour:
   isOwnerBy: 0
   sprites:
   - {fileID: 21300000, guid: ad098185922512f419769e7b1c54dd9b, type: 3}
+  - {fileID: 21300000, guid: e55fedb8cf1bb5946b031a5c0166d7d1, type: 3}
   - {fileID: 21300000, guid: fd660a7bf82129040a967783d5c682ac, type: 3}
   dialog: {fileID: 524810819263199437, guid: efb1a37deb5beb547a5c2c1822586746, type: 3}
 --- !u!61 &2334496479516933415
