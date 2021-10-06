@@ -53,12 +53,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
-<<<<<<< HEAD
+//<<<<<<< HEAD
         UIManager.Instance.ShowStatus(this);
 
         DestroyMovePlate();
         InitiateMovePlates();
-=======
+//=======
         if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
@@ -72,7 +72,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             this.isAttack = false;
         }
 
->>>>>>> master
+//>>>>>>> master
     }
 
     public void DestroyMovePlate()

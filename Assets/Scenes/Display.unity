@@ -2124,6 +2124,7 @@ GameObject:
   - component: {fileID: 1855614907}
   - component: {fileID: 1855614906}
   - component: {fileID: 1855614910}
+  - component: {fileID: 1855614911}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2225,6 +2226,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a05c945a62d70941bc9ca3ed6f7679c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthBar: {fileID: 1917900085}
+  HPText: {fileID: 152686267}
+  Damage: {fileID: 1932246084}
+  Defense: {fileID: 1540607505}
+  Gold: {fileID: 1194548188}
+  Lv: {fileID: 1701716145}
+--- !u!114 &1855614911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855614905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2733110e059f9c468cedaf822f3ea40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  attack: 0
+  armor: 0
 --- !u!1 &1866735998
 GameObject:
   m_ObjectHideFlags: 0
