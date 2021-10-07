@@ -52,19 +52,21 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
-        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
+        if (!this.isEnemy)
         {
-            DestroyMovePlate();
-            InitiateMovePlates();
-            this.isMove = false;
+            if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
+            {
+                DestroyMovePlate();
+                InitiateMovePlates();
+                this.isMove = false;
+            }
+            if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
+            {
+                //DestroyAttackPlate
+                //InitiateMovePlates tao o tan cong // x = 4-tầm đánh y = 4-tầm đánh x4 + tầm đánh y = 4 + tầm đánh  |xi-x||yi-y+| <= tầm đánh
+                this.isAttack = false;
+            }
         }
-        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
-        {
-            //DestroyAttackPlate
-            //InitiateMovePlates tao o tan cong // x = 4-tầm đánh y = 4-tầm đánh x4 + tầm đánh y = 4 + tầm đánh  |xi-x||yi-y+| <= tầm đánh
-            this.isAttack = false;
-        }
-
     }
 
     public void DestroyMovePlate()

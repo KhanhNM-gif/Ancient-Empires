@@ -104,7 +104,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
         {
             if (MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble == true)
             {
-                GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2);
+                GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2, GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot);
                 //playerHandle-Gold
                 return;
             }
