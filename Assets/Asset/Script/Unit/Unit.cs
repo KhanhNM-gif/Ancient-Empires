@@ -54,7 +54,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
-        if (!this.isEnemy)
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
             InitiateMovePlates();
@@ -78,17 +78,13 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void InitiateAttackPlates()
     {
-        for (int i = -Range; i <= Range; i ++)
+        foreach(var item in GameManager.Instance.bot.arrListUnit)
         {
-            for(int j = -(Range - Math.Abs(i));j<= Range - Math.Abs(i); j++)
+            if(Math.Abs(x - item.x)+Math.Abs(y-item.y)<= Range)
             {
-                MovePlateSpawn(x + i,y+j,null);
+                MovePlateSpawn(item.x, item.y,null);
             }    
-        }
-
-
-       
-
+        }    
     }
 
     public void DestroyMovePlate()
@@ -162,6 +158,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         mpScript.SetStackWay(queue);
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
+
+    public void AtkPlateSpawn(int matrixX,int matrixY)
+    {
+
+    }    
+
     public virtual void Update()
     {
         UpdatePossion();
