@@ -15,12 +15,12 @@ namespace Const
     {
         public const string BLUE_ARCHER = "BlueArcher";
         public const string BLUE_CATAPULT = "BlueCatapult";
-        public const string BLUE_GENERAL = "RedGeneral";
+        public const string BLUE_GENERAL = "BlueGeneral";
         public const string BLUE_SOLDIER = "BlueSoldier";
 
         public const string RED_ARCHER = "RedArcher";
         public const string RED_CATAPULT = "RedCatapult";
-        public const string RED_GENERAL = "BlueGeneral";
+        public const string RED_GENERAL = "RedGeneral";
         public const string RED_SOLDIER = "RedSoldier";
     }
 
@@ -33,5 +33,9 @@ namespace Const
             new Tuple<int, int>(0,1),
             new Tuple<int, int>(0,-1),
          };
+    }
+    public static class PlayerHandle
+    {
+        public const int NUMBER_UNIT_LIMIT = 8;
     }
 }

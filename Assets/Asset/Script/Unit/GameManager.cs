@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
-{   
+{
     public enum eStatus
     {
         Turn_Player,
@@ -15,14 +15,17 @@ public class GameManager : MonoBehaviour
 
     private ConcurrentDictionary<string, GameObject> UnitDictionary;
 
-    private GameObject[,] PositionUnit = new GameObject[100, 100];
-    private List<GameObject> arrListUnit = new List<GameObject>();
+    private Unit[,] PositionUnit = new Unit[100, 100];
+    //private List<Unit> arrListUnit = new List<Unit>();
+    public Bot bot { get; set; }
+    public Player player { get; set; }
     public static GameManager Instance;
     public Unit UnitSelected;
     public static Shop shop;
-    public static eStatus Status = eStatus.Turn_Bot;
+    public static eStatus Status = eStatus.Turn_Player;
 
-    
+    //x=4-tầm đánh y=4-tầm đánh x4+tầm đánh y=4+tầm đánh  |xi-x||yi-y+|<=tầm đánh
+
     private void Awake()
     {
         Instance = this;
@@ -38,14 +41,17 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
-        arrListUnit.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 4));
-        arrListUnit.Add(Create(Const.NameUnit.BLUE_ARCHER, 6, 4));
-        for (int i = 0; i < arrListUnit.Count; i++)
-        {
-            SetPosition(arrListUnit.ElementAt(i));
-        }
+        List<Unit> list = new List<Unit>();
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 4, 4));
+        player = new Player(500, 200, list);
+        foreach (var item in list) SetPosition(item);
+
+        list = new List<Unit>();
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 10, 9));
+        bot = new Bot(500, 200, list);
+        foreach (var item in list) SetPosition(item);
     }
-    public GameObject Create(string name, int x, int y)
+    public Unit Create(string name, int x, int y)
     {
         if (UnitDictionary.TryGetValue(name, out GameObject outGameObject))
         {
@@ -56,12 +62,12 @@ public class GameManager : MonoBehaviour
             un.y = y;
             un.Activate();
 
-            return obj;
+            return un;
         }
         return null;
     }
 
-    public void SetPosition(GameObject obj)
+    public void SetPosition(Unit obj)
     {
         Unit unit = obj.GetComponent<Unit>();
         int x = unit.x;
@@ -76,14 +82,20 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(SetWaitForSeconds(5));
     }
-
-
     IEnumerator SetWaitForSeconds(float time)
     {
         yield return new WaitForSeconds(time);
         SetStatus(eStatus.Turn_Player);
+        StartTurn();
         SkipTurn.Instance.Notification_Show("Your turn");
     }
+
+    public void StartTurn()
+    {
+        bot.StartTurn();
+        player.StartTurn();
+    }
+
 
     public eStatus GetStatus() => Status;
     public void SetStatus(eStatus status) => Status = status;
@@ -93,11 +105,18 @@ public class GameManager : MonoBehaviour
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
     }
-    public void addUnit(string name, int x, int y)
+    public void addUnit(PlayerHandle playerHandle, string name, int x, int y)
     {
-        if (arrListUnit.Count == Const.ConstGame.MAX_UNIT) return;
-        arrListUnit.Add(Create(name, x, y));
-        SetPosition(arrListUnit.ElementAt(arrListUnit.Count-1));
+        if (playerHandle.CheckLimitUnit())
+        {
+            Unit newUnit = Create(name, x, y);
+            playerHandle.AddUnit(newUnit);
+            SetPosition(newUnit);
+        }
+        else
+        {
+            SkipTurn.Instance.Notification_Show("Number unit max limit");
+        }
     }
 
     /// <summary>
@@ -106,10 +125,10 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public int getNumberUnit()
     {
-        return arrListUnit.Count;
+        return player.NumberUnit;
     }
 
-    public GameObject GetPosition(int x, int y) => PositionUnit[x, y];
+    public Unit GetPosition(int x, int y) => PositionUnit[x, y];
 
     void Update() { }
 }
