@@ -54,7 +54,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
-        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
+        if (!this.isEnemy)
         {
             DestroyMovePlate();
             InitiateMovePlates();
