@@ -24,6 +24,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int MoveSpeed;
     public bool isEnemy;
     public GameObject movePlates;
+    public GameObject attackPlates;
     private bool isAttack = false;
     private bool isMove = false;
     private bool isDisable=false;
@@ -37,6 +38,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public void Start()
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
+        MapManager.map.arrTile[x, y].AttackAble = false;
     }
     public void Activate()
     {
@@ -54,6 +56,35 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
         DestroyMovePlate();
         InitiateMovePlates();
+
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
+        {
+            DestroyAttackPlate();
+            InitiateAttackPlates();
+            this.isAttack = false;
+        }
+    }
+
+    public void DestroyAttackPlate()
+    {
+        GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
+        for (int i = 0;i < attackPlates.Length;i++) 
+        Destroy(attackPlates[i]);
+        
+    }
+
+    public void InitiateAttackPlates()
+    {
+        for (int i = -Range; i <= Range; i ++)
+        {
+            for(int j = -(Range - Math.Abs(i));j<= Range - Math.Abs(i); j++)
+            {
+                MovePlateSpawn(x + i,y+j,null);
+            }    
+        }
+
+
+       
     }
 
     public void DestroyMovePlate()
