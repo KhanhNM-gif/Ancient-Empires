@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< Updated upstream
 using Assets.Asset.Model;
 using System;
 
@@ -22,5 +23,20 @@ public class AttackPlate : MonoBehaviour , MatrixCoordi
         reference.x = this.x;
         reference.y = this.y;
         reference.DestroyAttackPlate();
+=======
+
+public class AttackPlate : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+>>>>>>> Stashed changes
     }
 }
