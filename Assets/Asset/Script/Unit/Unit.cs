@@ -22,6 +22,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int Range;
     public int Move;
     public int MoveSpeed;
+    public int Lv;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
@@ -54,6 +55,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
+
         if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
@@ -67,6 +69,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             this.isAttack = false;
         }
     }
+
 
     public void DestroyAttackPlate()
     {
@@ -85,6 +88,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 MovePlateSpawn(item.x, item.y,null);
             }    
         }    
+
     }
 
     public void DestroyMovePlate()
