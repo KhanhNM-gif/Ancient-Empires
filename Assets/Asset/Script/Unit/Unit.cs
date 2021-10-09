@@ -25,6 +25,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int Lv;
     public bool isEnemy;
     public GameObject movePlates;
+    public GameObject attackPlates;
     private bool isAttack = false;
     private bool isMove = true;
     private bool isDisable = false;
@@ -38,6 +39,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public void Start()
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
+        MapManager.map.arrTile[x, y].AttackAble = false;
     }
     public void Activate()
     {
@@ -53,12 +55,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
-//<<<<<<< HEAD
-        UIManager.Instance.ShowStatus(this);
 
-        DestroyMovePlate();
-        InitiateMovePlates();
-//=======
         if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
@@ -67,12 +64,31 @@ public class Unit : MonoBehaviour, MatrixCoordi
         }
         if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
-            //DestroyAttackPlate
-            //InitiateMovePlates tao o tan cong // x = 4-tầm đánh y = 4-tầm đánh x4 + tầm đánh y = 4 + tầm đánh  |xi-x||yi-y+| <= tầm đánh
+            DestroyAttackPlate();
+            InitiateAttackPlates();
             this.isAttack = false;
         }
+    }
 
-//>>>>>>> master
+
+    public void DestroyAttackPlate()
+    {
+        GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
+        for (int i = 0;i < attackPlates.Length;i++) 
+        Destroy(attackPlates[i]);
+        
+    }
+
+    public void InitiateAttackPlates()
+    {
+        foreach(var item in GameManager.Instance.bot.arrListUnit)
+        {
+            if(Math.Abs(x - item.x)+Math.Abs(y-item.y)<= Range)
+            {
+                MovePlateSpawn(item.x, item.y,null);
+            }    
+        }    
+
     }
 
     public void DestroyMovePlate()
@@ -146,6 +162,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         mpScript.SetStackWay(queue);
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
+
+    public void AtkPlateSpawn(int matrixX,int matrixY)
+    {
+
+    }    
+
     public virtual void Update()
     {
         UpdatePossion();
