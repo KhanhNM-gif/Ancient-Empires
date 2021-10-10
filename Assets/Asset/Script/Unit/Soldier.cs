@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 class Soldier : Unit
 {
+    public override int cost => Const.ConstGame.COST_SOLDIER;
+
     override public void Update()
     {
         base.Update();

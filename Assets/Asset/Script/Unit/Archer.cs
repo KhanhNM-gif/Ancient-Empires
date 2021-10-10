@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 class Archer : Unit
 {
+    public override int cost => Const.ConstGame.COST_ARCHER;
+
     override public void Update()
     {
         base.Update();

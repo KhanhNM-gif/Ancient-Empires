@@ -10,6 +10,10 @@ namespace Const
     {
         public const int FRAME = 60;
         public const int MAX_UNIT = 8;
+        public const int COST_ARCHER = 250;
+        public const int COST_SOLDIER = 150;
+        public const int COST_GENERAL = 1000;
+        public const int COST_CATAPULT = 700;
     }
     public static class NameUnit
     {

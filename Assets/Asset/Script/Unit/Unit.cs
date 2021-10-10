@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Unit : MonoBehaviour, MatrixCoordi
+public abstract class Unit : MonoBehaviour, MatrixCoordi
 {
     //public GameObject controller;
     //private string player;
@@ -15,6 +15,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int x { get; set; }
     public int y { get; set; }
 
+    public abstract int cost
+    {
+        get;
+    }
     public float CurrentHP;
     public float HP;
     public float Attack;
