@@ -47,11 +47,11 @@ public class GameManager : MonoBehaviour
         foreach (var item in list) SetPosition(item);
 
         list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 10, 9));
+        list.Add(Create(Const.NameUnit.RED_ARCHER, 10, 9, true));
         bot = new Bot(500, 200, list);
         foreach (var item in list) SetPosition(item);
     }
-    public Unit Create(string name, int x, int y)
+    public Unit Create(string name, int x, int y, bool isEnemy)
     {
         if (UnitDictionary.TryGetValue(name, out GameObject outGameObject))
         {
@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
             un.name = name;
             un.x = x;
             un.y = y;
+            un.isEnemy = isEnemy;
             un.Activate();
 
             return un;
@@ -105,11 +106,12 @@ public class GameManager : MonoBehaviour
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
     }
-    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y)
+
+    public void addUnit(PlayerHandle playerHandle, string name, int x, int y,bool isEnemy)
     {
         if (!playerHandle.CheckLimitUnit())
         {
-            Unit newUnit = Create(name, x, y);
+            Unit newUnit = Create(name, x, y, isEnemy);
             playerHandle.AddUnit(newUnit);
             playerHandle.Gold -= newUnit.cost;
             SetPosition(newUnit);

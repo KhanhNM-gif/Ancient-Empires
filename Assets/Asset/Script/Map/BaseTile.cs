@@ -14,4 +14,5 @@ public class BaseTile : MonoBehaviour , MatrixCoordi
     public bool MoveAble;
     public bool IsHouse;
     public bool IsCastle;
+    public bool AttackAble;
 }
