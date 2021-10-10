@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockMove : Catapult
+public class RockMove : MonoBehaviour
 {
-    public float speed = 10f;
+    public float speed = 1;
     Vector2 lastClickedPos;
     bool moving;
     public void move()
@@ -22,6 +22,10 @@ public class RockMove : Catapult
         else
         {
             moving = false;
+        }
+        if ((Vector2)transform.position == lastClickedPos)
+        {
+            Destroy(gameObject);
         }
     }
     public void Update()

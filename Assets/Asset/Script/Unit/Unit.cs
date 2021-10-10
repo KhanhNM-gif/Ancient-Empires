@@ -13,7 +13,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
     //public Sprite unit_sheet_1_0;
 
     public GameObject movePlates;
+    public GameObject attackPlate;
     public int move = 3;
+    public int attack = 1;
     public int moveSpeed = 2;
 
     private Queue<MatrixCoordi> queueMove;
@@ -50,6 +52,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
 
         for (int i = 0; i < movePlates.Length; i++) Destroy(movePlates[i]);
+    }
+    public void DestroyAttackPlate()
+    {
+        GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
+
+        for (int i = 0; i < attackPlates.Length; i++) Destroy(attackPlates[i]);
     }
 
     public void InitiateMovePlates()
@@ -112,6 +120,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         mpScript.SetStackWay(queue);
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
+
     void Update()
     {
         if (queueMove != null && queueMove.Count > 0)
@@ -119,7 +128,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             if (!IsMoving)
             {
                 MatrixCoordi matrixCoordi = queueMove.Peek();
-                vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y,-1);
+                vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
 
                 IsMoving = true;
             }
