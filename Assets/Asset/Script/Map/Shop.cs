@@ -136,7 +136,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
         {
             if (MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble == true)
             {
-                if (GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2))
+                if (GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2, false))
                 {
                     SetTextCountBuyUnit(nameUnit);
                 }

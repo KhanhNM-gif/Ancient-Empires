@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 4));
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 4, false));
         player = new Player(500, 200, list);
         foreach (var item in list) SetPosition(item);
 
@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
         PositionUnit[x, y] = null;
     }
 
-    public void addUnit(PlayerHandle playerHandle, string name, int x, int y,bool isEnemy)
+    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y,bool isEnemy)
     {
         if (!playerHandle.CheckLimitUnit())
         {
