@@ -26,23 +26,25 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
-    private bool isAttack;
-    private bool isMove;
+    private bool isAttack = false;
+    private bool isMove = true;
     private bool isDisable = false;
+
 
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
 
+
     public void Start()
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
-        isAttack = isMove = true;
     }
     public void Activate()
     {
         SetWordPositon();
+        isAttack = false;
     }
 
     public void SetWordPositon() => transform.position = MapTile.GridWordPosition(x, y, -1);
@@ -55,35 +57,33 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
 
         if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
-
         {
             DestroyMovePlate();
             InitiateMovePlates();
+            this.isMove = false;
         }
-        if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
             DestroyAttackPlate();
             InitiateAttackPlates();
+            this.isAttack = false;
         }
-
-        UIManager.Instance.UpdateStatus(this);
     }
 
 
     public void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
-
-        for (int i = 0; i < attackPlates.Length; i++)
-            Destroy(attackPlates[i]);
-
+        for (int i = 0;i < attackPlates.Length;i++) 
+        Destroy(attackPlates[i]);
+        
     }
 
     public void InitiateAttackPlates()
     {
-        foreach (var item in GameManager.Instance.bot.arrListUnit)
+        foreach(var item in GameManager.Instance.bot.arrListUnit)
         {
-            if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
+            if(Math.Abs(x - item.x)+Math.Abs(y-item.y)<= Range)
             {
                 MovePlateSpawn(item.x, item.y,null);
             }    
@@ -163,6 +163,11 @@ public class Unit : MonoBehaviour, MatrixCoordi
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
     }
 
+    public void AtkPlateSpawn(int matrixX,int matrixY)
+    {
+
+    }    
+
     public virtual void Update()
     {
         UpdatePossion();
@@ -176,6 +181,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             {
                 MatrixCoordi matrixCoordi = queueMove.Peek();
                 vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
+                //BinhBH chiem Thanh
                 if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsCastle)
                 {
                     ((Castle)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
@@ -198,33 +204,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         {
             IsMoving = false;
             queueMove.Dequeue();
-
             if (queueMove.Count == 0)
             {
                 if (CheckDisable()) DisableUnit();
             }
         }
     }
-
-    public void AttackToUnit(Unit unitTarget)
-    {
-        unitTarget.TakeDame(Attack);
-        if (CheckDisable()) DisableUnit();
-    }
-
-    public void TakeDame(float damage)
-    {
-        CurrentHP -= damage * (100f / (100 + Armor));
-        if (CurrentHP <= 0)
-        {
-            if (this.isEnemy) GameManager.Instance.bot.arrListUnit.Remove(this);
-            else GameManager.Instance.player.arrListUnit.Remove(this);
-            MapManager.map.arrTile[this.x, this.y].MoveAble = true;
-            Destroy(gameObject);
-        }
-
-    }
-
 
     private bool CheckDisable() => !isAttack && !isMove;
 

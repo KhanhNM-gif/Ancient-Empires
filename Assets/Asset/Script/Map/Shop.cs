@@ -41,7 +41,6 @@ public class Shop : MonoBehaviour, MatrixCoordi
         x = i;
         y = j;
         PannelShop.gameObject.SetActive(true);
-        UIManager.Instance.SetActivePnStatus(false);
     }
 
 
@@ -63,7 +62,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     /// </summary>
     private void showNumberOfUnit()
     {
-        //TextUnit.text = GameManager.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
+        TextUnit.text = GameManager.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
     }
 
 

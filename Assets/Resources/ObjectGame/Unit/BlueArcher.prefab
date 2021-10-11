@@ -142,8 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c680793346609499de06c8ec85278c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHP: 150
-  HP: 150
+  CurrentHP: 300
+  HP: 400
   Attack: 40
   Armor: 10
   Range: 4
@@ -151,4 +151,3 @@ MonoBehaviour:
   MoveSpeed: 3
   isEnemy: 0
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
-  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}

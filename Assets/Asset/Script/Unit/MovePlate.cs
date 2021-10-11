@@ -23,7 +23,6 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
         //BinhBH end
         reference.x = this.x;
         reference.y = this.y;
-        reference.SetIsMove(false);
         reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
         reference.DestroyMovePlate();// bỏ đi những ô moveplate
     }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 public class PlayerHandle
 {
-    public int NumberUnitLimit { get; set; } = Const.PlayerHandle.NUMBER_UNIT_LIMIT; 
-    public int NumberUnit { get => arrListUnit.Count; }
+    public int NumberUnitLimit { get => arrListUnit.Count;}
+    public int NumberUnit { get; set; } = Const.PlayerHandle.NUMBER_UNIT_LIMIT;
     public int Gold { get; set; }
     public int GoldPerTurn { get; set; }
     public List<Unit> arrListUnit = new List<Unit>();
@@ -17,7 +17,7 @@ public class PlayerHandle
         GoldPerTurn = goldPerTurn;
         this.arrListUnit = arrListUnit;
     }
-    public bool CheckLimitUnit() => NumberUnit < NumberUnitLimit;
+    public bool CheckLimitUnit() => NumberUnit >= NumberUnitLimit;
     public virtual void StartTurn()
     {
         Gold += GoldPerTurn;

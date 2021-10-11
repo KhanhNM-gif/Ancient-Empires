@@ -122,6 +122,4 @@ MonoBehaviour:
   Range: 0
   Move: 0
   MoveSpeed: 0
-  isEnemy: 0
-  movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
-  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
+  movePlates: {fileID: 0}

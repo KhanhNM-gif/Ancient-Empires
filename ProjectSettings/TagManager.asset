@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Tile
   - MovePlate
-  - AttackPlate
   layers:
   - Default
   - TransparentFX
