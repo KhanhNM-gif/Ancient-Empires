@@ -10,13 +10,13 @@ public class Castle : BaseTile
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
 
     public void changeOwner(int owner)
     {
-        if(isOwnerBy == 0)
+        if (isOwnerBy == 0)
         {
             isOwnerBy = owner;
             switch (isOwnerBy)
@@ -31,14 +31,9 @@ public class Castle : BaseTile
         }
 
     }
-
-    private void OnMouseDown()
+    void Update()
     {
-        if(isOwnerBy == 1)
-        {
+        if (isOwnerBy == 1 && Input.GetMouseButtonDown(1) && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player)
             GameManager.shop.showShop(x, y);
-        }
-        
     }
-
 }

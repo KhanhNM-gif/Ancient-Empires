@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2086330702389951960}
   - component: {fileID: 8969366064970140252}
   - component: {fileID: 6330250300096151446}
+  - component: {fileID: 2872630102570381029}
   m_Layer: 0
   m_Name: RedSoldier
   m_TagString: Untagged
@@ -95,12 +96,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c556fd9f93cc874799fbb09d5481a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHP: 0
-  HP: 0
-  Attack: 0
-  Armor: 0
-  Range: 0
-  Move: 0
-  MoveSpeed: 0
-  isEnemy: 0
+  CurrentHP: 200
+  HP: 200
+  Attack: 60
+  Armor: 25
+  Range: 1
+  Move: 4
+  MoveSpeed: 4
+  isEnemy: 1
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
+  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
+--- !u!61 &2872630102570381029
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8176039004416860555}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

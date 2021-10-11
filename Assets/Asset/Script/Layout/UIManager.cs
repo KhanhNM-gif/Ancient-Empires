@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
     public static UIManager Instance;
 
     public Slider healthBar;
@@ -13,13 +14,15 @@ public class UIManager : MonoBehaviour
     public Text Damage;
     public Text Defense;
 
-    public PlayerStatus Status;
+    public static UIManager Instance;
 
     public Text Gold;
+
 
     public Text Lv;
 
     private void Awake()
+
     {
         Instance = this;
     }
@@ -39,5 +42,6 @@ public class UIManager : MonoBehaviour
     public void ShowStatus(Gold gold)
     {
         Gold.text = gold.ToString();
+
     }
 }

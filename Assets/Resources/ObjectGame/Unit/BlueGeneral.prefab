@@ -115,10 +115,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95dd85882d0f36640af4045d30f3a20c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
-  movePlates: {fileID: 0}
-  xMap: -1
-  yMap: -1
-  moveSpeed: 2
-  player: 
-  unit_sheet_1_0: {fileID: 0}
+  CurrentHP: 0
+  HP: 0
+  Attack: 0
+  Armor: 0
+  Range: 0
+  Move: 0
+  MoveSpeed: 0
+  isEnemy: 0
+  movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
+  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
