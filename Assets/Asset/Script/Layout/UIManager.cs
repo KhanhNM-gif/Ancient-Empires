@@ -5,34 +5,39 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-
+    public GameObject pnStatus;
     public Slider healthBar;
     public Text HPText;
-    public PlayerHealthManager playerHealth;
 
     public Text Damage;
     public Text Defense;
 
-    public PlayerStatus Status;
+    public static UIManager Instance;
 
     public Text Gold;
-    public Gold coin;
     // Start is called before the first frame update
     void Start()
     {
-        
+        Instance = this;
     }
 
     // Update is called once per frame
-    void Update()
+    public void UpdateStatus(Unit unit)
     {
-        healthBar.maxValue = playerHealth.playerMaxHealth;
-        healthBar.value = playerHealth.playerCurrentHealth;
-        HPText.text = "" + playerHealth.playerCurrentHealth + "/" + playerHealth.playerMaxHealth;
+        pnStatus.SetActive(true);
+        healthBar.maxValue = unit.HP;
+        healthBar.value = unit.CurrentHP;
+        HPText.text = "" + unit.CurrentHP + "/" + unit.HP;
 
-        Damage.text = "" + Status.damage ;
-        Defense.text = "" + Status.defense ;
-
-        Gold.text = "" + coin.gold ;
+        Damage.text = unit.Attack.ToString();
+        Defense.text = unit.Armor.ToString();
+    }
+    public void SetActivePnStatus(bool s)
+    {
+        pnStatus.SetActive(s);
+    }
+    public void UpdateGold(int gold)
+    {
+        Gold.text = Gold.ToString();
     }
 }

@@ -42,12 +42,12 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 4, 4,false));
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 4, 3,false));
         player = new Player(500, 200, list);
         foreach (var item in list) SetPosition(item);
 
         list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.RED_ARCHER, 10, 9, true));
+        list.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
         bot = new Bot(500, 200, list);
         foreach (var item in list) SetPosition(item);
     }
@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
-        StartCoroutine(SetWaitForSeconds(5));
+        StartCoroutine(SetWaitForSeconds(3));
     }
     IEnumerator SetWaitForSeconds(float time)
     {

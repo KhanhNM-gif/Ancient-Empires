@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2730220499685742802}
   - component: {fileID: 1415246581420221337}
   - component: {fileID: 7397238375074468747}
+  - component: {fileID: 3935841692977683858}
   m_Layer: 0
   m_Name: RedCatapult
   m_TagString: Untagged
@@ -102,7 +103,34 @@ MonoBehaviour:
   Range: 0
   Move: 0
   MoveSpeed: 0
-  isEnemy: 0
+  isEnemy: 1
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
+  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
   rockmove: {fileID: 0}
   rock: {fileID: 0}
+--- !u!61 &3935841692977683858
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3260053033996700220}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

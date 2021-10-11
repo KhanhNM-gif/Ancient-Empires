@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.Asset.Model;
 using System;
+using System.Linq;
 
 public class AttackPlate : MonoBehaviour, MatrixCoordi
 {
     public GameObject controller;
     Unit reference = null;
-    private Queue<MatrixCoordi> queueAtk;
+    Unit target = null;
     public int x { get; set; }
     public int y { get; set; }
-
-    void Start() { }
 
     public void OnMouseDown()
     {
@@ -21,6 +20,24 @@ public class AttackPlate : MonoBehaviour, MatrixCoordi
 
         reference.x = this.x;
         reference.y = this.y;
+        reference.SetIsAttack(false);
+        reference.AttackToUnit(target);
         reference.DestroyAttackPlate();
+        
     }
+
+    /// <summary>
+    /// Xét vị trí của ô AttackPlate(dung spawn o di chuyển)
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    public void SetCoords(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+    public void SetReference(Unit obj) => reference = obj;
+    public Unit GetReference() => reference;
+    public void SetTarget(Unit obj) => target = obj;
+    public Unit GetTarget() => target;
 }
