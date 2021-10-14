@@ -9,6 +9,7 @@ TagManager:
   - Undefined
   - AttackPlate
   - Rock
+  - Arrow
   layers:
   - Default
   - TransparentFX

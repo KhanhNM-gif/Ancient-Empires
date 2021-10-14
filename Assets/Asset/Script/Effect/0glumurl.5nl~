@@ -7,8 +7,10 @@ public class RockMove : MonoBehaviour
     public float speed = 1;
     bool moving;
     Vector2 lastClickedPos;
+    float lookAngle;
     public void Update()
     {
+        lookAngle = Mathf.Atan2(lastClickedPos.y, lastClickedPos.x) * Mathf.Rad2Deg;
         if (moving && (Vector2)transform.position != lastClickedPos)
         {
             float step = speed * Time.deltaTime;
@@ -30,6 +32,10 @@ public class RockMove : MonoBehaviour
     public void SetlastClickedPos(Vector3 lastClickedPos)
     {
         this.lastClickedPos = Camera.main.ScreenToWorldPoint(lastClickedPos);
+    }
+    public void GetlockAngel(float lookAngle)
+    {
+        this.lookAngle = lookAngle;
     }
 }
 

@@ -2,11 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockMove : MonoBehaviour
+public class ArrowMove : MonoBehaviour
 {
     public float speed = 1;
+    public int rotationSpeed;
+    public float _horizontalInput = 0;
+    public float _verticalInput = 0;
     bool moving;
+    Rigidbody2D rb2D;
     Vector2 lastClickedPos;
+    public void Start()
+    {
+        rb2D = GetComponent<Rigidbody2D>(); 
+    }
     public void Update()
     {
         if (moving && (Vector2)transform.position != lastClickedPos)
@@ -30,6 +38,11 @@ public class RockMove : MonoBehaviour
     public void SetlastClickedPos(Vector3 lastClickedPos)
     {
         this.lastClickedPos = Camera.main.ScreenToWorldPoint(lastClickedPos);
+    }
+    private void SetInput()
+    {
+        _horizontalInput = Input.GetAxisRaw("Horizontal");
+        _verticalInput = Input.GetAxisRaw("Vertical");
     }
 }
 

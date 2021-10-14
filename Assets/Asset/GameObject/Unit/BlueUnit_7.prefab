@@ -115,7 +115,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -150,9 +150,8 @@ MonoBehaviour:
   moveSpeed: 2
   player: 
   attack: 0
-  firePonit: {fileID: 2883185743118022916}
+  firePoint: {fileID: 2883185743118022916}
   rock: {fileID: 4147566079158369806, guid: 9cace9b8fadba9d4e8b3465b5f90e42b, type: 3}
-  unit_sheet_1_0: {fileID: 0}
 --- !u!1 &5509840264812522303
 GameObject:
   m_ObjectHideFlags: 0

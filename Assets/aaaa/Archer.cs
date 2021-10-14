@@ -2,21 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Catapult : MonoBehaviour
+public class Archer : MonoBehaviour
 {
 
     public GameObject controller;
     public GameObject attackPlates;
 
-    public int xMap = -1;
-    public int yMap = -1;
+    public int xMap = 1;
+    public int yMap = 1;
     private int attackPlate = 4;
     public int moveSpeed = 2;
+    public float launchForce = 13;
 
+    
     public string player;
     public bool attack = false;
     public Transform firePoint;
-    public GameObject rock;
+    public GameObject arrow;
 
     public void Activate()
     {
@@ -70,10 +72,10 @@ public class Catapult : MonoBehaviour
     }
     public void DestroyRock()
     {
-        GameObject[] rock = GameObject.FindGameObjectsWithTag("Rock");
-        for (int i = 0; i < rock.Length; i++)
+        GameObject[] arrow = GameObject.FindGameObjectsWithTag("Arrow");
+        for (int i = 0; i < arrow.Length; i++)
         {
-            Destroy(rock[i]);
+            Destroy(arrow[i]);
         }
     }
 
@@ -130,9 +132,9 @@ public class Catapult : MonoBehaviour
     }
     public void Shoot()
     {
-        GameObject rockClone = Instantiate(rock, firePoint.position, firePoint.rotation);
-        RockMove rm = rockClone.GetComponent<RockMove>();
+        GameObject arrowClone = Instantiate(arrow, firePoint.position, firePoint.rotation);
+        RockMove rm = arrowClone.GetComponent<RockMove>();
         rm.SetlastClickedPos(Input.mousePosition);
-        rm.SetMoving(true);      
+        rm.SetMoving(true);
     }
 }

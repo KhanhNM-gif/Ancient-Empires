@@ -14,14 +14,15 @@ public class G : MonoBehaviour
     {
         player = new GameObject[]
         {
-            Create("player_Soldier",0,0)
+            CreateCatapult("player_Soldier",0,0)
+
         };
         for (int i = 0; i < player.Length; i++)
         {
             SetPosition(player[i]);
         }
     }
-    public GameObject Create(string name, int x, int y)
+    public GameObject CreateCatapult(string name, int x, int y)
     {
         GameObject obj = Instantiate(Catapult, new Vector3(0, 0, -1), Quaternion.identity);
         Catapult un = obj.GetComponent<Catapult>();

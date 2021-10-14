@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf4f8e9e1866c84294711a38276dfb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Catapult: {fileID: 4985447279391425855, guid: 3e16f02c547a49a4394c9607487d9155, type: 3}
+  Catapult: {fileID: 3193957269036742587, guid: 99edc2708b736644fad5096c67e8c3c9, type: 3}
 --- !u!4 &609119481
 Transform:
   m_ObjectHideFlags: 0
