@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
 
     public Text Damage;
     public Text Defense;
+    public Text AtkRange;
+    public Text MoveStep;
 
     public static UIManager Instance;
 
@@ -29,8 +31,10 @@ public class UIManager : MonoBehaviour
         healthBar.value = unit.CurrentHP;
         HPText.text = "" + unit.CurrentHP + "/" + unit.HP;
 
-        Damage.text = unit.Attack.ToString();
-        Defense.text = unit.Armor.ToString();
+        Damage.text = unit.Attack.ToString() + " Atk";
+        Defense.text = unit.Armor.ToString() + " Def";
+        AtkRange.text = unit.Range.ToString() + " Square";
+        MoveStep.text = unit.Move.ToString() + " Square";
     }
     public void SetActivePnStatus(bool s)
     {
