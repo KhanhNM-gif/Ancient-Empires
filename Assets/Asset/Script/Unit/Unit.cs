@@ -22,6 +22,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int Range;
     public int Move;
     public int MoveSpeed;
+    public float Lv;
+    private float exp;
+    private float expRequired;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
@@ -214,13 +217,15 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void AttackToUnit(Unit unitTarget)
     {
-        unitTarget.TakeDame(Attack);
+        float damage = Attack * (100f / (100 + Armor));
+        unitTarget.TakeDame(damage);
+        AddExp(damage);
         if (CheckDisable()) DisableUnit();
     }
 
     public void TakeDame(float damage)
     {
-        CurrentHP -= damage * (100f / (100 + Armor));
+        CurrentHP -= damage ;
         if (CurrentHP <= 0)
         {
             if (this.isEnemy) GameManager.Instance.bot.arrListUnit.Remove(this);
@@ -251,5 +256,25 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public bool GetIsMove() => isMove;
     public void SetIsMove(bool isMove) => this.isMove = isMove;
 
+    void LvUp()
+    {
+        Lv += 1;
+        exp = exp - expRequired;
+        Attack += 5;
+        Armor += 2;
+        expRequired = 1.25f * expRequired;
+    }
+
+    void Exp()
+    {
+        if (exp >= expRequired)
+            LvUp();
+    }
+
+    void AddExp(float damage)
+    {
+        exp += damage;
+        Exp();
+    }
 
 }
