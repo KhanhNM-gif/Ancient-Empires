@@ -21,10 +21,13 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public float Armor;
     public int Range;
     public int Move;
+    public int attackrange;
     public int MoveSpeed;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
+    public GameObject attack;
+    public GameObject dust;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
@@ -32,12 +35,17 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
+    public Transform firePoint;
+    public Transform DustPoint;
+    public Transform AttackPoint;
 
     public void Start()
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
         isAttack = isMove = true;
+        //Delay time spawn smoke
+        InvokeRepeating("MoveEffect",0.5f,0.2f);
     }
     public void Activate()
     {
@@ -74,6 +82,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             Destroy(attackPlates[i]);
 
     }
+
 
     public void InitiateAttackPlates()
     {
@@ -172,6 +181,11 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
+        // Chuot phai de hien UI
+        if(Input.GetMouseButtonDown(1))
+        {
+            
+        }
     }
 
     protected void UpdatePossion()
@@ -228,7 +242,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
             Destroy(gameObject);
         }
-
     }
 
 
@@ -244,6 +257,15 @@ public class Unit : MonoBehaviour, MatrixCoordi
         isDisable = false;
         isAttack = isMove = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(225, 225, 255);
+    }
+    public void MoveEffect()
+    {     
+        
+        if(IsMoving )
+        {           
+            GameObject d = Instantiate(dust, DustPoint.position, DustPoint.rotation);
+            Destroy (d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        }
     }
 
     public bool GetIsAttack() => isAttack;

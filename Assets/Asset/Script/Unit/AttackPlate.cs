@@ -10,6 +10,7 @@ public class AttackPlate : MonoBehaviour, MatrixCoordi
     public GameObject controller;
     Unit reference = null;
     Unit target = null;
+
     public int x { get; set; }
     public int y { get; set; }
 
@@ -23,7 +24,8 @@ public class AttackPlate : MonoBehaviour, MatrixCoordi
         reference.SetIsAttack(false);
         reference.AttackToUnit(target);
         reference.DestroyAttackPlate();
-        
+        reference.GetComponent<Catapult>().Shoot();
+        reference.DestroyMovePlate();
     }
 
     /// <summary>

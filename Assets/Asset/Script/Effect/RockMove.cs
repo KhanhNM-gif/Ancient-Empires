@@ -2,18 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockMove : Catapult
+public class RockMove : MonoBehaviour
 {
-    public float speed = 10f;
-    Vector2 lastClickedPos;
+    public float speed = 1;
     bool moving;
-    public void move()
+    Vector2 lastClickedPos;
+    public void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            lastClickedPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            moving = true;
-        }
         if (moving && (Vector2)transform.position != lastClickedPos)
         {
             float step = speed * Time.deltaTime;
@@ -23,10 +18,19 @@ public class RockMove : Catapult
         {
             moving = false;
         }
+        if ((Vector2)transform.position == lastClickedPos)
+        {
+            Destroy(gameObject);
+        }
     }
-    public void Update()
+    public void SetMoving(bool moving)
     {
-        move();
+        this.moving = moving;
+    }
+    public void SetlastClickedPos(Vector3 lastClickedPos)
+    {
+        this.lastClickedPos = Camera.main.ScreenToWorldPoint(lastClickedPos);
     }
 
 }
+
