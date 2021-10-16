@@ -6,20 +6,24 @@ public class RockMove : MonoBehaviour
 {
     public float speed = 1;
     bool moving;
-    Vector2 lastClickedPos;
+    public GameObject fire;
+    Vector3 lastClickedPos;
     public void Update()
     {
-        if (moving && (Vector2)transform.position != lastClickedPos)
+        if (moving && transform.position != lastClickedPos)
         {
             float step = speed * Time.deltaTime;
-            transform.position = Vector2.MoveTowards(transform.position, lastClickedPos, step);
+            transform.position = Vector3.MoveTowards(transform.position, lastClickedPos, step);
         }
         else
         {
             moving = false;
         }
-        if ((Vector2)transform.position == lastClickedPos)
+        if (transform.position == lastClickedPos)
         {
+            
+            GameObject f = Instantiate(fire, lastClickedPos, Quaternion.identity);
+            Destroy(f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
             Destroy(gameObject);
         }
     }

@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578996951649829330}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: 0.3, z: 2}
+  m_LocalPosition: {x: 0.3, y: 0.3, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4985447279391425848}
@@ -40,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1614391585796578478}
   m_Layer: 0
-  m_Name: DustPoint
+  m_Name: dustPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187,7 +187,6 @@ MonoBehaviour:
   attackrange: 5
   MoveSpeed: 5
   isEnemy: 0
-  Unitname: Catapult
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
   attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
   attack: {fileID: 6997682185456454703, guid: da3d668f2ec1e4043a71c48ffece6500, type: 3}

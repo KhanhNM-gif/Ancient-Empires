@@ -8,9 +8,14 @@ public class Catapult : Unit
 
     public void Shoot()
     {
+        
         GameObject rockClone = Instantiate(rock, firePoint.position, firePoint.rotation);
         RockMove rm = rockClone.GetComponent<RockMove>();
-        rm.SetlastClickedPos(Input.mousePosition);
+        rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
         rm.SetMoving(true);      
+    }
+    public void AnimationAttack()
+    {
+
     }
 }

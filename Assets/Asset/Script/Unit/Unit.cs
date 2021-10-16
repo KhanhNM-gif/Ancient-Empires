@@ -21,12 +21,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public float Armor;
     public int Range;
     public int Move;
-    public int attackrange;
     public int MoveSpeed;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
-    public GameObject attack;
     public GameObject dust;
     private bool isAttack;
     private bool isMove;
@@ -37,7 +35,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private bool IsMoving;
     public Transform firePoint;
     public Transform DustPoint;
-    public Transform AttackPoint;
 
     public void Start()
     {
@@ -45,7 +42,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         MapManager.map.arrTile[x, y].AttackAble = false;
         isAttack = isMove = true;
         //Delay time spawn smoke
-        InvokeRepeating("MoveEffect",0.5f,0.2f);
+        InvokeRepeating("MoveEffect",0.2f,0.2f);
     }
     public void Activate()
     {
@@ -71,7 +68,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             InitiateAttackPlates();
         }
 
-        UIManager.Instance.UpdateStatus(this);
+        
     }
 
     public void DestroyAttackPlate()
@@ -184,7 +181,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         // Chuot phai de hien UI
         if(Input.GetMouseButtonDown(1))
         {
-            
+            UIManager.Instance.UpdateStatus(this);
         }
     }
 
