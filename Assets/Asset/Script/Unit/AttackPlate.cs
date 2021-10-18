@@ -22,7 +22,7 @@ public class AttackPlate : MonoBehaviour, MatrixCoordi
         reference.SetIsAttack(false);
         reference.AttackToUnit(target);
         reference.DestroyAttackPlate();
-        reference.GetComponent<Catapult>().Shoot();
+        reference.AnimationAttack();
         reference.DestroyMovePlate();
     }
 

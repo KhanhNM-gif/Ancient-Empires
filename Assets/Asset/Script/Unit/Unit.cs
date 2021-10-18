@@ -74,7 +74,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
         
     }
+    public virtual void AnimationAttack()
+    {
 
+    }
     public void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");

@@ -6,7 +6,7 @@ public class Catapult : Unit
 {
     public GameObject rock;
 
-    public void Shoot()
+    private void Shoot()
     {
         
         GameObject rockClone = Instantiate(rock, firePoint.position, firePoint.rotation);
@@ -14,8 +14,8 @@ public class Catapult : Unit
         rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
         rm.SetMoving(true);      
     }
-    public void AnimationAttack()
+    public override void AnimationAttack()
     {
-
+        Shoot();
     }
 }
