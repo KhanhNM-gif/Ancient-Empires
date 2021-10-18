@@ -17,19 +17,15 @@ public class House : BaseTile
 
     public void changeOwner(int owner)
     {
-        if (isOwnerBy == 0)
+        isOwnerBy = owner;
+        switch (isOwnerBy)
         {
-            isOwnerBy = owner;
-            switch (isOwnerBy)
-            {
-                case 1:
-                    this.GetComponent<SpriteRenderer>().sprite = sprites[0];
-                    break;
-                case 2:
-                    this.GetComponent<SpriteRenderer>().sprite = sprites[1];
-                    break;
-            }
+            case 1:
+                this.GetComponent<SpriteRenderer>().sprite = sprites[0];
+                break;
+            case 2:
+                this.GetComponent<SpriteRenderer>().sprite = sprites[1];
+                break;
         }
-
     }
 }

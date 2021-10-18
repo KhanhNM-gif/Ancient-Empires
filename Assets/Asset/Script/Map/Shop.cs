@@ -20,8 +20,8 @@ public class Shop : MonoBehaviour, MatrixCoordi
     [SerializeField] private Text TextCountBuySolider;
     [SerializeField] private Text TextCountBuyValadorn;
     [SerializeField] private Text TextCountBuyCatapultr;
-    [SerializeField] private Text TextMonney;
-    [SerializeField] private Text TextUnit;
+    [SerializeField] private Image ImageGeneral;
+    [SerializeField] private Text TextNumberUnit;
 
     [SerializeField] private Button ButtonBuyArcher;
     [SerializeField] private Button ButtonBuySolider;
@@ -40,8 +40,59 @@ public class Shop : MonoBehaviour, MatrixCoordi
         showNumberOfUnit();
         x = i;
         y = j;
+        ActiveBuyUnit();
+
         PannelShop.gameObject.SetActive(true);
         UIManager.Instance.SetActivePnStatus(false);
+    }
+
+    private void ActiveBuyUnit()
+    {
+        int gold = GameManager.Instance.player.Gold;
+
+        if (GameManager.Instance.player.hasGeneral)
+        {
+            ImageGeneral.gameObject.SetActive(false);
+        }
+        else
+        {
+            ImageGeneral.gameObject.SetActive(true);
+        }
+        if (gold < Const.ConstGame.COST_SOLIDER)
+        {
+            ButtonBuySolider.gameObject.SetActive(false);
+            ButtonBuyArcher.gameObject.SetActive(false);
+            ButtonBuyCatapultr.gameObject.SetActive(false);
+            ButtonBuyValadorn.gameObject.SetActive(false);
+        }
+        else if (gold < Const.ConstGame.COST_ARCHER)
+        {
+            ButtonBuySolider.gameObject.SetActive(true);
+            ButtonBuyArcher.gameObject.SetActive(false);
+            ButtonBuyCatapultr.gameObject.SetActive(false);
+            ButtonBuyValadorn.gameObject.SetActive(false);
+        }
+        else if (gold < Const.ConstGame.COST_CAPUTAL)
+        {
+            ButtonBuySolider.gameObject.SetActive(true);
+            ButtonBuyArcher.gameObject.SetActive(true);
+            ButtonBuyCatapultr.gameObject.SetActive(false);
+            ButtonBuyValadorn.gameObject.SetActive(false);
+        }
+        else if (gold < Const.ConstGame.COST_GENERAL)
+        {
+            ButtonBuySolider.gameObject.SetActive(true);
+            ButtonBuyArcher.gameObject.SetActive(true);
+            ButtonBuyCatapultr.gameObject.SetActive(true);
+            ButtonBuyValadorn.gameObject.SetActive(false);
+        }
+        else
+        {
+            ButtonBuySolider.gameObject.SetActive(true);
+            ButtonBuyArcher.gameObject.SetActive(true);
+            ButtonBuyCatapultr.gameObject.SetActive(true);
+            ButtonBuyValadorn.gameObject.SetActive(true);
+        }
     }
 
 
@@ -63,7 +114,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     /// </summary>
     private void showNumberOfUnit()
     {
-        //TextUnit.text = GameManager.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
+        TextNumberUnit.text = GameManager.Instance.getNumberUnit() + "/" + Const.ConstGame.MAX_UNIT;
     }
 
 
@@ -77,7 +128,6 @@ public class Shop : MonoBehaviour, MatrixCoordi
          };
     /// <summary>
     /// BinhBH Mua quan xung quan vi tri thanh,
-    /// uu tien vi tri trong thanh va ben duoi thanh
     /// </summary>
     /// <param name="nameUnit"> ten quan muon mua</param>
     public void Buy(string nameUnit)
@@ -87,12 +137,24 @@ public class Shop : MonoBehaviour, MatrixCoordi
         {
             return;
         }
-
+        int goldBuyUnit = 0;
         switch (nameUnit)
         {
             case Const.NameUnit.BLUE_ARCHER:
-                CountArcher++;
-                TextCountBuyArcher.text = "[" + CountArcher + "]";
+                TextCountBuyArcher.text = "[" + ++CountArcher + "]";
+                goldBuyUnit = Const.ConstGame.COST_ARCHER;
+                break;
+            case Const.NameUnit.BLUE_SOLDIER:
+                TextCountBuySolider.text = "[" + ++CountSolider + "]";
+                goldBuyUnit = Const.ConstGame.COST_SOLIDER;
+                break;
+            case Const.NameUnit.BLUE_CATAPULT:
+                TextCountBuyCatapultr.text = "[" + ++CountCatapult + "]";
+                goldBuyUnit = Const.ConstGame.COST_CAPUTAL;
+                break;
+            case Const.NameUnit.BLUE_GENERAL:
+                TextCountBuyValadorn.text = "[" + ++CountValadorn + "]";
+                goldBuyUnit = Const.ConstGame.COST_GENERAL;
                 break;
         }
 
@@ -105,34 +167,19 @@ public class Shop : MonoBehaviour, MatrixCoordi
         {
             if (MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble == true)
             {
-                GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2, GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot);
-                //playerHandle-Gold
+                if(GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2,
+                    GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot))
+                {
+                    GameManager.Instance.player.Gold -= goldBuyUnit;
+                    UIManager.Instance.UpdateGold(GameManager.Instance.player.Gold);
+                    MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble = false;
+                    ActiveBuyUnit();
+                    showNumberOfUnit();
+                }
                 return;
             }
         }
-
-
-        /*if (MapManager.map.arrTile[x, y].MoveAble == true)
-        {
-            GameManager.Instance.addUnit(nameUnit, x, y);
-            return;
-        }
-        else if (MapManager.map.arrTile[x, y - 1].MoveAble == true)
-        {
-            GameManager.Instance.addUnit(nameUnit, x, y - 1);
-            return;
-        }
-        for (int i = x + 1; i >= x - 1; i--)
-        {
-            for (int j = y - 1; j <= y + 1; j++)
-            {
-                if (MapManager.map.arrTile[i, j].MoveAble == true)
-                {
-                    GameManager.Instance.addUnit(nameUnit, i, j);
-                    return;
-                }
-            }
-        }*/
+        
 
     }
 

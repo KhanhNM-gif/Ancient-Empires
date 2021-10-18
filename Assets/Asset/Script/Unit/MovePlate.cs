@@ -26,6 +26,27 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
         reference.SetIsMove(false);
         reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
         reference.DestroyMovePlate();// bỏ đi những ô moveplate
+
+
+        //BinhBH Chiem thanh, nha
+        Unit u = GameManager.Instance.UnitSelected;
+        if (u != null)
+        {
+            int whoOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player ? 1 : 2;
+            if (MapManager.map.arrTile[u.x, u.y].IsCastle &&  u.x == this.x && u.y == this.y && u.canOccupiedCastle)
+            {
+                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(whoOccupied);
+                GameManager.Instance.player.CountOccupiedCastle++;
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
+            }
+            else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y)
+            {
+                ((House)MapManager.map.arrTile[x, y]).changeOwner(whoOccupied);
+                GameManager.Instance.player.CountOccupiedHouse++;
+                SkipTurn.Instance.Notification_Show("Occupied House");
+            }
+        }
+        //BinhBH end
     }
 
     /// <summary>
