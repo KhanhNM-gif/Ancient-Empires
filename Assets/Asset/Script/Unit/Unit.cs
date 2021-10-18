@@ -63,7 +63,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
-            InitiateMovePlates();
+            InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<MatrixCoordi> way) { MovePlateSpawn(x, y, way); };
+            InitiateMovePlates(dlg);
         }
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
@@ -73,7 +74,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
         
     }
+    public virtual void AnimationAttack()
+    {
 
+    }
     public void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
@@ -113,10 +117,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         for (int i = 0; i < movePlates.Length; i++) Destroy(movePlates[i]);
     }
 
+
+    public delegate void InitiateMovePlatesDelegate(int x, int y, Queue<MatrixCoordi> way);
     /// <summary>
     /// Tìm đường và Spawn ô di chuyển
     /// </summary>
-    public void InitiateMovePlates()
+    public void InitiateMovePlates(InitiateMovePlatesDelegate impd)
     {
         MatrixCoordi matrixCoordi;
         int cost;
@@ -133,7 +139,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             if (cost > 0)
             {
                 GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
-                MovePlateSpawn(matrixCoordi.x, matrixCoordi.y, way);
+                impd(matrixCoordi.x, matrixCoordi.y, way);
             }
 
             foreach (var item in Const.Unit.STEP_MOVE)
