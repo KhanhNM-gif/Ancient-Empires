@@ -41,7 +41,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
         isAttack = isMove = true;
-        canOccupiedCastle = true;
     }
     public void Activate()
     {

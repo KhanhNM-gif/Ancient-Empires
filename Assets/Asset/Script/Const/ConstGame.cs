@@ -11,9 +11,8 @@ namespace Const
         public const int FRAME = 60;
         public const int MAX_UNIT = 8;
         public const int GOLD_START_GAME = 500;
-        public const int GOLD_PER_HOUSE = 75;
+        public const int GOLD_PER_CONTRUCTION = 75;
         public const int GOLD_PER_TURN_DEFAULT = 50;
-        public const int GOLD_PER_CASTLE = 100;
         public const int COST_ARCHER = 250;
         public const int COST_SOLIDER = 150;
         public const int COST_GENERAL = 600;

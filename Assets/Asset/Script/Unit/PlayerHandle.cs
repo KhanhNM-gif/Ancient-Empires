@@ -13,6 +13,7 @@ public class PlayerHandle
     public List<Unit> arrListUnit = new List<Unit>();
     public int CountOccupiedHouse = 0;
     public int CountOccupiedCastle = 0;
+    public List<BaseTile> listOccupied = new List<BaseTile>();
     public bool hasGeneral;
 
     public PlayerHandle(int gold, int goldPerTurn, List<Unit> arrListUnit)
@@ -27,8 +28,7 @@ public class PlayerHandle
     public virtual void StartTurn()
     {
         //BinhBH tinh toan lai so tien duoc cong lai vao bat dau moi turn
-        GoldPerTurn = Const.ConstGame.GOLD_PER_TURN_DEFAULT + CountOccupiedHouse * Const.ConstGame.GOLD_PER_HOUSE
-            + Const.ConstGame.GOLD_PER_CASTLE * CountOccupiedCastle;
+        GoldPerTurn = Const.ConstGame.GOLD_PER_TURN_DEFAULT + listOccupied.Count * Const.ConstGame.GOLD_PER_CONTRUCTION;
         Gold += GoldPerTurn;
         UIManager.Instance.UpdateGold(Gold);
         foreach (var item in arrListUnit)

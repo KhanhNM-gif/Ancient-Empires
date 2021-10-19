@@ -32,17 +32,32 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
         Unit u = GameManager.Instance.UnitSelected;
         if (u != null)
         {
-            int whoOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player ? 1 : 2;
+            bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
             if (MapManager.map.arrTile[u.x, u.y].IsCastle &&  u.x == this.x && u.y == this.y && u.canOccupiedCastle)
             {
-                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(whoOccupied);
-                GameManager.Instance.player.CountOccupiedCastle++;
+                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied? 1: 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                
                 SkipTurn.Instance.Notification_Show("Occupied Castle");
             }
             else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y)
             {
-                ((House)MapManager.map.arrTile[x, y]).changeOwner(whoOccupied);
-                GameManager.Instance.player.CountOccupiedHouse++;
+                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
                 SkipTurn.Instance.Notification_Show("Occupied House");
             }
         }
