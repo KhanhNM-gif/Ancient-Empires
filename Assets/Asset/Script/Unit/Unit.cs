@@ -43,7 +43,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
-        isAttack = isMove = true;
+        isAttack = false;
+        isMove = true;
         //Delay time spawn smoke
         InvokeRepeating("MoveEffect",0.2f,0.2f);
     }
@@ -71,8 +72,11 @@ public class Unit : MonoBehaviour, MatrixCoordi
             DestroyAttackPlate();
             InitiateAttackPlates();
         }
-
-        
+        if(!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack == false && this.isMove == false)
+        {
+            DisableUnit();
+        }
+        UIManager.Instance.UpdateStatus(this);
     }
     public virtual void AnimationAttack()
     {
@@ -95,6 +99,20 @@ public class Unit : MonoBehaviour, MatrixCoordi
             if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
             {
                 AttackPlateSpawn(item.x, item.y, item);
+            }
+        }
+    }
+    public void SetAttack()
+    {
+        foreach (var item in GameManager.Instance.bot.arrListUnit)
+        {
+            if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
+            {
+                isAttack = true;
+            }
+            else
+            {
+                isAttack = false;
             }
         }
     }
@@ -187,11 +205,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
-        // Chuot phai de hien UI
-        if(Input.GetMouseButtonDown(1))
-        {
-            UIManager.Instance.UpdateStatus(this);
-        }
+        SetAttack();
     }
 
     protected void UpdatePossion()
