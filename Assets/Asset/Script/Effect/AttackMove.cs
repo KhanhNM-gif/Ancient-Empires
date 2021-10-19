@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockMove : MonoBehaviour
+public class AttackMove : MonoBehaviour
 {
     public float speed = 1;
     bool moving;

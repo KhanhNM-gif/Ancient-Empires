@@ -165,14 +165,15 @@ MonoBehaviour:
   Armor: 25
   Range: 1
   Move: 4
-  attackrange: 0
   MoveSpeed: 4
+  Lv: 0
   isEnemy: 1
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
   attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
   dust: {fileID: 638546194192704375, guid: 131cb42beccb50d47a615112fa035359, type: 3}
   firePoint: {fileID: 3113708177610957188}
   DustPoint: {fileID: 8989085299767521772}
+  attack: {fileID: 1147931926519157571, guid: a3206e1912089e046a58cef0cdba4300, type: 3}
 --- !u!61 &2872630102570381029
 BoxCollider2D:
   m_ObjectHideFlags: 0
