@@ -6,7 +6,7 @@ public class Catapult : Unit
 {
     public GameObject rock;
 
-    private void Shoot()
+    private void CatapultAttack()
     {
         
         GameObject rockClone = Instantiate(rock, firePoint.position, firePoint.rotation);
@@ -16,6 +16,6 @@ public class Catapult : Unit
     }
     public override void AnimationAttack()
     {
-        Shoot();
+        CatapultAttack();
     }
 }

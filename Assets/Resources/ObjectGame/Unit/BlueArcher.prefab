@@ -210,11 +210,12 @@ MonoBehaviour:
   Armor: 10
   Range: 4
   Move: 4
-  attackrange: 0
   MoveSpeed: 3
+  Lv: 0
   isEnemy: 0
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
   attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
   dust: {fileID: 638546194192704375, guid: 131cb42beccb50d47a615112fa035359, type: 3}
   firePoint: {fileID: 2322816060229110139}
   DustPoint: {fileID: 2488045227641758523}
+  arrow: {fileID: 6665658668342047286, guid: f0179ff2e19f9fa4f996c7b691c7a554, type: 3}

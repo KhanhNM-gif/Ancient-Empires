@@ -18,7 +18,6 @@ public class AttackPlate : MonoBehaviour, MatrixCoordi
     {
         MapManager.map.arrTile[reference.x, reference.y].AttackAble = true;
         MapManager.map.arrTile[this.x, this.y].AttackAble = false;
-        
         reference.SetIsAttack(false);
         reference.AttackToUnit(target);
         reference.DestroyAttackPlate();

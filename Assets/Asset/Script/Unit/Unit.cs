@@ -43,7 +43,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
-        isAttack = false;
+        isAttack = true;
         isMove = true;
         //Delay time spawn smoke
         InvokeRepeating("MoveEffect",0.2f,0.2f);
@@ -113,7 +113,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             else
             {
                 isAttack = false;
-            }
+            }          
         }
     }
 
@@ -205,7 +205,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
-        SetAttack();
     }
 
     protected void UpdatePossion()
