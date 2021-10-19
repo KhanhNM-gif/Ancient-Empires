@@ -42,13 +42,13 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_CATAPULT, 4, 3,false));
-        player = new Player(500, 200, list);
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 4, 3, false));
+        player = new Player(Const.ConstGame.GOLD_START_GAME, 200, list);
         foreach (var item in list) SetPosition(item);
 
         list = new List<Unit>();
         list.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
-        bot = new Bot(500, 200, list);
+        bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200, list);
         foreach (var item in list) SetPosition(item);
     }
     public Unit Create(string name, int x, int y, bool isEnemy)
@@ -106,17 +106,19 @@ public class GameManager : MonoBehaviour
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
     }
-    public void addUnit(PlayerHandle playerHandle, string name, int x, int y,bool isEnemy)
+    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y,bool isEnemy)
     {
         if (playerHandle.CheckLimitUnit())
         {
             Unit newUnit = Create(name, x, y, isEnemy);
             playerHandle.AddUnit(newUnit);
             SetPosition(newUnit);
+            return true;
         }
         else
         {
             SkipTurn.Instance.Notification_Show("Number unit max limit");
+            return false;
         }
     }
 
