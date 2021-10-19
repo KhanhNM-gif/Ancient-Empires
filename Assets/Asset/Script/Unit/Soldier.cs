@@ -20,10 +20,19 @@ class Soldier : Unit
     {
         SoldierAttack();
     }
+    
+    override public void Start()
+    {
+        base.Update();
+        canOccupiedHouse = true;
+    }
+    
     override public void Update()
     { 
         base.Update();
     }
+    
+
 
     
 
