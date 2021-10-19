@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class Catapult : Unit
 {
-    public RockMove rockmove;
     public GameObject rock;
-    public void OnMouseDown()
+
+    private void Shoot()
     {
-        rock.SetActive(true);
-        rockmove.move();
+        
+        GameObject rockClone = Instantiate(rock, firePoint.position, firePoint.rotation);
+        RockMove rm = rockClone.GetComponent<RockMove>();
+        rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
+        rm.SetMoving(true);      
+    }
+    public override void AnimationAttack()
+    {
+        Shoot();
     }
 }

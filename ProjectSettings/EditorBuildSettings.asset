@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Setting.unity
     guid: 301675fe7f2574f4d9f9d618e589e963
+  - enabled: 1
+    path: Assets/Scenes/MoveMap.unity
+    guid: 0bf6fca19933dbc468849ccd9cabf62b
   m_configObjects: {}

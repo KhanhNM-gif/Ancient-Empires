@@ -22,9 +22,13 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int Range;
     public int Move;
     public int MoveSpeed;
+    public float Lv;
+    private float exp;
+    private float expRequired;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
+    public GameObject dust;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
@@ -35,12 +39,16 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
+    public Transform firePoint;
+    public Transform DustPoint;
 
     public virtual void Start()
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
         isAttack = isMove = true;
+        //Delay time spawn smoke
+        InvokeRepeating("MoveEffect",0.2f,0.2f);
     }
     public void Activate()
     {
@@ -59,7 +67,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
-            InitiateMovePlates();
+            InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<MatrixCoordi> way) { MovePlateSpawn(x, y, way); };
+            InitiateMovePlates(dlg);
         }
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
@@ -67,9 +76,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
             InitiateAttackPlates();
         }
 
-        UIManager.Instance.UpdateStatus(this);
+        
     }
+    public virtual void AnimationAttack()
+    {
 
+    }
     public void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
@@ -78,6 +90,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             Destroy(attackPlates[i]);
 
     }
+
 
     public void InitiateAttackPlates()
     {
@@ -108,10 +121,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         for (int i = 0; i < movePlates.Length; i++) Destroy(movePlates[i]);
     }
 
+
+    public delegate void InitiateMovePlatesDelegate(int x, int y, Queue<MatrixCoordi> way);
     /// <summary>
     /// Tìm đường và Spawn ô di chuyển
     /// </summary>
-    public void InitiateMovePlates()
+    public void InitiateMovePlates(InitiateMovePlatesDelegate impd)
     {
         MatrixCoordi matrixCoordi;
         int cost;
@@ -128,7 +143,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             if (cost > 0)
             {
                 GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
-                MovePlateSpawn(matrixCoordi.x, matrixCoordi.y, way);
+                impd(matrixCoordi.x, matrixCoordi.y, way);
             }
 
             foreach (var item in Const.Unit.STEP_MOVE)
@@ -176,6 +191,11 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
+        // Chuot phai de hien UI
+        if(Input.GetMouseButtonDown(1))
+        {
+            UIManager.Instance.UpdateStatus(this);
+        }
     }
 
     protected void UpdatePossion()
@@ -210,13 +230,15 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void AttackToUnit(Unit unitTarget)
     {
-        unitTarget.TakeDame(Attack);
+        float damage = Attack * (100f / (100 + Armor));
+        unitTarget.TakeDame(damage);
+        AddExp(damage);
         if (CheckDisable()) DisableUnit();
     }
 
     public void TakeDame(float damage)
     {
-        CurrentHP -= damage * (100f / (100 + Armor));
+        CurrentHP -= damage ;
         if (CurrentHP <= 0)
         {
             if (this.isEnemy)
@@ -233,7 +255,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
             Destroy(gameObject);
             
         }
-
     }
 
 
@@ -250,11 +271,40 @@ public class Unit : MonoBehaviour, MatrixCoordi
         isAttack = isMove = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(225, 225, 255);
     }
+    public void MoveEffect()
+    {     
+        
+        if(IsMoving )
+        {           
+            GameObject d = Instantiate(dust, DustPoint.position, DustPoint.rotation);
+            Destroy (d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        }
+    }
 
     public bool GetIsAttack() => isAttack;
     public void SetIsAttack(bool isAttack) => this.isAttack = isAttack;
     public bool GetIsMove() => isMove;
     public void SetIsMove(bool isMove) => this.isMove = isMove;
 
+    void LvUp()
+    {
+        Lv += 1;
+        exp = exp - expRequired;
+        Attack += 5;
+        Armor += 2;
+        expRequired = 1.25f * expRequired;
+    }
+
+    void Exp()
+    {
+        if (exp >= expRequired)
+            LvUp();
+    }
+
+    void AddExp(float damage)
+    {
+        exp += damage;
+        Exp();
+    }
 
 }

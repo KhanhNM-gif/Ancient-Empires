@@ -17,4 +17,9 @@ class Soldier : Unit
     {
         base.Update();
     }
+
+    public override void AnimationAttack()
+    {
+       
+    }
 }

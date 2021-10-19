@@ -7,11 +7,12 @@ TagManager:
   - Tile
   - MovePlate
   - AttackPlate
+  - Attack
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Rock
   - Water
   - UI
   - 
@@ -43,6 +44,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: 
+    uniqueID: 956345351
     locked: 0
   - name: Soldier
     uniqueID: 58218535
