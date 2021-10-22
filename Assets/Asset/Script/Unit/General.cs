@@ -25,7 +25,7 @@ class General : Unit
     
     override public void Start()
     {
-        base.Update();
+        base.Start();
         canOccupiedHouse = true;
         canOccupiedCastle = true;
         isGeneral = true;
