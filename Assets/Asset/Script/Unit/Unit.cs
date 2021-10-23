@@ -267,7 +267,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
             Destroy(gameObject);
             GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
-            Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length)
+            Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
         }
     }
 
