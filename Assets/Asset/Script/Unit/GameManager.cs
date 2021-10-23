@@ -42,8 +42,8 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_SOLDIER, 5, 3,false));
-        list.Add(Create(Const.NameUnit.BLUE_GENERAL, 2, 3,false));
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 3,false));
+        list.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3,false));
         
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200, list);
         foreach (var item in list) SetPosition(item);
@@ -86,8 +86,6 @@ public class GameManager : MonoBehaviour
         foreach (var item in player.arrListUnit)
         {
             item.EnableColor();
-            item.DestroyAttackPlate();
-            item.DestroyMovePlate();
         }
         Unit.DisablePlate();
         StartCoroutine(SetWaitForSeconds(3));

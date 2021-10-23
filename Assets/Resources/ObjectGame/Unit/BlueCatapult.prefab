@@ -180,7 +180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentHP: 150
   HP: 150
-  Attack: 40
+  Attack: 400
   Armor: 30
   Range: 5
   Move: 4
