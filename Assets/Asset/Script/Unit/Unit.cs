@@ -265,13 +265,16 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
-            Destroy(gameObject);
-            GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
-            Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+            InvokeRepeating("Death", 1f, 0.2f);
         }
     }
 
-
+    public void Death()
+    {
+        Destroy(gameObject);
+        GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
+        Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+    }
     private bool CheckDisable() => !isAttack && !isMove;
 
     private void DisableUnit()
@@ -293,7 +296,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public void MoveEffect()
     {     
         
-        if(IsMoving )
+        if(IsMoving)
         {           
             GameObject d = Instantiate(dust, DustPoint.position, DustPoint.rotation);
             Destroy (d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
