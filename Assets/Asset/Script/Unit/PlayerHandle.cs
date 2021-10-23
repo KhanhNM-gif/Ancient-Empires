@@ -26,6 +26,7 @@ public class PlayerHandle
             item.SetIsAttack(true);
             item.SetIsMove(true);
             item.EnableUnit();
+            item.EnableColor();
         }
     }
     public virtual void AddUnit(Unit unit)

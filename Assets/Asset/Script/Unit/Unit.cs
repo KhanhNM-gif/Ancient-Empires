@@ -29,6 +29,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject movePlates;
     public GameObject attackPlates;
     public GameObject dust;
+    public GameObject Explo;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
@@ -88,7 +89,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
         for (int i = 0; i < attackPlates.Length; i++)
             Destroy(attackPlates[i]);
-
     }
 
 
@@ -262,6 +262,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
             else GameManager.Instance.player.arrListUnit.Remove(this);
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
             Destroy(gameObject);
+            GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
+            Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
         }
     }
 
@@ -272,12 +274,17 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
         isDisable = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);
+        GetComponent<Animator>().enabled = false;
     }
     public void EnableUnit()
     {
         isDisable = false;
-        isAttack = isMove = true;
+        isAttack = isMove = true;  
+    }
+    public void EnableColor()
+    {
         gameObject.GetComponent<SpriteRenderer>().color = new Color(225, 225, 255);
+        GetComponent<Animator>().enabled = true;
     }
     public void MoveEffect()
     {     

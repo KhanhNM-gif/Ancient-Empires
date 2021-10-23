@@ -42,10 +42,9 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_SOLDIER, 4, 3,false));
+        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 4, 3,false));
         player = new Player(500, 200, list);
         foreach (var item in list) SetPosition(item);
-
         list = new List<Unit>();
         list.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
         bot = new Bot(500, 200, list);
@@ -62,7 +61,6 @@ public class GameManager : MonoBehaviour
             un.y = y;
             un.isEnemy = isEnemy;
             un.Activate();
-
             return un;
         }
         return null;
@@ -75,12 +73,17 @@ public class GameManager : MonoBehaviour
         int y = unit.y;
         if (x < 0) x = 0;
         if (y < 0) y = 0;
-
         PositionUnit[x, y] = obj;
     }
 
     public void EndTurn()
-    {
+    {   
+        foreach (var item in player.arrListUnit)
+        {
+            item.EnableColor();
+            item.DestroyAttackPlate();
+            item.DestroyMovePlate();
+        }
         StartCoroutine(SetWaitForSeconds(3));
     }
     IEnumerator SetWaitForSeconds(float time)
