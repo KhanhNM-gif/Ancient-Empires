@@ -13,8 +13,9 @@ public class MoveMap : MonoBehaviour
 
     private Vector3 dragOrigin;
 
-    private void Start()
+    private void Awake()
     {
+        
         cam = Camera.main;
 
         MapManager swapMap = Instantiate(map, new Vector3(0, 0), Quaternion.identity);

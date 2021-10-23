@@ -65,16 +65,15 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
+        DisablePlate();
         GameManager.Instance.UnitSelected = this;
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
-            DestroyMovePlate();
             InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<MatrixCoordi> way) { MovePlateSpawn(x, y, way); };
             InitiateMovePlates(dlg);
         }
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
-            DestroyAttackPlate();
             InitiateAttackPlates();
         }
         if(!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack == false && this.isMove == false)
@@ -87,7 +86,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
 
     }
-    public void DestroyAttackPlate()
+    public static void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
 
@@ -132,7 +131,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         apScript.name = $"MovePlate({matrixX},{matrixY})";
     }
 
-    public void DestroyMovePlate()
+    public static void DestroyMovePlate()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
 
@@ -328,5 +327,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         exp += damage;
         Exp();
     }
-
+    public static void DisablePlate()
+    {
+        DestroyAttackPlate(); 
+        DestroyMovePlate();
+    }
 }

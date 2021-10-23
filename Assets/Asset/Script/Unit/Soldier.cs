@@ -23,6 +23,7 @@ class Soldier : Unit
     
     override public void Start()
     {
+        base.Start();
         canOccupiedHouse = true;
     }
     

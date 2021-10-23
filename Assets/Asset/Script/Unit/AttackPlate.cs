@@ -15,14 +15,14 @@ public class AttackPlate : MonoBehaviour, MatrixCoordi
     public int y { get; set; }
 
     public void OnMouseDown()
-    {
+    {   
+        Unit.DisablePlate();
         MapManager.map.arrTile[reference.x, reference.y].AttackAble = true;
         MapManager.map.arrTile[this.x, this.y].AttackAble = false;
         reference.SetIsAttack(false);
         reference.AttackToUnit(target);
-        reference.DestroyAttackPlate();
         reference.AnimationAttack();
-        reference.DestroyMovePlate();
+       
     }
 
     /// <summary>
