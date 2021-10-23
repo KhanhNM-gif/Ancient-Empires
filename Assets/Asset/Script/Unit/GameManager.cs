@@ -47,9 +47,6 @@ public class GameManager : MonoBehaviour
         
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200, list);
         foreach (var item in list) SetPosition(item);
-
-        
-
         list = new List<Unit>();
         list.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
         bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200, list);
@@ -68,9 +65,7 @@ public class GameManager : MonoBehaviour
             un.y = y;
             un.isEnemy = isEnemy;
             un.Activate();
-
             MapManager.map.arrTile[x, y].MoveAble = false;
-
             return un;
         }
         return null;
@@ -83,12 +78,17 @@ public class GameManager : MonoBehaviour
         int y = unit.y;
         if (x < 0) x = 0;
         if (y < 0) y = 0;
-
         PositionUnit[x, y] = obj;
     }
 
     public void EndTurn()
-    {
+    {   
+        foreach (var item in player.arrListUnit)
+        {
+            item.EnableColor();
+            item.DestroyAttackPlate();
+            item.DestroyMovePlate();
+        }
         Unit.DisablePlate();
         StartCoroutine(SetWaitForSeconds(3));
     }

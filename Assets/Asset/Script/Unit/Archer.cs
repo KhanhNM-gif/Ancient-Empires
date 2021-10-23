@@ -10,12 +10,11 @@ class Archer : Unit
     public GameObject arrow;
 
     private void ArcherAttack()
-    {
-        
-        GameObject rockClone = Instantiate(arrow, firePoint.position, firePoint.rotation);
-        RockMove rm = rockClone.GetComponent<RockMove>();
-        rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
-        rm.SetMoving(true);      
+    {       
+        GameObject arrowClone = Instantiate(arrow, firePoint.position, firePoint.rotation);
+        ArrowMove af = arrowClone.GetComponent<ArrowMove>();
+        af.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
+        af.SetMoving(true);         
     }
     public override void AnimationAttack()
     {

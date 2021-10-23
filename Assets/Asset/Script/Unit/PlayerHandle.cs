@@ -36,6 +36,7 @@ public class PlayerHandle
             item.SetIsAttack(true);
             item.SetIsMove(true);
             item.EnableUnit();
+            item.EnableColor();
 
             //BinhBH Hoi mau cho tuong trong thanh hoac nha.
             if (MapManager.map.arrTile[item.x, item.y].IsCastle || MapManager.map.arrTile[item.x, item.y].IsHouse)
