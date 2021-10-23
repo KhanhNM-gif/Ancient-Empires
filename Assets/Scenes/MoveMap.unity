@@ -1921,8 +1921,8 @@ MonoBehaviour:
   TextCountBuySolider: {fileID: 0}
   TextCountBuyValadorn: {fileID: 0}
   TextCountBuyCatapultr: {fileID: 0}
-  TextMonney: {fileID: 0}
-  TextUnit: {fileID: 0}
+  ImageGeneral: {fileID: 0}
+  TextNumberUnit: {fileID: 0}
   ButtonBuyArcher: {fileID: 0}
   ButtonBuySolider: {fileID: 0}
   ButtonBuyValadorn: {fileID: 0}
@@ -3799,8 +3799,8 @@ MonoBehaviour:
   TextCountBuySolider: {fileID: 120567439}
   TextCountBuyValadorn: {fileID: 1732170811}
   TextCountBuyCatapultr: {fileID: 108734102}
-  TextMonney: {fileID: 0}
-  TextUnit: {fileID: 0}
+  ImageGeneral: {fileID: 0}
+  TextNumberUnit: {fileID: 0}
   ButtonBuyArcher: {fileID: 130215121}
   ButtonBuySolider: {fileID: 1392540435}
   ButtonBuyValadorn: {fileID: 11559206}

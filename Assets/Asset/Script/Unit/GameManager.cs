@@ -42,7 +42,9 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_GENERAL, 4, 3,false));
+        list.Add(Create(Const.NameUnit.BLUE_SOLDIER, 5, 3,false));
+        list.Add(Create(Const.NameUnit.BLUE_GENERAL, 2, 3,false));
+        
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200, list);
         foreach (var item in list) SetPosition(item);
         list = new List<Unit>();
@@ -52,8 +54,10 @@ public class GameManager : MonoBehaviour
     }
     public Unit Create(string name, int x, int y, bool isEnemy)
     {
+
         if (UnitDictionary.TryGetValue(name, out GameObject outGameObject))
         {
+
             GameObject obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
             Unit un = obj.GetComponent<Unit>();
             un.name = name;
@@ -61,6 +65,7 @@ public class GameManager : MonoBehaviour
             un.y = y;
             un.isEnemy = isEnemy;
             un.Activate();
+            MapManager.map.arrTile[x, y].MoveAble = false;
             return un;
         }
         return null;
@@ -84,6 +89,7 @@ public class GameManager : MonoBehaviour
             item.DestroyAttackPlate();
             item.DestroyMovePlate();
         }
+        Unit.DisablePlate();
         StartCoroutine(SetWaitForSeconds(3));
     }
     IEnumerator SetWaitForSeconds(float time)
