@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         Instance = this;
+        Gold.text = Const.ConstGame.GOLD_START_GAME+"";
     }
 
     // Update is called once per frame
@@ -42,6 +43,6 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateGold(int gold)
     {
-        Gold.text = Gold.ToString();
+        Gold.text = gold +"";
     }
 }

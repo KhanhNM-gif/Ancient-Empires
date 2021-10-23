@@ -33,6 +33,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
+    public bool canOccupiedCastle;
+    public bool canOccupiedHouse;
+    public bool isGeneral;
 
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
@@ -40,7 +43,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public Transform firePoint;
     public Transform DustPoint;
 
-    public void Start()
+    public virtual void Start()
     {
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
@@ -62,6 +65,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
+        GameManager.Instance.UnitSelected = this;
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
             DestroyMovePlate();
@@ -215,14 +219,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
             {
                 MatrixCoordi matrixCoordi = queueMove.Peek();
                 vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
-                if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsCastle)
-                {
-                    ((Castle)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
-                }
-                if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsHouse)
-                {
-                    ((House)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
-                }
                 IsMoving = true;
             }
             else MoveMap();
@@ -258,12 +254,20 @@ public class Unit : MonoBehaviour, MatrixCoordi
         CurrentHP -= damage ;
         if (CurrentHP <= 0)
         {
-            if (this.isEnemy) GameManager.Instance.bot.arrListUnit.Remove(this);
-            else GameManager.Instance.player.arrListUnit.Remove(this);
+            if (this.isEnemy)
+            {
+                if (isGeneral) GameManager.Instance.bot.hasGeneral = false;
+                GameManager.Instance.bot.arrListUnit.Remove(this);
+            }
+            else
+            {
+                if (isGeneral) GameManager.Instance.player.hasGeneral = false;
+                GameManager.Instance.player.arrListUnit.Remove(this);
+            }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
             Destroy(gameObject);
             GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
-            Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+            Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length)
         }
     }
 
