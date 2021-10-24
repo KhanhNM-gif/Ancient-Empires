@@ -25,6 +25,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public float Lv;
     private float exp;
     private float expRequired;
+    float time = 0;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
@@ -86,6 +87,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
 
     }
+    
     public static void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
@@ -208,6 +210,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
+        
     }
 
     protected void UpdatePossion()
@@ -264,7 +267,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
-            InvokeRepeating("Death", 1f, 0.2f);
+            InvokeRepeating("Death",1.2f , 0.2f);
         }
     }
 

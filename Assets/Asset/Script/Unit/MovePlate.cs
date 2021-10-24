@@ -25,10 +25,7 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
         reference.y = this.y;
         reference.SetIsMove(false);
         reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
-        
         reference.SetAttack();
-
-        reference.DestroyAttackPlate();
         Unit.DisablePlate();
 
         //BinhBH Chiem thanh, nha
