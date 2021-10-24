@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 public class Bot : PlayerHandle
 {
-    public Bot(int gold, int goldPerTurn, List<Unit> arrListUnit) : base(gold, goldPerTurn, arrListUnit)
+    public Bot(int gold, int goldPerTurn) : base(gold, goldPerTurn)
     {
 
     }

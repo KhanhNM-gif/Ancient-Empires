@@ -16,11 +16,10 @@ public class PlayerHandle
     public List<BaseTile> listOccupied = new List<BaseTile>();
     public bool hasGeneral;
 
-    public PlayerHandle(int gold, int goldPerTurn, List<Unit> arrListUnit)
+    public PlayerHandle(int gold, int goldPerTurn)
     {
         Gold = gold;
         GoldPerTurn = goldPerTurn;
-        this.arrListUnit = arrListUnit;
         //BinhBH todo khi spawn tuong thi can set lai thanh true
         hasGeneral = false;
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class Player : PlayerHandle
 {
-    public Player(int gold, int goldPerTurn, List<Unit> arrListUnit) : base(gold, goldPerTurn, arrListUnit)
+    public Player(int gold, int goldPerTurn) : base(gold, goldPerTurn)
     {
 
     }
