@@ -14,7 +14,7 @@ public class Castle : BaseTile
             {
             changeOwner(1);
         }
-        if(x==10 && y==4)
+        if(x==10 && y==9)
         {
             changeOwner(2);
         }
