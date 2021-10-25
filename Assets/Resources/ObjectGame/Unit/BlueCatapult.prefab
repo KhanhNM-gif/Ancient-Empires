@@ -23,8 +23,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578996951649829330}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: 0.3, z: -2}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4985447279391425848}
@@ -180,20 +180,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentHP: 150
   HP: 150
-  Attack: 70
+  Attack: 400
   Armor: 30
   Range: 5
   Move: 4
-  attackrange: 5
   MoveSpeed: 5
+  Lv: 0
   isEnemy: 0
   movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
   attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
-  attack: {fileID: 6997682185456454703, guid: da3d668f2ec1e4043a71c48ffece6500, type: 3}
   dust: {fileID: 638546194192704375, guid: 131cb42beccb50d47a615112fa035359, type: 3}
+  Explo: {fileID: 4416846523397566388, guid: 610300a4afee84048a89df0f009f72b4, type: 3}
+  canOccupiedCastle: 0
+  canOccupiedHouse: 0
+  isGeneral: 0
   firePoint: {fileID: 9089118955187409284}
   DustPoint: {fileID: 1614391585796578478}
-  AttackPoint: {fileID: 0}
   rock: {fileID: 4795212602549913846, guid: a6c03becd5d69ac44a85261cda1ce2cc, type: 3}
 --- !u!61 &6219196518884075795
 BoxCollider2D:

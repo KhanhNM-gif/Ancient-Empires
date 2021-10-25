@@ -19,19 +19,26 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public float HP;
     public float Attack;
     public float Armor;
+    public float BaseArmor;
     public int Range;
+    public int BaseRange;
     public int Move;
     public int MoveSpeed;
     public float Lv;
     private float exp;
     private float expRequired;
+    float time = 0;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
     public GameObject dust;
+    public GameObject Explo;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
+    public bool canOccupiedCastle;
+    public bool canOccupiedHouse;
+    public bool isGeneral;
 
     private Queue<MatrixCoordi> queueMove;
     private Vector3 vectorTo;
@@ -39,11 +46,15 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public Transform firePoint;
     public Transform DustPoint;
 
-    public void Start()
+    public virtual void Start()
     {
+        BaseArmor = Armor;
+        BaseRange = Range;
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
-        isAttack = isMove = true;
+
+        isAttack = true;
+        isMove = true;
 
         //Delay time spawn smoke
         InvokeRepeating("MoveEffect",0.2f,0.2f);
@@ -64,31 +75,34 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     private void OnMouseDown()
     {
+        DisablePlate();
+        GameManager.Instance.UnitSelected = this;
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
-            DestroyMovePlate();
             InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<MatrixCoordi> way) { MovePlateSpawn(x, y, way); };
             InitiateMovePlates(dlg);
         }
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
-            DestroyAttackPlate();
             InitiateAttackPlates();
         }
-
-        
+        if(!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack == false && this.isMove == false)
+        {
+            DisableUnit();
+        }
+        UIManager.Instance.UpdateStatus(this);
     }
     public virtual void AnimationAttack()
     {
 
     }
-    public void DestroyAttackPlate()
+    
+    public static void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
 
         for (int i = 0; i < attackPlates.Length; i++)
             Destroy(attackPlates[i]);
-
     }
 
 
@@ -100,6 +114,20 @@ public class Unit : MonoBehaviour, MatrixCoordi
             {
                 AttackPlateSpawn(item.x, item.y, item);
             }
+        }
+    }
+    public void SetAttack()
+    {
+        foreach (var item in GameManager.Instance.bot.arrListUnit)
+        {
+            if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
+            {
+                isAttack = true;
+            }
+            else
+            {
+                isAttack = false;
+            }          
         }
     }
 
@@ -114,7 +142,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         apScript.name = $"MovePlate({matrixX},{matrixY})";
     }
 
-    public void DestroyMovePlate()
+    public static void DestroyMovePlate()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
 
@@ -191,11 +219,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
-        // Chuot phai de hien UI
-        if(Input.GetMouseButtonDown(1))
-        {
-            UIManager.Instance.UpdateStatus(this);
-        }
+        
     }
 
     protected void UpdatePossion()
@@ -206,14 +230,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
             {
                 MatrixCoordi matrixCoordi = queueMove.Peek();
                 vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
-                if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsCastle)
-                {
-                    ((Castle)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
-                }
-                if (MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y].IsHouse)
-                {
-                    ((House)MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y]).changeOwner(1);
-                }
                 IsMoving = true;
             }
             else MoveMap();
@@ -231,14 +247,57 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
             if (queueMove.Count == 0)
             {
+                Occupied();
+                Armor = BaseArmor + MapManager.map.arrTile[x, y].Ammor;
+                Range = BaseRange + MapManager.map.arrTile[x, y].ShootingRange;
+                UIManager.Instance.UpdateStatus(this);
                 if (CheckDisable()) DisableUnit();
+            }
+        }
+    }
+
+    /// <summary>
+    /// BinhBH Chiem thanh, nha
+    /// </summary>
+    private void Occupied()
+    {
+        Unit u = this;
+        if (u != null)
+        {
+            bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
+            if (MapManager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
+            {
+                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
+            }
+            else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
+            {
+                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                SkipTurn.Instance.Notification_Show("Occupied House");
             }
         }
     }
 
     public void AttackToUnit(Unit unitTarget)
     {
-        float damage = Attack * (100f / (100 + Armor));
+        float damage = (float) Math.Round(Attack * (100f / (100 + Armor)));
         unitTarget.TakeDame(damage);
         AddExp(damage);
         if (CheckDisable()) DisableUnit();
@@ -249,31 +308,49 @@ public class Unit : MonoBehaviour, MatrixCoordi
         CurrentHP -= damage ;
         if (CurrentHP <= 0)
         {
-            if (this.isEnemy) GameManager.Instance.bot.arrListUnit.Remove(this);
-            else GameManager.Instance.player.arrListUnit.Remove(this);
+            if (this.isEnemy)
+            {
+                if (isGeneral) GameManager.Instance.bot.hasGeneral = false;
+                GameManager.Instance.bot.arrListUnit.Remove(this);
+            }
+            else
+            {
+                if (isGeneral) GameManager.Instance.player.hasGeneral = false;
+                GameManager.Instance.player.arrListUnit.Remove(this);
+            }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
-            Destroy(gameObject);
+            InvokeRepeating("Death",1.2f , 0.2f);
         }
     }
 
-
+    public void Death()
+    {
+        Destroy(gameObject);
+        GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
+        Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+    }
     private bool CheckDisable() => !isAttack && !isMove;
 
     private void DisableUnit()
     {
         isDisable = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);
+        GetComponent<Animator>().enabled = false;
     }
     public void EnableUnit()
     {
         isDisable = false;
-        isAttack = isMove = true;
+        isAttack = isMove = true;  
+    }
+    public void EnableColor()
+    {
         gameObject.GetComponent<SpriteRenderer>().color = new Color(225, 225, 255);
+        GetComponent<Animator>().enabled = true;
     }
     public void MoveEffect()
     {     
         
-        if(IsMoving )
+        if(IsMoving)
         {           
             GameObject d = Instantiate(dust, DustPoint.position, DustPoint.rotation);
             Destroy (d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
@@ -305,5 +382,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         exp += damage;
         Exp();
     }
-
+    public static void DisablePlate()
+    {
+        DestroyAttackPlate(); 
+        DestroyMovePlate();
+    }
 }

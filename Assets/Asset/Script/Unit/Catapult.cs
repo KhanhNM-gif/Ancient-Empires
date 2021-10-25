@@ -5,17 +5,16 @@ using UnityEngine;
 public class Catapult : Unit
 {
     public GameObject rock;
-
-    private void Shoot()
+    private void CatapultAttack()
     {
-        
         GameObject rockClone = Instantiate(rock, firePoint.position, firePoint.rotation);
         RockMove rm = rockClone.GetComponent<RockMove>();
         rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
-        rm.SetMoving(true);      
+        rm.SetMoving(true);
     }
+    
     public override void AnimationAttack()
     {
-        Shoot();
+        CatapultAttack();
     }
 }

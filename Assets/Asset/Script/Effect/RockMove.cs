@@ -20,8 +20,7 @@ public class RockMove : MonoBehaviour
             moving = false;
         }
         if (transform.position == lastClickedPos)
-        {
-            
+        { 
             GameObject f = Instantiate(fire, lastClickedPos, Quaternion.identity);
             Destroy(f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
             Destroy(gameObject);
@@ -35,6 +34,5 @@ public class RockMove : MonoBehaviour
     {
         this.lastClickedPos = Camera.main.ScreenToWorldPoint(lastClickedPos);
     }
-
 }
 
