@@ -33,6 +33,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject attackPlates;
     public GameObject dust;
     public GameObject Explo;
+    public GameObject LeverUp;
+    public GameObject Heal;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
@@ -52,10 +54,15 @@ public class Unit : MonoBehaviour, MatrixCoordi
         BaseRange = Range;
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
+
         isAttack = true;
         isMove = true;
+
         //Delay time spawn smoke
         InvokeRepeating("MoveEffect",0.2f,0.2f);
+        //ExpRequired to Lv2
+        expRequired = 100;
+
     }
     public void Activate()
     {
@@ -361,9 +368,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
         Lv += 1;
         exp = exp - expRequired;
+        expRequired = 1.25f * expRequired;
         Attack += 5;
         Armor += 2;
-        expRequired = 1.25f * expRequired;
     }
 
     void Exp()
