@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     public Text Defense;
     public Text AtkRange;
     public Text MoveStep;
-
+    public Text Level;
     public static UIManager Instance;
 
     public Text Gold;
@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
         Defense.text = unit.Armor.ToString() + " Def";
         AtkRange.text = unit.Range.ToString() + " Square";
         MoveStep.text = unit.Move.ToString() + " Square";
+        Level.text = "Lv " + unit.Lv.ToString();
     }
     public void SetActivePnStatus(bool s)
     {
