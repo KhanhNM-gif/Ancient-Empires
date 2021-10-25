@@ -33,6 +33,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject attackPlates;
     public GameObject dust;
     public GameObject Explo;
+    public GameObject LeverUp;
+    public GameObject Heal;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
