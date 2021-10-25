@@ -42,11 +42,12 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200);
         player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3, false));
-        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3, false));
+        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_SOLDIER, 2, 3, false));
         foreach (var item in player.arrListUnit) SetPosition(item);
 
         bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200);
-        bot.arrListUnit.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
+        bot.arrListUnit.Add(Create(Const.NameUnit.RED_GENERAL, 8, 8, true));
+        bot.arrListUnit.Add(Create(Const.NameUnit.RED_SOLDIER, 6, 8, true));
         foreach (var item in bot.arrListUnit) SetPosition(item);
     }
     public Unit Create(string name, int x, int y, bool isEnemy)

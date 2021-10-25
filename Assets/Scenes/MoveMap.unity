@@ -2526,6 +2526,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &924176577 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2496230095531821146, guid: 7804f08e580ffc24784f896bbab2b30b, type: 3}
+  m_PrefabInstance: {fileID: 238536405}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1079816608
 GameObject:
   m_ObjectHideFlags: 0
@@ -4005,6 +4016,7 @@ MonoBehaviour:
   Defense: {fileID: 1482125944}
   AtkRange: {fileID: 1107558270}
   MoveStep: {fileID: 871855335}
+  Level: {fileID: 924176577}
   Gold: {fileID: 1672402562}
 --- !u!1 &1794567132
 GameObject:
