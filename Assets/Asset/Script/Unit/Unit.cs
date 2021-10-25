@@ -31,6 +31,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject attackPlates;
     public GameObject dust;
     public GameObject Explo;
+    public GameObject LeverUp;
+    public GameObject Heal;
     private bool isAttack;
     private bool isMove;
     private bool isDisable = false;
@@ -317,6 +319,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
         Attack += 5;
         Armor += 2;
         expRequired = 1.25f * expRequired;
+        // GameObject f = Instantiate(Fire, firePoint.position , DustPoint.rotation);
+        // Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
     void Exp()

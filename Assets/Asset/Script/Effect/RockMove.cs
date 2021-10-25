@@ -10,8 +10,6 @@ public class RockMove : MonoBehaviour
     Vector3 lastClickedPos;
     public void Update()
     {
-        float distance = Vector3.Distance(transform.position, lastClickedPos);
-        timedelay = distance / speed;
         if (moving && transform.position != lastClickedPos)
         {
             float step = speed * Time.deltaTime;
