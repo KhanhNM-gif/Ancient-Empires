@@ -24,7 +24,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int BaseRange;
     public int Move;
     public int MoveSpeed;
-    public float Lv;
+    public int Lv;
     private float exp;
     private float expRequired;
     float time = 0;
