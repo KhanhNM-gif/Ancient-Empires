@@ -40,17 +40,14 @@ public class GameManager : MonoBehaviour
         GameObject[] arrUnit = Resources.LoadAll<GameObject>(@"ObjectGame/Unit");
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
+        player = new Player(Const.ConstGame.GOLD_START_GAME, 200);
+        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3, false));
+        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3, false));
+        foreach (var item in player.arrListUnit) SetPosition(item);
 
-        List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 3,false));
-        list.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3,false));
-        
-        player = new Player(Const.ConstGame.GOLD_START_GAME, 200, list);
-        foreach (var item in list) SetPosition(item);
-        list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
-        bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200, list);
-        foreach (var item in list) SetPosition(item);
+        bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200);
+        bot.arrListUnit.Add(Create(Const.NameUnit.RED_SOLDIER, 8, 8, true));
+        foreach (var item in bot.arrListUnit) SetPosition(item);
     }
     public Unit Create(string name, int x, int y, bool isEnemy)
     {

@@ -19,10 +19,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public float HP;
     public float Attack;
     public float Armor;
+    public float BaseArmor;
     public int Range;
+    public int BaseRange;
     public int Move;
     public int MoveSpeed;
-    public float Lv;
+    public int Lv;
     private float exp;
     private float expRequired;
     float time = 0;
@@ -48,12 +50,19 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public virtual void Start()
     {
+        BaseArmor = Armor;
+        BaseRange = Range;
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
+
         isAttack = true;
         isMove = true;
+
         //Delay time spawn smoke
         InvokeRepeating("MoveEffect",0.2f,0.2f);
+        //ExpRequired to Lv2
+        expRequired = 100;
+
     }
     public void Activate()
     {
@@ -240,14 +249,57 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
             if (queueMove.Count == 0)
             {
+                Occupied();
+                Armor = BaseArmor + MapManager.map.arrTile[x, y].Ammor;
+                Range = BaseRange + MapManager.map.arrTile[x, y].ShootingRange;
+                UIManager.Instance.UpdateStatus(this);
                 if (CheckDisable()) DisableUnit();
+            }
+        }
+    }
+
+    /// <summary>
+    /// BinhBH Chiem thanh, nha
+    /// </summary>
+    private void Occupied()
+    {
+        Unit u = this;
+        if (u != null)
+        {
+            bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
+            if (MapManager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
+            {
+                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
+            }
+            else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
+            {
+                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                SkipTurn.Instance.Notification_Show("Occupied House");
             }
         }
     }
 
     public void AttackToUnit(Unit unitTarget)
     {
-        float damage = Attack * (100f / (100 + Armor));
+        float damage = (float) Math.Round(Attack * (100f / (100 + Armor)));
         unitTarget.TakeDame(damage);
         AddExp(damage);
         if (CheckDisable()) DisableUnit();
@@ -316,11 +368,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
         Lv += 1;
         exp = exp - expRequired;
+        expRequired = 1.25f * expRequired;
         Attack += 5;
         Armor += 2;
-        expRequired = 1.25f * expRequired;
-        // GameObject f = Instantiate(Fire, firePoint.position , DustPoint.rotation);
-        // Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
     void Exp()
