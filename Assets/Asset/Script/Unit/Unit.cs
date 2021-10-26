@@ -27,7 +27,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int Lv;
     private float exp;
     private float expRequired;
-    float time = 0;
+    //float time = 0;
     public bool isEnemy;
     public GameObject movePlates;
     public GameObject attackPlates;
@@ -37,7 +37,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject Heal;
     private bool isAttack;
     private bool isMove;
-    private bool isDisable = false;
+    //private bool isDisable;
     public bool canOccupiedCastle;
     public bool canOccupiedHouse;
     public bool isGeneral;
@@ -70,6 +70,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
 
     public void SetWordPositon() => transform.position = MapTile.GridWordPosition(x, y, -1);
+    public Vector3 GetWordPositon() => MapTile.GridWordPosition(x, y, -1);
     public void SetStackMove(Queue<MatrixCoordi> queue)
     {
         queueMove = queue;
@@ -94,7 +95,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         }
         UIManager.Instance.UpdateStatus(this);
     }
-    public virtual void AnimationAttack()
+    public virtual void AnimationAttack(Unit unit, float damage)
     {
 
     }
@@ -120,17 +121,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     public void SetAttack()
     {
-        foreach (var item in GameManager.Instance.bot.arrListUnit)
-        {
-            if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
-            {
-                isAttack = true;
-            }
-            else
-            {
-                isAttack = false;
-            }          
-        }
+        if (isAttack&& !(Math.Abs(x - this.x) + Math.Abs(y - this.y) <= Range)) isAttack = false;
     }
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
@@ -221,7 +212,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
-        
     }
 
     protected void UpdatePossion()
@@ -297,10 +287,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
         }
     }
 
-    public void AttackToUnit(Unit unitTarget)
+    public void AttackToUnit(Unit unitTarget,out float damage)
     {
-        float damage = (float) Math.Round(Attack * (100f / (100 + Armor)));
-        unitTarget.TakeDame(damage);
+        damage = (float) Math.Round(Attack * (100f / (100 + unitTarget.Armor)));
+        //unitTarget.TakeDame(damage);
         AddExp(damage);
         if (CheckDisable()) DisableUnit();
     }
@@ -321,7 +311,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
-            InvokeRepeating("Death",1.2f , 0.2f);
+            InvokeRepeating("Death",0.5f , 0.2f);
         }
     }
 
@@ -331,17 +321,21 @@ public class Unit : MonoBehaviour, MatrixCoordi
         GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
         Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
+    public void showPopupDameTake()
+    {
+        PopupDamage.CreatePopupDamage(100f, transform.position);
+    }
     private bool CheckDisable() => !isAttack && !isMove;
 
     private void DisableUnit()
     {
-        isDisable = true;
+        //isDisable = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);
         GetComponent<Animator>().enabled = false;
     }
     public void EnableUnit()
     {
-        isDisable = false;
+        //isDisable = false;
         isAttack = isMove = true;  
     }
     public void EnableColor()

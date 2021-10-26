@@ -37,7 +37,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     /// </summary>
     public void showShop(int i, int j)
     {
-       
+        Unit.DisablePlate();
         showNumberOfUnit();
         x = i;
         y = j;

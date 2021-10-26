@@ -11,7 +11,7 @@ public class Player : PlayerHandle
     {
 
     }
-    public void StartTurn()
+    public override void StartTurn()
     {
         base.StartTurn();
         SkipTurn.Instance.btn_SkipTurn.SetActive(true);
