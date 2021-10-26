@@ -58,7 +58,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1508360828402565614}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.18, y: -2.22, z: 0}
+  m_LocalPosition: {x: -2.18, y: -2.22, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6542667713539337229}
@@ -142,6 +142,11 @@ MonoBehaviour:
   attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
   dust: {fileID: 638546194192704375, guid: 131cb42beccb50d47a615112fa035359, type: 3}
   Explo: {fileID: 4416846523397566388, guid: 610300a4afee84048a89df0f009f72b4, type: 3}
+  LeverUp: {fileID: 0}
+  Heal: {fileID: 0}
+  canOccupiedCastle: 0
+  canOccupiedHouse: 0
+  isGeneral: 0
   firePoint: {fileID: 6542667713539337229}
   DustPoint: {fileID: 7092267571677108453}
   attack: {fileID: 1147931926519157571, guid: a3206e1912089e046a58cef0cdba4300, type: 3}

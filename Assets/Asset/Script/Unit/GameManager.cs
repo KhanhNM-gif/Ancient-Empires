@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
 
         List<Unit> list = new List<Unit>();
-        list.Add(Create(Const.NameUnit.BLUE_ARCHER, 5, 3,false));
+        list.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3,false));
         list.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3,false));
         
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200, list);

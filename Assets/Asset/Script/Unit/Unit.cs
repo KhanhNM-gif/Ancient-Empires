@@ -32,6 +32,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public GameObject dust;
     public GameObject Explo;
     public GameObject LeverUp;
+    public GameObject Flame;
     public GameObject Heal;
     private bool isAttack;
     private bool isMove;
@@ -319,8 +320,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
         Attack += 5;
         Armor += 2;
         expRequired = 1.25f * expRequired;
-        // GameObject f = Instantiate(Fire, firePoint.position , DustPoint.rotation);
-        // Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        GameObject f = Instantiate(Flame, DustPoint.position , DustPoint.rotation);
+        Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        GameObject l = Instantiate(LeverUp, firePoint.position , firePoint.rotation);
+        Destroy (l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
     void Exp()
