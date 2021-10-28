@@ -9,20 +9,18 @@ class General : Unit
 {
     public GameObject attack;
 
-    private void GeneralAttack()
+    private void GeneralAttack(Unit unit, float damage)
     {
-        
-        GameObject rockClone = Instantiate(attack, firePoint.position, firePoint.rotation);
-        AttackMove rm = rockClone.GetComponent<AttackMove>();
-        rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
-        rm.SetMoving(true);      
+        GameObject attackClone = Instantiate(attack, firePoint.position, firePoint.rotation);
+        AttackMove am = attackClone.GetComponent<AttackMove>();
+        am.CreateAttackEffect(unit, damage);
     }
-    public override void AnimationAttack()
+    public override void AnimationAttack(Unit unit, float damage)
     {
-        GeneralAttack();
+        GeneralAttack(unit, damage);
     }
-    
-    
+
+
     override public void Start()
     {
         base.Start();
