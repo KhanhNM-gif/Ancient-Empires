@@ -10,7 +10,14 @@ public class Castle : BaseTile
     // Start is called before the first frame update
     void Start()
     {
-
+        if(x==4 && y==4)
+            {
+            changeOwner(1);
+        }
+        if(x==10 && y==9)
+        {
+            changeOwner(2);
+        }
     }
 
 
@@ -25,7 +32,7 @@ public class Castle : BaseTile
                     this.GetComponent<SpriteRenderer>().sprite = sprites[0];
                     break;
                 case 2:
-                    this.GetComponent<SpriteRenderer>().sprite = sprites[1];
+                    this.GetComponent<SpriteRenderer>().sprite = sprites[2];
                     break;
             }
         }
@@ -33,7 +40,28 @@ public class Castle : BaseTile
     }
     void Update()
     {
-        if (isOwnerBy == 1 && Input.GetMouseButtonDown(1) && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player)
-            GameManager.shop.showShop(x, y);
+        if (Input.GetMouseButtonDown(1))
+        {
+            Castle c = null;
+            int i, j;
+            Vector2 vector = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
+            i = (int)System.Math.Round(vector.x);
+            j = (int)System.Math.Round(vector.y);
+            if (i != x || j != y)
+            {
+                return;
+            }
+
+            if (MapManager.map.arrTile[i, j].IsCastle)
+            {
+                c = ((Castle)MapManager.map.arrTile[i, j]);
+            }
+
+            if (c != null && c.isOwnerBy == 1 && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player)
+            {
+                GameManager.shop.showShop(x, y);
+            }
+        }
+
     }
 }

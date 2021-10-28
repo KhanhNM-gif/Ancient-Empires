@@ -37,6 +37,7 @@ public class Shop : MonoBehaviour, MatrixCoordi
     /// </summary>
     public void showShop(int i, int j)
     {
+       
         showNumberOfUnit();
         x = i;
         y = j;
