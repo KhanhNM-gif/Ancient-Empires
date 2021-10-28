@@ -29,7 +29,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private float expRequired;
     //float time = 0;
     public bool isEnemy;
-
     private bool isAttack;
     private bool isMove;
     //private bool isDisable;
@@ -360,6 +359,11 @@ public class Unit : MonoBehaviour, MatrixCoordi
         expRequired = 1.25f * expRequired;
         Attack += 5;
         Armor += 2;
+        expRequired = 1.25f * expRequired;
+        GameObject f = Instantiate(Flame, DustPoint.position , DustPoint.rotation);
+        Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        GameObject l = Instantiate(LeverUp, firePoint.position , firePoint.rotation);
+        Destroy (l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
     void Exp()
