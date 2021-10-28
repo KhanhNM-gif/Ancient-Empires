@@ -129,11 +129,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1acb62fac491492478a2176a0bab0483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHP: 0
-  HP: 0
+  CurrentHP: 200
+  HP: 2
   Attack: 0
   Armor: 0
+  BaseArmor: 0
   Range: 0
+  BaseRange: 0
   Move: 0
   MoveSpeed: 0
   Lv: 0

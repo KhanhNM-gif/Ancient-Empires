@@ -9,16 +9,15 @@ class Archer : Unit
 {
     public GameObject arrow;
 
-    private void ArcherAttack()
-    {       
+    private void ArcherAttack(Unit unit, float damage)
+    {
         GameObject arrowClone = Instantiate(arrow, firePoint.position, firePoint.rotation);
         ArrowMove af = arrowClone.GetComponent<ArrowMove>();
-        af.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
-        af.SetMoving(true);         
+        af.CreateAttackEffect(unit, damage);
     }
-    public override void AnimationAttack()
+    public override void AnimationAttack(Unit unit, float damage)
     {
-        ArcherAttack();
+        ArcherAttack(unit, damage);
     }
     override public void Update()
     {

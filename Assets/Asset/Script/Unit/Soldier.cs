@@ -9,18 +9,17 @@ class Soldier : Unit
 {
     public GameObject attack;
 
-    private void SoldierAttack()
+    private void SoldierAttack(Unit unit, float damage)
     {
         GameObject attackClone = Instantiate(attack, firePoint.position, firePoint.rotation);
-        AttackMove rm = attackClone.GetComponent<AttackMove>();
-        rm.SetlastClickedPos(new Vector3(Input.mousePosition.x,Input.mousePosition.y,7));
-        rm.SetMoving(true);      
+        AttackMove am = attackClone.GetComponent<AttackMove>();
+        am.CreateAttackEffect(unit, damage);
     }
-    public override void AnimationAttack()
+    public override void AnimationAttack(Unit unit, float damage)
     {
-        SoldierAttack();
+        SoldierAttack(unit, damage);
     }
-    
+
     override public void Start()
     {
         base.Start();
