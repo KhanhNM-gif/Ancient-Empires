@@ -9,7 +9,7 @@ namespace Assets.Asset.Script.Effect
 {
     public class Attack : MonoBehaviour
     {
-        protected float speed=3;
+        protected float speed=4;
         protected bool moving;
         protected Vector3 lastPos;
         private Unit UnitTarget;

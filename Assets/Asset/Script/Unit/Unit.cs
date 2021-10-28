@@ -29,12 +29,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private float expRequired;
     //float time = 0;
     public bool isEnemy;
-    public GameObject movePlates;
-    public GameObject attackPlates;
-    public GameObject dust;
-    public GameObject Explo;
-    public GameObject LeverUp;
-    public GameObject Heal;
+
     private bool isAttack;
     private bool isMove;
     //private bool isDisable;
@@ -126,7 +121,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
     {
-        GameObject mp = Instantiate(attackPlates, MapTile.GridWordPosition(matrixX, matrixY, -2), Quaternion.identity);
+        GameObject mp = Instantiate(AssetManage.i.attackPlates, MapTile.GridWordPosition(matrixX, matrixY, -2), Quaternion.identity);
 
         AttackPlate apScript = mp.GetComponent<AttackPlate>();
         apScript.SetReference(this);
@@ -200,7 +195,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void MovePlateSpawn(int matrixX, int matrixY, Queue<MatrixCoordi> queue)
     {
-        GameObject mp = Instantiate(movePlates, MapTile.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
+        GameObject mp = Instantiate(AssetManage.i.movePlates, MapTile.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
         mpScript.SetReference(this);
@@ -318,7 +313,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public void Death()
     {
         Destroy(gameObject);
-        GameObject f = Instantiate(Explo, firePoint.position, Quaternion.identity);
+        GameObject f = Instantiate(AssetManage.i.Explo, firePoint.position, Quaternion.identity);
         Destroy(f, f.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
     public void showPopupDameTake()
@@ -348,7 +343,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         
         if(IsMoving)
         {           
-            GameObject d = Instantiate(dust, DustPoint.position, DustPoint.rotation);
+            GameObject d = Instantiate(AssetManage.i.dust, DustPoint.position, DustPoint.rotation);
             Destroy (d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
         }
     }
