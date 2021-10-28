@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8992121848022819207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7945493255364105487}
+  - component: {fileID: 7251349838386650248}
+  m_Layer: 0
+  m_Name: Map1Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7945493255364105487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8992121848022819207}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7251349838386650248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8992121848022819207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dcbdf309fae3e14995a3d17546fa860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tsnow: {fileID: 6665554199080190496, guid: a1286b5d918f79244b904c84160fd090, type: 3}
+  snow: {fileID: 6407976803252246428, guid: ca181316ad401514b92d7679678d6c14, type: 3}
+  border: {fileID: 901956919074486629, guid: 341cdc43e4063ba4a877af8636682628, type: 3}
+  castle: {fileID: 3150660231975898894, guid: 5a94b16248ff7ea4995819e72338b5ba, type: 3}
+  house: {fileID: 8554035901525708422, guid: d544eb09c6072f046b171f18428e299d, type: 3}
+  mountain: {fileID: 687343611166284980, guid: 4d3ed97276b38ca4682c4da7d2889d6e, type: 3}
+  forest: {fileID: 8090485520120494987, guid: 2ef4f078363a357439cf7a98b0a49dd1, type: 3}
+  way: {fileID: 1578421516078180590, guid: bdb9d078f3d461a498efaa2725db179a, type: 3}

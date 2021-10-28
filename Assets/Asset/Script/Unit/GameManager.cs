@@ -41,8 +41,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200);
-        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3, false));
-        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3, false));
+        //player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3, false));
+        //player.arrListUnit.Add(Create(Const.NameUnit.BLUE_CATAPULT, 2, 3, false));
         foreach (var item in player.arrListUnit) SetPosition(item);
 
         bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200);
@@ -63,6 +63,8 @@ public class GameManager : MonoBehaviour
             un.isEnemy = isEnemy;
             un.Activate();
             MapManager.map.arrTile[x, y].MoveAble = false;
+            Map1Manager.map.arrTile[x, y].MoveAble = false;
+            Map2Manager.map.arrTile[x, y].MoveAble = false;
             return un;
         }
         return null;

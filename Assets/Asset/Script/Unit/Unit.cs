@@ -53,6 +53,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
 
+        Map1Manager.map.arrTile[x, y].MoveAble = false;
+        Map1Manager.map.arrTile[x, y].AttackAble = false;
+
+        Map2Manager.map.arrTile[x, y].MoveAble = false;
+        Map2Manager.map.arrTile[x, y].AttackAble = false;
+
         isAttack = true;
         isMove = true;
 
@@ -191,6 +197,67 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 }
             }
         }
+
+        queue.Enqueue(new Tuple<MatrixCoordi, int>(Map1Manager.map.arrTile[x, y], 0));
+
+        while (queue.Count > 0)
+        {
+            Tuple<MatrixCoordi, int> s = queue.Dequeue();
+            matrixCoordi = s.Item1; cost = s.Item2;
+
+            if (cost > 0)
+            {
+                GetQueueWay(wayDictionary, matrixCoordi, Map1Manager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
+                impd(matrixCoordi.x, matrixCoordi.y, way);
+            }
+
+            foreach (var item in Const.Unit.STEP_MOVE)
+            {
+                int x = matrixCoordi.x + item.Item1;
+                int y = matrixCoordi.y + item.Item2;
+
+                if (x >= Map1Manager.map.Width || x < 0 || y >= Map1Manager.map.Height || y < 0) continue;
+
+                int newCost = cost + Map1Manager.map.arrTile[x, y].MoveRange;
+                BaseTile tile = Map1Manager.map.arrTile[x, y];
+
+                if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
+                {
+                    queue.Enqueue(new Tuple<MatrixCoordi, int>(Map1Manager.map.arrTile[x, y], newCost));
+                    wayDictionary[tile] = new Tuple<MatrixCoordi, int>(Map1Manager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
+                }
+            }
+        }
+        queue.Enqueue(new Tuple<MatrixCoordi, int>(Map2Manager.map.arrTile[x, y], 0));
+
+        while (queue.Count > 0)
+        {
+            Tuple<MatrixCoordi, int> s = queue.Dequeue();
+            matrixCoordi = s.Item1; cost = s.Item2;
+
+            if (cost > 0)
+            {
+                GetQueueWay(wayDictionary, matrixCoordi, Map2Manager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
+                impd(matrixCoordi.x, matrixCoordi.y, way);
+            }
+
+            foreach (var item in Const.Unit.STEP_MOVE)
+            {
+                int x = matrixCoordi.x + item.Item1;
+                int y = matrixCoordi.y + item.Item2;
+
+                if (x >= Map2Manager.map.Width || x < 0 || y >= Map2Manager.map.Height || y < 0) continue;
+
+                int newCost = cost + Map2Manager.map.arrTile[x, y].MoveRange;
+                BaseTile tile = Map2Manager.map.arrTile[x, y];
+
+                if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
+                {
+                    queue.Enqueue(new Tuple<MatrixCoordi, int>(Map2Manager.map.arrTile[x, y], newCost));
+                    wayDictionary[tile] = new Tuple<MatrixCoordi, int>(Map2Manager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
+                }
+            }
+        }
     }
     // tấn công
 
@@ -253,6 +320,24 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 UIManager.Instance.UpdateStatus(this);
                 if (CheckDisable()) DisableUnit();
             }
+
+            if (queueMove.Count == 0)
+            {
+                Occupied();
+                Armor = BaseArmor + Map1Manager.map.arrTile[x, y].Ammor;
+                Range = BaseRange + Map1Manager.map.arrTile[x, y].ShootingRange;
+                UIManager.Instance.UpdateStatus(this);
+                if (CheckDisable()) DisableUnit();
+            }
+
+            if (queueMove.Count == 0)
+            {
+                Occupied();
+                Armor = BaseArmor + Map2Manager.map.arrTile[x, y].Ammor;
+                Range = BaseRange + Map2Manager.map.arrTile[x, y].ShootingRange;
+                UIManager.Instance.UpdateStatus(this);
+                if (CheckDisable()) DisableUnit();
+            }
         }
     }
 
@@ -293,6 +378,71 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 SkipTurn.Instance.Notification_Show("Occupied House");
             }
         }
+
+        if (u != null)
+        {
+            bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
+            if (Map1Manager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
+            {
+                ((Castle)Map1Manager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(Map1Manager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(Map1Manager.map.arrTile[x, y]);
+                }
+
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
+            }
+            else if (Map1Manager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
+            {
+                ((House)Map1Manager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(Map1Manager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
+                }
+                SkipTurn.Instance.Notification_Show("Occupied House");
+            }
+        }
+
+        if (u != null)
+        {
+            bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
+            if (Map2Manager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
+            {
+                ((Castle)Map2Manager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(Map2Manager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(Map2Manager.map.arrTile[x, y]);
+                }
+
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
+            }
+            else if (Map2Manager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
+            {
+                ((House)Map2Manager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                if (playerOccupied)
+                {
+                    GameManager.Instance.player.listOccupied.Add(Map2Manager.map.arrTile[x, y]);
+                }
+                else
+                {
+                    GameManager.Instance.bot.listOccupied.Add(Map2Manager.map.arrTile[x, y]);
+                }
+                SkipTurn.Instance.Notification_Show("Occupied House");
+            }
+        }
+
     }
 
     public void AttackToUnit(Unit unitTarget)
@@ -319,6 +469,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
+            Map1Manager.map.arrTile[this.x, this.y].MoveAble = true;
+            Map2Manager.map.arrTile[this.x, this.y].MoveAble = true;
             InvokeRepeating("Death",1.2f , 0.2f);
         }
     }
