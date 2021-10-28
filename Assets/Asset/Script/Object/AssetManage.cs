@@ -11,6 +11,7 @@ public class AssetManage : MonoBehaviour
     public GameObject dust;
     public GameObject Explo;
     public GameObject LeverUp;
+    public GameObject Flame;
     public GameObject Heal;
     public static AssetManage i;
 

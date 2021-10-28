@@ -49,7 +49,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
 
-        isAttack = true;
+        isAttack = false;
         isMove = true;
 
         //Delay time spawn smoke
@@ -360,9 +360,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         Attack += 5;
         Armor += 2;
         expRequired = 1.25f * expRequired;
-        GameObject f = Instantiate(Flame, DustPoint.position , DustPoint.rotation);
+        GameObject f = Instantiate(AssetManage.i.Flame, DustPoint.position , DustPoint.rotation);
         Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
-        GameObject l = Instantiate(LeverUp, firePoint.position , firePoint.rotation);
+        GameObject l = Instantiate(AssetManage.i.LeverUp, firePoint.position , firePoint.rotation);
         Destroy (l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
