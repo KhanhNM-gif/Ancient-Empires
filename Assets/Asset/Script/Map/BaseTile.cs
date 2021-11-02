@@ -1,9 +1,7 @@
 using Assets.Asset.Model;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseTile : MonoBehaviour , MatrixCoordi
+public class BaseTile : MonoBehaviour, IMatrixCoordi
 {
     public int x { get; set; }
     public int y { get; set; }
@@ -15,4 +13,9 @@ public class BaseTile : MonoBehaviour , MatrixCoordi
     public bool IsHouse;
     public bool IsCastle;
     public bool AttackAble;
+
+    public int Distance(IMatrixCoordi mc)
+    {
+        throw new System.NotImplementedException();
+    }
 }

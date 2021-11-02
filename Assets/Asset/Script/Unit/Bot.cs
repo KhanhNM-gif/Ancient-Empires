@@ -19,7 +19,7 @@ public class Bot : PlayerHandle
         ConcurrentDictionary<Unit, List<DestinationCell>> wayDictionary = new ConcurrentDictionary<Unit, List<DestinationCell>>();
         foreach (var item in units)
         {
-            Unit.InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<MatrixCoordi> way)
+            Unit.InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<IMatrixCoordi> way)
             {
                 if (wayDictionary[item] == null) wayDictionary[item] = new List<DestinationCell>();
 

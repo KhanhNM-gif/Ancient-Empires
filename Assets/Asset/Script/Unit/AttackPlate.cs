@@ -5,7 +5,7 @@ using Assets.Asset.Model;
 using System;
 using System.Linq;
 
-public class AttackPlate : MonoBehaviour, MatrixCoordi
+public class AttackPlate : MonoBehaviour, IMatrixCoordi
 {
     public GameObject controller;
     Unit reference = null;

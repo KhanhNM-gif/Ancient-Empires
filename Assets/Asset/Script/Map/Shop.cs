@@ -5,7 +5,7 @@ using Assets.Asset.Model;
 using UnityEngine.UI;
 using System;
 
-public class Shop : MonoBehaviour, MatrixCoordi
+public class Shop : MonoBehaviour, IMatrixCoordi
 {
 
     [SerializeField] private GameObject PannelShop;

@@ -1,13 +1,20 @@
 using Assets.Asset.Model;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class Unit : MonoBehaviour, MatrixCoordi
+public class Unit : MonoBehaviour, IMatrixCoordi
 {
+
+    public enum LabelUnit
+    {
+        Archer,
+        General,
+        Soldier,
+        Catapult
+    }
+
     //public GameObject controller;
     //private string player;
     //public Sprite unit_sheet_1_0;
@@ -15,6 +22,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public int x { get; set; }
     public int y { get; set; }
 
+    public LabelUnit labelUnit;
     public float CurrentHP;
     public float HP;
     public float Attack;
@@ -37,7 +45,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public bool canOccupiedHouse;
     public bool isGeneral;
 
-    private Queue<MatrixCoordi> queueMove;
+    private Queue<IMatrixCoordi> queueMove;
     private Vector3 vectorTo;
     private bool IsMoving;
     public Transform firePoint;
@@ -54,7 +62,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         isMove = true;
 
         //Delay time spawn smoke
-        InvokeRepeating("MoveEffect",0.2f,0.2f);
+        InvokeRepeating("MoveEffect", 0.2f, 0.2f);
         //ExpRequired to Lv2
         expRequired = 100;
 
@@ -66,7 +74,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void SetWordPositon() => transform.position = MapTile.GridWordPosition(x, y, -1);
     public Vector3 GetWordPositon() => MapTile.GridWordPosition(x, y, -1);
-    public void SetStackMove(Queue<MatrixCoordi> queue)
+    public void SetStackMove(Queue<IMatrixCoordi> queue)
     {
         queueMove = queue;
     }
@@ -77,14 +85,14 @@ public class Unit : MonoBehaviour, MatrixCoordi
         GameManager.Instance.UnitSelected = this;
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isMove)
         {
-            InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<MatrixCoordi> way) { MovePlateSpawn(x, y, way); };
+            InitiateMovePlatesDelegate dlg = delegate (int x, int y, Queue<IMatrixCoordi> way) { MovePlateSpawn(x, y, way); };
             InitiateMovePlates(dlg);
         }
         if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack)
         {
             InitiateAttackPlates();
         }
-        if(!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack == false && this.isMove == false)
+        if (!isEnemy && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player && this.isAttack == false && this.isMove == false)
         {
             DisableUnit();
         }
@@ -94,7 +102,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     {
 
     }
-    
+
     public static void DestroyAttackPlate()
     {
         GameObject[] attackPlates = GameObject.FindGameObjectsWithTag("AttackPlate");
@@ -116,7 +124,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     public void SetAttack()
     {
-        if (isAttack&& !(Math.Abs(x - this.x) + Math.Abs(y - this.y) <= Range)) isAttack = false;
+        if (isAttack && !(Math.Abs(x - this.x) + Math.Abs(y - this.y) <= Range)) isAttack = false;
     }
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
@@ -138,27 +146,27 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
 
 
-    public delegate void InitiateMovePlatesDelegate(int x, int y, Queue<MatrixCoordi> way);
+    public delegate void InitiateMovePlatesDelegate(int x, int y, Queue<IMatrixCoordi> way);
     /// <summary>
     /// Tìm đường và Spawn ô di chuyển
     /// </summary>
     public void InitiateMovePlates(InitiateMovePlatesDelegate impd)
     {
-        MatrixCoordi matrixCoordi;
+        IMatrixCoordi matrixCoordi;
         int cost;
-        Queue<Tuple<MatrixCoordi, int>> queue = new Queue<Tuple<MatrixCoordi, int>>();
-        ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>> wayDictionary = new ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>>();
+        Queue<Tuple<IMatrixCoordi, int>> queue = new Queue<Tuple<IMatrixCoordi, int>>();
+        ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int>> wayDictionary = new ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int>>();
 
-        queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], 0));
+        queue.Enqueue(new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[x, y], 0));
 
         while (queue.Count > 0)
         {
-            Tuple<MatrixCoordi, int> s = queue.Dequeue();
+            Tuple<IMatrixCoordi, int> s = queue.Dequeue();
             matrixCoordi = s.Item1; cost = s.Item2;
 
             if (cost > 0)
             {
-                GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<MatrixCoordi> way);
+                GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<IMatrixCoordi> way);
                 impd(matrixCoordi.x, matrixCoordi.y, way);
             }
 
@@ -174,8 +182,8 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
                 if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
                 {
-                    queue.Enqueue(new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[x, y], newCost));
-                    wayDictionary[tile] = new Tuple<MatrixCoordi, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
+                    queue.Enqueue(new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[x, y], newCost));
+                    wayDictionary[tile] = new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
                 }
             }
         }
@@ -183,17 +191,17 @@ public class Unit : MonoBehaviour, MatrixCoordi
     // tấn công
 
     // chiếm thành
-    public void GetQueueWay(ConcurrentDictionary<MatrixCoordi, Tuple<MatrixCoordi, int>> dictionnary, MatrixCoordi p, MatrixCoordi e, out Queue<MatrixCoordi> way)
+    public void GetQueueWay(ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int>> dictionnary, IMatrixCoordi p, IMatrixCoordi e, out Queue<IMatrixCoordi> way)
     {
         if (dictionnary.ContainsKey(p))
         {
             GetQueueWay(dictionnary, dictionnary[p].Item1, e, out way);
             way.Enqueue(p);
         }
-        else way = new Queue<MatrixCoordi>();
+        else way = new Queue<IMatrixCoordi>();
     }
 
-    public void MovePlateSpawn(int matrixX, int matrixY, Queue<MatrixCoordi> queue)
+    public void MovePlateSpawn(int matrixX, int matrixY, Queue<IMatrixCoordi> queue)
     {
         GameObject mp = Instantiate(AssetManage.i.movePlates, MapTile.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
@@ -215,7 +223,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         {
             if (!IsMoving)
             {
-                MatrixCoordi matrixCoordi = queueMove.Peek();
+                IMatrixCoordi matrixCoordi = queueMove.Peek();
                 vectorTo = MapTile.GridWordPosition(matrixCoordi.x, matrixCoordi.y, -1);
                 IsMoving = true;
             }
@@ -282,9 +290,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         }
     }
 
-    public void AttackToUnit(Unit unitTarget,out float damage)
+    public void AttackToUnit(Unit unitTarget, out float damage)
     {
-        damage = (float) Math.Round(Attack * (100f / (100 + unitTarget.Armor)));
+        damage = (float)Math.Round(Attack * (100f / (100 + unitTarget.Armor)));
         //unitTarget.TakeDame(damage);
         AddExp(damage);
         if (CheckDisable()) DisableUnit();
@@ -292,7 +300,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
 
     public void TakeDame(float damage)
     {
-        CurrentHP -= damage ;
+        CurrentHP -= damage;
         if (CurrentHP <= 0)
         {
             if (this.isEnemy)
@@ -306,7 +314,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
-            InvokeRepeating("Death",0.5f , 0.2f);
+            InvokeRepeating("Death", 0.5f, 0.2f);
         }
     }
 
@@ -331,7 +339,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     public void EnableUnit()
     {
         //isDisable = false;
-        isAttack = isMove = true;  
+        isAttack = isMove = true;
     }
     public void EnableColor()
     {
@@ -339,12 +347,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
         GetComponent<Animator>().enabled = true;
     }
     public void MoveEffect()
-    {     
-        
-        if(IsMoving)
-        {           
+    {
+
+        if (IsMoving)
+        {
             GameObject d = Instantiate(AssetManage.i.dust, DustPoint.position, DustPoint.rotation);
-            Destroy (d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+            Destroy(d, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
         }
     }
 
@@ -375,7 +383,12 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     public static void DisablePlate()
     {
-        DestroyAttackPlate(); 
+        DestroyAttackPlate();
         DestroyMovePlate();
+    }
+
+    public int Distance(IMatrixCoordi mc)
+    {
+        return Math.Abs(mc.x - x) + Math.Abs(mc.y - y);
     }
 }

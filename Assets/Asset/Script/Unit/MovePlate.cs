@@ -4,11 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovePlate : MonoBehaviour, MatrixCoordi
+public class MovePlate : MonoBehaviour, IMatrixCoordi
 {
     public GameObject controller;
     Unit reference = null;
-    private Queue<MatrixCoordi> queueWay;
+    private Queue<IMatrixCoordi> queueWay;
     public int x { get; set; }
     public int y { get; set; }
 
@@ -42,6 +42,6 @@ public class MovePlate : MonoBehaviour, MatrixCoordi
         this.y = y;
     }
     public void SetReference(Unit obj) => reference = obj;
-    public void SetStackWay(Queue<MatrixCoordi> queue) => queueWay = queue;
+    public void SetStackWay(Queue<IMatrixCoordi> queue) => queueWay = queue;
     public Unit GetReference() => reference;
 }
