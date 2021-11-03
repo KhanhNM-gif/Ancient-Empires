@@ -51,6 +51,9 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public Transform firePoint;
     public Transform DustPoint;
 
+    public ActUnit Act;
+    public bool isAct;
+
     public virtual void Start()
     {
         BaseArmor = Armor;
@@ -215,6 +218,10 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public virtual void Update()
     {
         UpdatePossion();
+        if (isAct)
+        {
+            Act.queueActs.Dequeue().Handle();
+        }
     }
 
     protected void UpdatePossion()
