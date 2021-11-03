@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-public class PlayerHandle
+public class PlayerHandle : MonoBehaviour
 {
     public int NumberUnitLimit { get; set; } = Const.PlayerHandle.NUMBER_UNIT_LIMIT; 
     public int NumberUnit { get => arrListUnit.Count; }
@@ -42,7 +43,12 @@ public class PlayerHandle
             {
                 float hp = item.CurrentHP += 20;
                 if(hp> item.HP) hp = item.HP;
-                item.CurrentHP = hp;
+                item.CurrentHP = hp;            
+                GameObject h = Instantiate(AssetManage.i.Heal, item.firePoint.position, Quaternion.identity);
+                Destroy(h, h.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+                GameObject heal = Instantiate(AssetManage.i.HealUp, item.firePoint.position, Quaternion.identity);
+                Destroy(heal, heal.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+
             }
 
         }
