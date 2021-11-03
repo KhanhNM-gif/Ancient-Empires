@@ -10,32 +10,30 @@ public class Castle : BaseTile
     // Start is called before the first frame update
     void Start()
     {
-        if(x==4 && y==4)
-            {
-            changeOwner(1);
-        }
-        if(x==10 && y==9)
-        {
-            changeOwner(2);
-        }
     }
 
 
     public void changeOwner(int owner)
     {
-        if (isOwnerBy == 0)
+        if(isOwnerBy != 0)
         {
-            isOwnerBy = owner;
-            switch (isOwnerBy)
-            {
-                case 1:
-                    this.GetComponent<SpriteRenderer>().sprite = sprites[0];
-                    break;
-                case 2:
-                    this.GetComponent<SpriteRenderer>().sprite = sprites[2];
-                    break;
-            }
+            if (isOwnerBy == 1 && owner == 2) GameManager.Instance.player.CountOccupiedCastle--;
+            if (isOwnerBy == 2 && owner == 1) GameManager.Instance.bot.CountOccupiedCastle--;
         }
+
+        isOwnerBy = owner;
+        switch (isOwnerBy)
+        {
+            case 1:
+                GameManager.Instance.player.CountOccupiedCastle++;
+                this.GetComponent<SpriteRenderer>().sprite = sprites[0];
+                break;
+            case 2:
+                GameManager.Instance.bot.CountOccupiedCastle++;
+                this.GetComponent<SpriteRenderer>().sprite = sprites[2];
+                break;
+        }
+        GameManager.Instance.EndGame();
 
     }
     void Update()

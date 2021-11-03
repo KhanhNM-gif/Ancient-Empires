@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+
+    [SerializeField] public GameObject EndGameUI;
+    [SerializeField] public Button ButtonNewGame;
+    [SerializeField] public Button ButtonPause;
+    [SerializeField] public GameObject SkipTurn;
     public GameObject pnStatus;
     public Slider healthBar;
     public Text HPText;
@@ -45,5 +51,36 @@ public class UIManager : MonoBehaviour
     public void UpdateGold(int gold)
     {
         Gold.text = gold +"";
+    }
+
+    public void ShowEndGame(bool win)
+    {
+
+        if (win)
+        {
+            ButtonNewGame.onClick.AddListener(() => {
+                NextLevel();
+            });
+        }
+        else
+        {
+            ButtonNewGame.onClick.AddListener(() => {
+                ReStartGame();
+            });
+        }
+        ButtonPause.gameObject.SetActive(false);
+        SkipTurn.SetActive(false);
+        pnStatus.SetActive(false);
+        EndGameUI.SetActive(true);
+    }
+
+    private void ReStartGame()
+    {
+        SceneManager.LoadScene(GameManager.Instance.MapName);
+    }
+
+    private void NextLevel()
+    {
+        SceneManager.LoadScene(GameManager.Instance.MapName);
     }
 }

@@ -35,4 +35,9 @@ public class SkipTurn : MonoBehaviour
         yield return new WaitForSeconds(time);
         pnNotification.SetActive(false);
     }
+
+    public void HideNotification()
+    {
+        pnNotification.SetActive(false);
+    }
 }

@@ -269,6 +269,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
             if (MapManager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
             {
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
                 ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
                 if (playerOccupied)
                 {
@@ -278,11 +279,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 {
                     GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
                 }
-
-                SkipTurn.Instance.Notification_Show("Occupied Castle");
             }
             else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
             {
+                SkipTurn.Instance.Notification_Show("Occupied House");
                 ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
                 if (playerOccupied)
                 {
@@ -292,7 +292,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 {
                     GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
                 }
-                SkipTurn.Instance.Notification_Show("Occupied House");
             }
         }
     }
@@ -312,12 +311,20 @@ public class Unit : MonoBehaviour, MatrixCoordi
         {
             if (this.isEnemy)
             {
-                if (isGeneral) GameManager.Instance.bot.hasGeneral = false;
+                if (isGeneral)
+                {
+                    GameManager.Instance.bot.hasGeneral = false;
+                    GameManager.Instance.EndGame();
+                }
                 GameManager.Instance.bot.arrListUnit.Remove(this);
             }
             else
             {
-                if (isGeneral) GameManager.Instance.player.hasGeneral = false;
+                if (isGeneral)
+                {
+                    GameManager.Instance.player.hasGeneral = false;
+                    GameManager.Instance.EndGame();
+                }
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
@@ -333,7 +340,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     private bool CheckDisable() => !isAttack && !isMove;
 
-    private void DisableUnit()
+    public void DisableUnit()
     {
         isDisable = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);

@@ -20,8 +20,7 @@ public class PlayerHandle
     {
         Gold = gold;
         GoldPerTurn = goldPerTurn;
-        //BinhBH todo khi spawn tuong thi can set lai thanh true
-        hasGeneral = false;
+
     }
     public bool CheckLimitUnit() => NumberUnit < NumberUnitLimit;
     public virtual void StartTurn()
@@ -36,6 +35,10 @@ public class PlayerHandle
             item.SetIsMove(true);
             item.EnableUnit();
             item.EnableColor();
+            if (item.isGeneral)
+            {
+                hasGeneral = item.isGeneral;
+            }
 
             //BinhBH Hoi mau cho tuong trong thanh hoac nha.
             if (MapManager.map.arrTile[item.x, item.y].IsCastle || MapManager.map.arrTile[item.x, item.y].IsHouse)
