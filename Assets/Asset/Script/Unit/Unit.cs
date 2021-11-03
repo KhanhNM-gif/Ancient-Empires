@@ -49,7 +49,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
         MapManager.map.arrTile[x, y].MoveAble = false;
         MapManager.map.arrTile[x, y].AttackAble = false;
 
-        isAttack = false;
+        isAttack = true;
         isMove = true;
 
         //Delay time spawn smoke
@@ -115,7 +115,18 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     public void SetAttack()
     {
-        if (isAttack&& !(Math.Abs(x - this.x) + Math.Abs(y - this.y) <= Range)) isAttack = false;
+        if (isAttack)
+        {
+            foreach (var item in GameManager.Instance.bot.arrListUnit)
+            {
+                if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
+                {
+                    return;
+                }
+            }
+            isAttack = false;
+        }
+        
     }
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
