@@ -115,7 +115,18 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     public void SetAttack()
     {
-        if (isAttack&& !(Math.Abs(x - this.x) + Math.Abs(y - this.y) <= Range)) isAttack = false;
+        if (isAttack)
+        {
+            foreach (var item in GameManager.Instance.bot.arrListUnit)
+            {
+                if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
+                {
+                    return;
+                }
+            }
+            isAttack = false;
+        }
+        
     }
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
@@ -360,9 +371,9 @@ public class Unit : MonoBehaviour, MatrixCoordi
         Attack += 5;
         Armor += 2;
         expRequired = 1.25f * expRequired;
-        GameObject f = Instantiate(Flame, DustPoint.position , DustPoint.rotation);
+        GameObject f = Instantiate(AssetManage.i.Flame, DustPoint.position , DustPoint.rotation);
         Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
-        GameObject l = Instantiate(LeverUp, firePoint.position , firePoint.rotation);
+        GameObject l = Instantiate(AssetManage.i.LeverUp, firePoint.position , firePoint.rotation);
         Destroy (l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 

@@ -11,7 +11,9 @@ public class AssetManage : MonoBehaviour
     public GameObject dust;
     public GameObject Explo;
     public GameObject LeverUp;
+    public GameObject Flame;
     public GameObject Heal;
+    public GameObject HealUp;
     public static AssetManage i;
 
     // Start is called before the first frame update
