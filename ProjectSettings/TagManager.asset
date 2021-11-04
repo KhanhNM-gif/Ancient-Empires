@@ -45,9 +45,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: 
-    uniqueID: 956345351
-    locked: 0
-  - name: Soldier
+  - name: Unit
     uniqueID: 58218535
+    locked: 0
+  - name: Effect
+    uniqueID: 956345351
     locked: 0
