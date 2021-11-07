@@ -29,7 +29,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
     private float expRequired;
     //float time = 0;
     public bool isEnemy;
-
     private bool isAttack;
     private bool isMove;
     //private bool isDisable;
@@ -122,7 +121,18 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     public void SetAttack()
     {
-        if (isAttack&& !(Math.Abs(x - this.x) + Math.Abs(y - this.y) <= Range)) isAttack = false;
+        if (isAttack)
+        {
+            foreach (var item in GameManager.Instance.bot.arrListUnit)
+            {
+                if (Math.Abs(x - item.x) + Math.Abs(y - item.y) <= Range)
+                {
+                    return;
+                }
+            }
+            isAttack = false;
+        }
+        
     }
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
@@ -339,6 +349,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
             bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
             if (MapManager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
             {
+                SkipTurn.Instance.Notification_Show("Occupied Castle");
                 ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
                 if (playerOccupied)
                 {
@@ -348,11 +359,10 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 {
                     GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
                 }
-
-                SkipTurn.Instance.Notification_Show("Occupied Castle");
             }
             else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
             {
+                SkipTurn.Instance.Notification_Show("Occupied House");
                 ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
                 if (playerOccupied)
                 {
@@ -362,7 +372,6 @@ public class Unit : MonoBehaviour, MatrixCoordi
                 {
                     GameManager.Instance.bot.listOccupied.Add(MapManager.map.arrTile[x, y]);
                 }
-                SkipTurn.Instance.Notification_Show("Occupied House");
             }
         }
 
@@ -447,12 +456,20 @@ public class Unit : MonoBehaviour, MatrixCoordi
         {
             if (this.isEnemy)
             {
-                if (isGeneral) GameManager.Instance.bot.hasGeneral = false;
+                if (isGeneral)
+                {
+                    GameManager.Instance.bot.hasGeneral = false;
+                    GameManager.Instance.EndGame();
+                }
                 GameManager.Instance.bot.arrListUnit.Remove(this);
             }
             else
             {
-                if (isGeneral) GameManager.Instance.player.hasGeneral = false;
+                if (isGeneral)
+                {
+                    GameManager.Instance.player.hasGeneral = false;
+                    GameManager.Instance.EndGame();
+                }
                 GameManager.Instance.player.arrListUnit.Remove(this);
             }
             MapManager.map.arrTile[this.x, this.y].MoveAble = true;
@@ -475,7 +492,7 @@ public class Unit : MonoBehaviour, MatrixCoordi
     }
     private bool CheckDisable() => !isAttack && !isMove;
 
-    private void DisableUnit()
+    public void DisableUnit()
     {
         //isDisable = true;
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);
@@ -513,6 +530,11 @@ public class Unit : MonoBehaviour, MatrixCoordi
         expRequired = 1.25f * expRequired;
         Attack += 5;
         Armor += 2;
+        expRequired = 1.25f * expRequired;
+        GameObject f = Instantiate(AssetManage.i.Flame, DustPoint.position , DustPoint.rotation);
+        Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        GameObject l = Instantiate(AssetManage.i.LeverUp, firePoint.position , firePoint.rotation);
+        Destroy (l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
     void Exp()

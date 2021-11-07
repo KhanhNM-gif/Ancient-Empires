@@ -118,19 +118,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1acb62fac491492478a2176a0bab0483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHP: 200
+  CurrentHP: 100
   HP: 200
   Attack: 15
   Armor: 30
+  BaseArmor: 0
   Range: 1
+  BaseRange: 0
   Move: 4
   MoveSpeed: 4
   Lv: 0
   isEnemy: 0
-  movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
-  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
-  dust: {fileID: 638546194192704375, guid: 131cb42beccb50d47a615112fa035359, type: 3}
-  Explo: {fileID: 4416846523397566388, guid: 610300a4afee84048a89df0f009f72b4, type: 3}
   canOccupiedCastle: 0
   canOccupiedHouse: 0
   isGeneral: 0
@@ -187,7 +185,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7323917880967741658}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.000000014901161, z: 0}
+  m_LocalPosition: {x: 0, y: -0.000000014901161, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7287003030443988778}
@@ -217,7 +215,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7516971575630690665}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.4, z: 0}
+  m_LocalPosition: {x: 0, y: -0.4, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7287003030443988778}
