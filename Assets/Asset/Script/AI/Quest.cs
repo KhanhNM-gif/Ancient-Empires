@@ -37,7 +37,7 @@ public class TileDistance
         this.distance = distance;
     }
 }
-public class Quest
+public class QuestBot
 {
     //public List<Quest> ltChildQuest;
     public eTypeQuest TypeQuest;
@@ -48,7 +48,7 @@ public class Quest
     public List<UnitDistanst> ltUnitBot;
     public float feasibility;
 
-    public Quest()
+    public QuestBot()
     {
 
     }
@@ -63,7 +63,7 @@ public class Quest
 
 public class QuestManage
 {
-    List<Quest> ltQuest;
+    List<QuestBot> ltQuest;
 
 
     public void Handle2()
@@ -103,7 +103,7 @@ public class QuestManage
 
         foreach (var item in listHouse)
         {
-            Quest quest = new Quest();
+            QuestBot quest = new QuestBot();
             AddToListTile(item, listTileBot, quest.ltConstructionBot);
             AddToListTile(item, listTilePlayer, quest.ltConstructionPlayer);
 

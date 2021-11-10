@@ -95,6 +95,8 @@ public class MapManager : MonoBehaviour
                 cloneHouse.y = j;
                 cloneHouse.name = $"tile({i},{j})";
 
+                map.houses.Add(cloneHouse);
+
                 map.arrTile[i, j] = cloneHouse;
                 break;
             case "05":// thanh chinh
@@ -102,6 +104,8 @@ public class MapManager : MonoBehaviour
                 cloneCastle.x = i;
                 cloneCastle.y = j;
                 cloneCastle.name = $"tile({i},{j})";
+
+                map.castles.Add(cloneCastle);
 
                 map.arrTile[i, j] = cloneCastle;
                 break;

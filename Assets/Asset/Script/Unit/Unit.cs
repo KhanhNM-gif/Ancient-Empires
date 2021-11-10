@@ -2,6 +2,7 @@ using Assets.Asset.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Unit : MonoBehaviour, IMatrixCoordi
@@ -39,7 +40,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public bool isEnemy;
 
     private bool isAttack;
-    private bool isMove;
+    public bool isMove;
     //private bool isDisable;
     public bool canOccupiedCastle;
     public bool canOccupiedHouse;
@@ -53,6 +54,10 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
     public ActUnit Act;
     public bool isAct;
+
+    public Unit UnitTarget;
+    public House HouseTarget;
+    public Castle CastleTarget;
 
     public virtual void Start()
     {
@@ -191,6 +196,51 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             }
         }
     }
+    public void GetListMovePlates(out List<MovePlate> outList)
+    {
+        IMatrixCoordi matrixCoordi;
+        int cost;
+        outList = new List<MovePlate>();
+        Queue<Tuple<IMatrixCoordi, int>> queue = new Queue<Tuple<IMatrixCoordi, int>>();
+        ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int>> wayDictionary = new ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int>>();
+
+        queue.Enqueue(new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[x, y], 0));
+
+        while (queue.Count > 0)
+        {
+            Tuple<IMatrixCoordi, int> s = queue.Dequeue();
+            matrixCoordi = s.Item1; cost = s.Item2;
+
+            if (cost > 0)
+            {
+                GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<IMatrixCoordi> way);
+
+                MovePlate movePlate = new MovePlate();
+                movePlate.SetReference(this);
+                movePlate.SetCoords(matrixCoordi.x, matrixCoordi.y);
+                movePlate.SetStackWay(way);
+
+                outList.Add(movePlate);
+            }
+
+            foreach (var item in Const.Unit.STEP_MOVE)
+            {
+                int x = matrixCoordi.x + item.Item1;
+                int y = matrixCoordi.y + item.Item2;
+
+                if (x >= MapManager.map.Width || x < 0 || y >= MapManager.map.Height || y < 0) continue;
+
+                int newCost = cost + MapManager.map.arrTile[x, y].MoveRange;
+                BaseTile tile = MapManager.map.arrTile[x, y];
+
+                if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
+                {
+                    queue.Enqueue(new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[x, y], newCost));
+                    wayDictionary[tile] = new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
+                }
+            }
+        }
+    }
     // tấn công
 
     // chiếm thành
@@ -254,6 +304,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 Range = BaseRange + MapManager.map.arrTile[x, y].ShootingRange;
                 UIManager.Instance.UpdateStatus(this);
                 if (CheckDisable()) DisableUnit();
+                GameManager.Instance.bot.rest = true;
             }
         }
     }
@@ -269,7 +320,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             bool playerOccupied = GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player;
             if (MapManager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
             {
-                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 2);
                 if (playerOccupied)
                 {
                     GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
@@ -283,7 +334,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             }
             else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
             {
-                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 2);
                 if (playerOccupied)
                 {
                     GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
@@ -397,5 +448,92 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public int Distance(IMatrixCoordi mc)
     {
         return Math.Abs(mc.x - x) + Math.Abs(mc.y - y);
+    }
+
+    public void SetTagetBot()
+    {
+        this.UnitTarget = null;
+        this.HouseTarget = null;
+        this.CastleTarget = null;
+        int minDis = 99;
+        foreach (var enemy in GameManager.Instance.player.arrListUnit)
+        {
+            int d = Math.Abs(enemy.x - this.x) + Math.Abs(enemy.y - this.y) - this.Range;
+            if (d < minDis)
+            {
+                minDis = d;
+                this.UnitTarget = enemy;
+            }
+        }
+
+        minDis = 99;
+        if (this.canOccupiedHouse)
+        {
+            foreach (var houses in MapManager.map.houses)
+            {
+                if (houses.isOwnerBy != 2)
+                {
+                    int d = Math.Abs(houses.x - this.x) + Math.Abs(houses.y - this.y);
+                    if (d < minDis)
+                    {
+                        minDis = d;
+                        this.HouseTarget = houses;
+                    }
+                }
+            }
+        }
+
+        minDis = 99;
+        if (this.canOccupiedCastle)
+        {
+            foreach (var castle in MapManager.map.castles)
+            {
+                if (castle.isOwnerBy != 2)
+                {
+                    int d = Math.Abs(castle.x - this.x) + Math.Abs(castle.y - this.y);
+                    if (d < minDis)
+                    {
+                        minDis = d;
+                        this.CastleTarget = castle;
+                    }
+                }
+            }
+        }
+
+        void Dijkstra(BaseTile baseTileFinish)
+        {
+            ConcurrentDictionary<BaseTile, Tuple<int, int>> dic = new ConcurrentDictionary<BaseTile, Tuple<int, int>>();
+            int cost;
+            LinkedList<Tuple<BaseTile, int>> queue = new LinkedList<Tuple<BaseTile, int>>();
+            ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int>> wayDictionary = new ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int>>();
+
+            queue.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[x, y], 0));
+            IMatrixCoordi matrixCoordi;
+
+            while (queue.Count > 0)
+            {
+                Tuple<BaseTile, int> s = queue.First();
+                matrixCoordi = s.Item1; cost = s.Item2;
+
+                foreach (var item in Const.Unit.STEP_MOVE)
+                {
+                    int x = matrixCoordi.x + item.Item1;
+                    int y = matrixCoordi.y + item.Item2;
+
+                    if (x >= MapManager.map.Width || x < 0 || y >= MapManager.map.Height || y < 0) continue;
+
+                    int newCost = cost + MapManager.map.arrTile[x, y].MoveRange;
+                    BaseTile tile = MapManager.map.arrTile[x, y];
+
+                    queue = new LinkedList<Tuple<BaseTile, int>>(queue.OrderBy(x => dic[x.Item1].Item1 + dic[x.Item1].Item2).ToArray());
+
+                    if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
+                    {
+                        queue.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[x, y], newCost));
+                        wayDictionary[tile] = new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
+                    }
+                }
+            }
+        }
     }
 }

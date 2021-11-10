@@ -5,7 +5,7 @@
         int x { get; set; }
         int y { get; set; }
 
-        public int Distance(IMatrixCoordi mc);
+        //public int Distance(IMatrixCoordi mc);
     }
 
 }

@@ -8,13 +8,18 @@ public class MovePlate : MonoBehaviour, IMatrixCoordi
 {
     public GameObject controller;
     Unit reference = null;
-    private Queue<IMatrixCoordi> queueWay;
+    public Queue<IMatrixCoordi> queueWay;
     public int x { get; set; }
     public int y { get; set; }
 
     public void Start() { }
 
     public void OnMouseDown()
+    {
+        Click();
+    }
+
+    public void Click()
     {
         //BinhBh khi di chuyen den thi set vi tri day khong di chuyen dc nua de nhung unit khac khong di vao dc
         //Khi di ra thi set co the di chuyen dc
@@ -27,8 +32,6 @@ public class MovePlate : MonoBehaviour, IMatrixCoordi
         reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
         reference.SetAttack();
         Unit.DisablePlate();
-
-        
     }
 
     /// <summary>

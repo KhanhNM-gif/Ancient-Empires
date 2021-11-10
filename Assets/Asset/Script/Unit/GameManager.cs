@@ -1,4 +1,5 @@
 using Assets.Asset.Model;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ public class GameManager : MonoBehaviour
     }
 
     private ConcurrentDictionary<string, GameObject> UnitDictionary;
-
+    public bool block;
     private Unit[,] PositionUnit = new Unit[100, 100];
     //private List<Unit> arrListUnit = new List<Unit>();
     public Bot bot { get; set; }
@@ -23,6 +24,9 @@ public class GameManager : MonoBehaviour
     public Unit UnitSelected;
     public static Shop shop;
     public static eStatus Status = eStatus.Turn_Player;
+    public Queue<Unit> queue;
+
+
 
     //x=4-tầm đánh y=4-tầm đánh x4+tầm đánh y=4+tầm đánh  |xi-x||yi-y+|<=tầm đánh
 
@@ -80,24 +84,19 @@ public class GameManager : MonoBehaviour
     }
 
     public void EndTurn()
-    {   
+    {
         foreach (var item in player.arrListUnit)
         {
             item.EnableColor();
         }
         Unit.DisablePlate();
-        StartCoroutine(SetWaitForSeconds(3));
+        block = false;
     }
-    IEnumerator SetWaitForSeconds(float time)
-    {
-        yield return new WaitForSeconds(time);
-        SetStatus(eStatus.Turn_Player);
-        StartTurn();
-        SkipTurn.Instance.Notification_Show("Your turn");
-    }
+
 
     public void StartTurn()
     {
+        Status = eStatus.Turn_Player;
         bot.StartTurn();
         player.StartTurn();
     }
@@ -111,7 +110,7 @@ public class GameManager : MonoBehaviour
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
     }
-    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y,bool isEnemy)
+    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y, bool isEnemy)
     {
         if (playerHandle.CheckLimitUnit())
         {
@@ -138,5 +137,65 @@ public class GameManager : MonoBehaviour
 
     public Unit GetPosition(int x, int y) => PositionUnit[x, y];
 
-    void Update() { }
+    void Update()
+    {
+        if (Status == eStatus.Turn_Bot && bot.rest && !block)
+        {
+            block = true;
+            queue = new Queue<Unit>();
+            if (!bot.arrListUnit.Exists(x => x.isMove == true))
+            {
+                StartTurn();
+                return;
+            }
+
+            foreach (var item in bot.arrListUnit)
+            {
+                if (!item.isMove) continue;
+                item.GetListMovePlates(out List<MovePlate> outlt);
+                item.SetTagetBot();
+                float pointMax = -99;
+                float point;
+                MovePlate movePlateBest = new MovePlate();
+                foreach (var platemove in outlt)
+                {
+                    int d1 = 0, d2 = 0, d3 = 0;
+
+                    if (item.UnitTarget != null)
+                    {
+                        d1 = Math.Abs(item.UnitTarget.x - platemove.x) + Math.Abs(item.UnitTarget.y - platemove.y) - item.Range;
+                    }
+                    if (item.HouseTarget != null)
+                    {
+                        d2 = Math.Abs(item.HouseTarget.x - platemove.x) + Math.Abs(item.HouseTarget.y - platemove.y);
+                    }
+                    if (item.CastleTarget != null)
+                    {
+                        d3 = Math.Abs(item.CastleTarget.x - platemove.x) + Math.Abs(item.CastleTarget.y - platemove.y);
+                    }
+
+                    point = d1 <= 0 ? (10 + d1) : (10 - d1) + d2 == 0 ? 20 : (20 - (int)Math.Ceiling((double)d2 / item.Move) * 5);
+                    //+ d3 == 0 ? 30 : (15 - d3 / item.Move * 5);
+                    if (point > pointMax)
+                    {
+                        pointMax = point;
+                        movePlateBest = platemove;
+                    }
+                }
+
+                bot.rest = false;
+                item.isMove = false;
+                movePlateBest.Click();
+                block = false;
+                return;
+            }
+        }
+    }
+}
+
+class SX
+{
+    public MovePlate movePlate { get; set; }
+    public int cost { get; set; }
+    public int MinDestinationFinish { get; set; }
 }

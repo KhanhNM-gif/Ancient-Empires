@@ -11,7 +11,12 @@ public class MapTile
         Width = width;
         Height = height;
         arrTile = new BaseTile[width + 1, height + 1];
+
+        castles = new List<Castle>();
+        houses = new List<House>();
     }
+    public List<Castle> castles { get; set; }
+    public List<House> houses { get; set; }
 
     public static Vector3 GridWordPosition(int x, int y, int z = 0)
     {
