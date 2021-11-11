@@ -1,9 +1,6 @@
-using Assets.Asset.Model;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -167,11 +164,11 @@ public class GameManager : MonoBehaviour
                     }
                     if (item.HouseTarget != null)
                     {
-                        d2 = Math.Abs(item.HouseTarget.x - platemove.x) + Math.Abs(item.HouseTarget.y - platemove.y);
+                        d2 = item.Dijkstra(platemove, item.HouseTarget);
                     }
                     if (item.CastleTarget != null)
                     {
-                        d3 = Math.Abs(item.CastleTarget.x - platemove.x) + Math.Abs(item.CastleTarget.y - platemove.y);
+                        d3 = item.Dijkstra(platemove, item.HouseTarget);
                     }
 
                     point = d1 <= 0 ? (10 + d1) : (10 - d1) + d2 == 0 ? 20 : (20 - (int)Math.Ceiling((double)d2 / item.Move) * 5);

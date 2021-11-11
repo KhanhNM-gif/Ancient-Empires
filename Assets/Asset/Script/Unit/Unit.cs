@@ -499,41 +499,60 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 }
             }
         }
+    }
 
-        void Dijkstra(BaseTile baseTileFinish)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="baseTileFinish"></param>
+    public int Dijkstra(IMatrixCoordi nextCoordi, BaseTile baseTileFinish)
+    {
+        LinkedList<Tuple<BaseTile, int>> linkedList = new LinkedList<Tuple<BaseTile, int>>();
+        ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int, int>> wayDictionary = new ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int, int>>();
+
+        linkedList.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[nextCoordi.x, nextCoordi.y], 0));
+        IMatrixCoordi matrixCoordi;
+
+        int cost;
+
+        while (linkedList.Count > 0)
         {
-            ConcurrentDictionary<BaseTile, Tuple<int, int>> dic = new ConcurrentDictionary<BaseTile, Tuple<int, int>>();
-            int cost;
-            LinkedList<Tuple<BaseTile, int>> queue = new LinkedList<Tuple<BaseTile, int>>();
-            ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int>> wayDictionary = new ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int>>();
+            Tuple<BaseTile, int> s = linkedList.First();
+            linkedList.RemoveFirst();
 
-            queue.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[x, y], 0));
-            IMatrixCoordi matrixCoordi;
+            matrixCoordi = s.Item1; cost = s.Item2;
 
-            while (queue.Count > 0)
+            if (s.Item1.Equals(baseTileFinish)) return cost;
+
+            foreach (var item in Const.Unit.STEP_MOVE)
             {
-                Tuple<BaseTile, int> s = queue.First();
-                matrixCoordi = s.Item1; cost = s.Item2;
+                int x = matrixCoordi.x + item.Item1;
+                int y = matrixCoordi.y + item.Item2;
 
-                foreach (var item in Const.Unit.STEP_MOVE)
+                if (x >= MapManager.map.Width || x < 0 || y >= MapManager.map.Height || y < 0) continue;
+
+                int newCost = cost + MapManager.map.arrTile[x, y].MoveRange;
+                int minCostFinish = newCost + Math.Abs(x - baseTileFinish.x) + Math.Abs(y - baseTileFinish.y);
+                BaseTile tile = MapManager.map.arrTile[x, y];
+
+                if (!(x == nextCoordi.x && y == nextCoordi.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item3 > minCostFinish) && tile.MoveAble)//Check dk ra khoi map
                 {
-                    int x = matrixCoordi.x + item.Item1;
-                    int y = matrixCoordi.y + item.Item2;
-
-                    if (x >= MapManager.map.Width || x < 0 || y >= MapManager.map.Height || y < 0) continue;
-
-                    int newCost = cost + MapManager.map.arrTile[x, y].MoveRange;
-                    BaseTile tile = MapManager.map.arrTile[x, y];
-
-                    queue = new LinkedList<Tuple<BaseTile, int>>(queue.OrderBy(x => dic[x.Item1].Item1 + dic[x.Item1].Item2).ToArray());
-
-                    if (newCost <= this.Move && !(x == this.x && y == this.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item2 > newCost) && tile.MoveAble)//Check dk ra khoi map
-                    {
-                        queue.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[x, y], newCost));
-                        wayDictionary[tile] = new Tuple<IMatrixCoordi, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost);
-                    }
+                    linkedList.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[x, y], newCost));
+                    wayDictionary[tile] = new Tuple<IMatrixCoordi, int, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost, minCostFinish);
                 }
             }
+
+            try
+            {
+                linkedList = new LinkedList<Tuple<BaseTile, int>>(linkedList.OrderBy(x => wayDictionary[x.Item1].Item3).ToArray());
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
         }
+
+        return 99;
+
     }
 }
