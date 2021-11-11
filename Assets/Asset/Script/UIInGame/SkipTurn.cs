@@ -21,7 +21,7 @@ public class SkipTurn : MonoBehaviour
         btn_SkipTurn.SetActive(false);
         Notification_Show("Enemy turn");
         GameManager.Instance.EndTurn();
-        UIManager.Instance.SetActivePnStatus(false); 
+        UIManager.Instance.SetActivePnStatus(false);
     }
     public void Notification_Show(string msg)
     {
@@ -33,6 +33,11 @@ public class SkipTurn : MonoBehaviour
     IEnumerator WaitForSeconds(GameObject obj, float time)
     {
         yield return new WaitForSeconds(time);
+        pnNotification.SetActive(false);
+    }
+
+    public void HideNotification()
+    {
         pnNotification.SetActive(false);
     }
 }

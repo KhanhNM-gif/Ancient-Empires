@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public Queue<Unit> queue;
 
 
+    public string MapName;
 
     //x=4-tầm đánh y=4-tầm đánh x4+tầm đánh y=4+tầm đánh  |xi-x||yi-y+|<=tầm đánh
 
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MapName = "MoveMap";
         UnitDictionary = new ConcurrentDictionary<string, GameObject>();
 
         GameObject[] arrUnit = Resources.LoadAll<GameObject>(@"ObjectGame/Unit");
@@ -43,13 +45,25 @@ public class GameManager : MonoBehaviour
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200);
         player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3, false));
+        player.hasGeneral = true;
         player.arrListUnit.Add(Create(Const.NameUnit.BLUE_SOLDIER, 2, 3, false));
         foreach (var item in player.arrListUnit) SetPosition(item);
 
         bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200);
         bot.arrListUnit.Add(Create(Const.NameUnit.RED_GENERAL, 8, 8, true));
+        bot.hasGeneral = true;
         bot.arrListUnit.Add(Create(Const.NameUnit.RED_SOLDIER, 6, 8, true));
         foreach (var item in bot.arrListUnit) SetPosition(item);
+
+
+        if (MapManager.map.arrTile[4, 4].IsCastle)
+        {
+            ((Castle)MapManager.map.arrTile[4, 4]).changeOwner(1);
+        }
+        if (MapManager.map.arrTile[4, 4].IsCastle)
+        {
+            ((Castle)MapManager.map.arrTile[10, 9]).changeOwner(2);
+        }
     }
     public Unit Create(string name, int x, int y, bool isEnemy)
     {
@@ -60,6 +74,10 @@ public class GameManager : MonoBehaviour
             GameObject obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
             Unit un = obj.GetComponent<Unit>();
             un.name = name;
+            if (name.Contains("General"))
+            {
+                un.isGeneral = true;
+            }
             un.x = x;
             un.y = y;
             un.isEnemy = isEnemy;
@@ -112,8 +130,13 @@ public class GameManager : MonoBehaviour
         if (playerHandle.CheckLimitUnit())
         {
             Unit newUnit = Create(name, x, y, isEnemy);
+            if (newUnit.isGeneral)
+            {
+                player.hasGeneral = true;
+            }
             playerHandle.AddUnit(newUnit);
-            SetPosition(newUnit);
+            if (newUnit)
+                SetPosition(newUnit);
             return true;
         }
         else
@@ -187,6 +210,28 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
+    }
+    
+    public void EndGame()
+    {
+        if (!player.hasGeneral && player.CountOccupiedCastle == 0)
+        {
+            UIManager.Instance.ShowEndGame(false);
+            DisableAll();
+        }
+        else if (!bot.hasGeneral && bot.CountOccupiedCastle == 0)
+        {
+            UIManager.Instance.ShowEndGame(true);
+            DisableAll();
+        }
+    }
+
+    private void DisableAll()
+    {
+        foreach (var item in bot.arrListUnit) item.DisableUnit();
+        foreach (var item in player.arrListUnit) item.DisableUnit();
+        Unit.DisablePlate();
+        SkipTurn.Instance.HideNotification();
     }
 }
 

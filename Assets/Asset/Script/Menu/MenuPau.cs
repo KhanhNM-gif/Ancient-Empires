@@ -6,8 +6,6 @@ public class MenuPau : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private bool isPause;
-    [SerializeField] private GameObject ruleUI;
-    [SerializeField] private bool isOpen;
 
     private void Update()
     {
@@ -17,17 +15,6 @@ public class MenuPau : MonoBehaviour
         }
         else {
             DeactivateMenu();
-        }
-    }
-    private void Start()
-    {
-        if (isOpen)
-        {
-            ActiveRuleUI();
-        }
-        else
-        {
-            DeactiveRuleUI();
         }
     }
     public void ActivateMenu()
@@ -43,20 +30,5 @@ public class MenuPau : MonoBehaviour
         AudioListener.pause = false;
         pauseMenuUI.SetActive(false);
         isPause = false;
-    }
-    public void ActiveRuleUI()
-    {
-        ruleUI.SetActive(true);
-        pauseMenuUI.SetActive(false);
-        isOpen = false;
-        isPause = false;
-    }
-    public void DeactiveRuleUI()
-    {
-        ruleUI.SetActive(false);
-        pauseMenuUI.SetActive(false);
-        isOpen = false;
-        isPause = false;
-
     }
 }
