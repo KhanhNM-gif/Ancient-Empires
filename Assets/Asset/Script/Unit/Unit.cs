@@ -22,7 +22,6 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
     public int x { get; set; }
     public int y { get; set; }
-
     public LabelUnit labelUnit;
     public float CurrentHP;
     public float HP;
@@ -51,12 +50,15 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public Transform firePoint;
     public Transform DustPoint;
 
-    public ActUnit Act;
-    public bool isAct;
+    private Queue<IPlateAction> actions;
+    private bool isActions;
+
 
     public Unit UnitTarget;
     public House HouseTarget;
     public Castle CastleTarget;
+
+    public bool isBlockAnimation;
 
     public virtual void Start()
     {
@@ -84,6 +86,10 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public void SetStackMove(Queue<IMatrixCoordi> queue)
     {
         queueMove = queue;
+    }
+    public void SetIPlateAction(Queue<IPlateAction> queue)
+    {
+        actions = queue;
     }
 
     private void OnMouseDown()
@@ -142,7 +148,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             }
             isAttack = false;
         }
-        
+
     }
 
     public void AttackPlateSpawn(int matrixX, int matrixY, Unit unit)
@@ -150,7 +156,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
         GameObject mp = Instantiate(AssetManage.i.attackPlates, MapTile.GridWordPosition(matrixX, matrixY, -2), Quaternion.identity);
 
         AttackPlate apScript = mp.GetComponent<AttackPlate>();
-        apScript.SetReference(this);
+        apScript.reference = this;
         apScript.SetCoords(matrixX, matrixY);
         apScript.SetTarget(unit);
         apScript.name = $"MovePlate({matrixX},{matrixY})";
@@ -226,7 +232,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 GetQueueWay(wayDictionary, matrixCoordi, MapManager.map.arrTile[x, y], out Queue<IMatrixCoordi> way);
 
                 MovePlate movePlate = new MovePlate();
-                movePlate.SetReference(this);
+                movePlate.reference = this;
                 movePlate.SetCoords(matrixCoordi.x, matrixCoordi.y);
                 movePlate.SetStackWay(way);
 
@@ -269,7 +275,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
         GameObject mp = Instantiate(AssetManage.i.movePlates, MapTile.GridWordPosition(matrixX, matrixY, -1), Quaternion.identity);
 
         MovePlate mpScript = mp.GetComponent<MovePlate>();
-        mpScript.SetReference(this);
+        mpScript.reference = this;
         mpScript.SetCoords(matrixX, matrixY);
         mpScript.SetStackWay(queue);
         mpScript.name = $"MovePlate({matrixX},{matrixY})";
@@ -277,10 +283,14 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
     public virtual void Update()
     {
-        UpdatePossion();
-        if (isAct)
+        if (!isBlockAnimation)
         {
-            Act.queueActs.Dequeue().Handle();
+            UpdatePossion();
+
+        }
+        else
+        {
+
         }
     }
 
@@ -331,7 +341,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             if (MapManager.map.arrTile[u.x, u.y].IsCastle && u.x == this.x && u.y == this.y && u.canOccupiedCastle)
             {
                 SkipTurn.Instance.Notification_Show("Occupied Castle");
-                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                ((Castle)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 2);
                 if (playerOccupied)
                 {
                     GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
@@ -344,7 +354,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             else if (MapManager.map.arrTile[u.x, u.y].IsHouse && u.x == this.x && u.y == this.y && u.canOccupiedHouse)
             {
                 SkipTurn.Instance.Notification_Show("Occupied House");
-                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 0);
+                ((House)MapManager.map.arrTile[x, y]).changeOwner(playerOccupied ? 1 : 2);
                 if (playerOccupied)
                 {
                     GameManager.Instance.player.listOccupied.Add(MapManager.map.arrTile[x, y]);
@@ -444,10 +454,10 @@ public class Unit : MonoBehaviour, IMatrixCoordi
         Attack += 5;
         Armor += 2;
         expRequired = 1.25f * expRequired;
-        GameObject f = Instantiate(AssetManage.i.Flame, DustPoint.position , DustPoint.rotation);
-        Destroy (f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
-        GameObject l = Instantiate(AssetManage.i.LeverUp, firePoint.position , firePoint.rotation);
-        Destroy (l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        GameObject f = Instantiate(AssetManage.i.Flame, DustPoint.position, DustPoint.rotation);
+        Destroy(f, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        GameObject l = Instantiate(AssetManage.i.LeverUp, firePoint.position, firePoint.rotation);
+        Destroy(l, l.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 
     void Exp()
@@ -532,6 +542,8 @@ public class Unit : MonoBehaviour, IMatrixCoordi
         LinkedList<Tuple<BaseTile, int>> linkedList = new LinkedList<Tuple<BaseTile, int>>();
         ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int, int>> wayDictionary = new ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int, int>>();
 
+        if (nextCoordi == null) nextCoordi = this;
+
         linkedList.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[nextCoordi.x, nextCoordi.y], 0));
         IMatrixCoordi matrixCoordi;
 
@@ -576,5 +588,20 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
         return 99;
 
+    }
+
+    public void GetAttackPlates(IMatrixCoordi point, out List<AttackPlate> outList)
+    {
+        outList = new List<AttackPlate>();
+        foreach (var item in GameManager.Instance.bot.arrListUnit)
+        {
+            if (Math.Abs(point.x - item.x) + Math.Abs(point.y - item.y) <= Range)
+            {
+                AttackPlate apScript = new AttackPlate();
+                apScript.reference = this;
+                apScript.SetCoords(item.x, item.y);
+                apScript.SetTarget(item);
+            }
+        }
     }
 }

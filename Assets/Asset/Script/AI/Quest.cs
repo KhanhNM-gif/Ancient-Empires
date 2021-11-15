@@ -1,18 +1,20 @@
 ﻿using Assets.Asset.Model;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using static TypeQuest;
+using static Unit;
 
 public class TypeQuest
 {
     public enum eTypeQuest
     {
         OccupyCastle,
+        GuardCastle,
         OccupyEmptyHouse,
         OccupyEnemyHouse,
-        GuardEmptyHouse,
-        GuardEnemyHouse,
+        GuardHouse,
         AttackEnemy,
-
     }
 }
 public class UnitDistanst
@@ -40,76 +42,132 @@ public class TileDistance
 public class QuestBot
 {
     //public List<Quest> ltChildQuest;
-    public eTypeQuest TypeQuest;
-    public List<TileDistance> ltConstructionBot;
-    public List<TileDistance> ltConstructionPlayer;
-    public BaseTile ConstructionTarget;
-    public List<UnitDistanst> ltUnitPlayer;
-    public List<UnitDistanst> ltUnitBot;
-    public float feasibility;
+    public eTypeQuest TypeQuest;    //loại quest
+    public List<TileDistance> ltConstructionBot;    // danh sách thành địch tham gia nv
+    public List<TileDistance> ltConstructionPlayer; // danh sách thành ta tham gia nv
+    public BaseTile ConstructionTarget;             // Đối tượng nhiệm vụ
+    public List<UnitDistanst> ltUnitPlayer;         // List quân tham gia cuộc chiến
+    public List<UnitDistanst> ltUnitBot;            // List quân địch tham gia cuộc chiến
+    public float feasibility;                       // Độ khả thi thành công 
 
     public QuestBot()
     {
-
+        ltConstructionBot = new List<TileDistance>();
+        ltConstructionPlayer = new List<TileDistance>();
+        ltUnitPlayer = new List<UnitDistanst>();
+        ltUnitBot = new List<UnitDistanst>();
     }
-
-    public void Handle()
-    {
-
-    }
-
-
 }
 
 public class QuestManage
 {
-    List<QuestBot> ltQuest;
+    LinkedList<QuestBot> ltQuest;
 
 
     public void Handle2()
     {
-        GetListQuest();
         CalcularFeasibility();
     }
 
-    public void Handle()
-    {
-        foreach (var item in ltQuest)
-        {
-            float distanceMin = 99;
-            Unit unitChiem;
-            foreach (var unitbot in item.ltUnitBot)
-            {
-                if (unitbot.unit.canOccupiedHouse)
-                    if (unitbot.distance / unitbot.unit.Move < distanceMin)
-                    {
-                        distanceMin = unitbot.distance;
-                        unitChiem = unitbot.unit;
-                    }
-                    else if (unitbot.distance / unitbot.unit.Move == distanceMin)
-                    {
-
-                    }
-            }
-        }
-    }
-    public void GetListQuest()
+    public void SetQuest()
     {
         List<BaseTile> listTileBot = GameManager.Instance.bot.listOccupied;
         List<BaseTile> listTilePlayer = GameManager.Instance.player.listOccupied;
-        List<Unit> listUnitBot = GameManager.Instance.bot.arrListUnit;
         List<Unit> listUnitPlayer = GameManager.Instance.player.arrListUnit;
         List<House> listHouse = MapManager.map.GetListHouse();
+        List<Castle> listCastle = MapManager.map.GetListCastle();
+        List<Unit> listUnitBot = new List<Unit>(GameManager.Instance.bot.arrListUnit);
 
+
+        //set ConstructionTarget House
+        ltQuest = new LinkedList<QuestBot>();
         foreach (var item in listHouse)
         {
-            QuestBot quest = new QuestBot();
-            AddToListTile(item, listTileBot, quest.ltConstructionBot);
-            AddToListTile(item, listTilePlayer, quest.ltConstructionPlayer);
+            QuestBot quest = new QuestBot() { ConstructionTarget = item };
+            if (item.isOwnerBy == 0) quest.TypeQuest = eTypeQuest.OccupyEmptyHouse;
+            if (item.isOwnerBy == 1) quest.TypeQuest = eTypeQuest.OccupyEnemyHouse;
+            if (item.isOwnerBy == 2) quest.TypeQuest = eTypeQuest.GuardHouse;
 
-            AddToListUnit(item, listUnitBot, quest.ltUnitBot);
-            AddToListUnit(item, listUnitPlayer, quest.ltUnitPlayer);
+            ltQuest.AddFirst(quest);
         }
+        foreach (var item in listCastle)
+        {
+            QuestBot quest = new QuestBot() { ConstructionTarget = item };
+            if (item.isOwnerBy == 1) quest.TypeQuest = eTypeQuest.OccupyCastle;
+            if (item.isOwnerBy == 2) quest.TypeQuest = eTypeQuest.GuardCastle;
+
+            ltQuest.AddFirst(quest);
+        }
+
+        //set listUnitPlayer
+        foreach (var item in listUnitPlayer)
+        {
+            foreach (var quest in ltQuest)
+            {
+                double d = Math.Round((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
+                if (d <= 2)
+                {
+                    quest.ltUnitPlayer.Add(new UnitDistanst(item, (int)d));
+                    switch (item.labelUnit)
+                    {
+                        case LabelUnit.Soldier: quest.feasibility -= 8; break;
+                        case LabelUnit.Archer: quest.feasibility -= 10; break;
+                        case LabelUnit.Catapult: quest.feasibility -= 14; break;
+                        case LabelUnit.General: quest.feasibility -= 20; break;
+                    }
+                }
+            }
+        }
+
+        List<QuestBot> questBotRemove = new List<QuestBot>();
+        foreach (var quest in ltQuest)
+            if ((quest.TypeQuest == eTypeQuest.GuardCastle || quest.TypeQuest == eTypeQuest.GuardHouse) && quest.feasibility == 0)
+                questBotRemove.Add(quest);
+        foreach (var item in questBotRemove)
+            ltQuest.Remove(item);
+
+
+
+        ltQuest = new LinkedList<QuestBot>(ltQuest.OrderBy(x => x.feasibility).ToList());
+        while (ltQuest.Count > 4)
+        {
+            foreach (var item in listUnitBot)
+            {
+                int minD = 99;
+
+                QuestBot questSelect = null;
+                foreach (var quest in ltQuest)
+                {
+                    int d = (int)Math.Round((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
+                    if (minD > d)
+                    {
+                        minD = d;
+                        questSelect = quest;
+                    }
+                }
+
+                if (questSelect != null)
+                {
+                    questSelect.ltUnitBot.Add(new UnitDistanst(item, minD));
+                    switch (item.labelUnit)
+                    {
+                        case LabelUnit.Soldier: questSelect.feasibility += 8; break;
+                        case LabelUnit.Archer: questSelect.feasibility += 10; break;
+                        case LabelUnit.Catapult: questSelect.feasibility += 14; break;
+                        case LabelUnit.General: questSelect.feasibility += 20; break;
+                    }
+                }
+            }
+
+            ltQuest = new LinkedList<QuestBot>(ltQuest.OrderBy(x => x.feasibility).ToList());
+            listUnitBot = new List<Unit>(ltQuest.Last.Value.ltUnitBot.Select(x => x.unit));
+            ltQuest.RemoveLast();
+        }
+
+
+        //loại bỏ các nhiệm vụ bất khả thi 
+
+
 
     }
     private void AddToListTile(IMatrixCoordi matrixCoordi, List<BaseTile> matrixCoordis, List<TileDistance> add)

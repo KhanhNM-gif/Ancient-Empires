@@ -4,10 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovePlate : MonoBehaviour, IMatrixCoordi
+public class MovePlate : MonoBehaviour, IMatrixCoordi,IPlateAction
 {
     public GameObject controller;
-    Unit reference = null;
+    public Unit reference { get; set; }
     public Queue<IMatrixCoordi> queueWay;
     public int x { get; set; }
     public int y { get; set; }
@@ -16,10 +16,10 @@ public class MovePlate : MonoBehaviour, IMatrixCoordi
 
     public void OnMouseDown()
     {
-        Click();
+        Handle();
     }
 
-    public void Click()
+    public void Handle()
     {
         //BinhBh khi di chuyen den thi set vi tri day khong di chuyen dc nua de nhung unit khac khong di vao dc
         //Khi di ra thi set co the di chuyen dc
@@ -44,7 +44,5 @@ public class MovePlate : MonoBehaviour, IMatrixCoordi
         this.x = x;
         this.y = y;
     }
-    public void SetReference(Unit obj) => reference = obj;
     public void SetStackWay(Queue<IMatrixCoordi> queue) => queueWay = queue;
-    public Unit GetReference() => reference;
 }

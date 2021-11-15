@@ -8,7 +8,6 @@ using UnityEngine;
 class Soldier : Unit
 {
     public GameObject attack;
-
     private void SoldierAttack(Unit unit, float damage)
     {
         GameObject attackClone = Instantiate(attack, firePoint.position, firePoint.rotation);

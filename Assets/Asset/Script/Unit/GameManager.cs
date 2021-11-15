@@ -1,7 +1,9 @@
+using Assets.Asset.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unit;
 
 public class GameManager : MonoBehaviour
 {
@@ -70,7 +72,6 @@ public class GameManager : MonoBehaviour
 
         if (UnitDictionary.TryGetValue(name, out GameObject outGameObject))
         {
-
             GameObject obj = Instantiate(outGameObject, new Vector3(0, 0, -1), Quaternion.identity);
             Unit un = obj.GetComponent<Unit>();
             un.name = name;
@@ -78,6 +79,11 @@ public class GameManager : MonoBehaviour
             {
                 un.isGeneral = true;
             }
+            if (name == Const.NameUnit.BLUE_SOLDIER) un.labelUnit = LabelUnit.Soldier;
+            if (name == Const.NameUnit.RED_SOLDIER) un.labelUnit = LabelUnit.Soldier;
+            if (name == Const.NameUnit.RED_GENERAL) un.labelUnit = LabelUnit.General;
+            if (name == Const.NameUnit.BLUE_GENERAL) un.labelUnit = LabelUnit.General;
+
             un.x = x;
             un.y = y;
             un.isEnemy = isEnemy;
@@ -106,6 +112,8 @@ public class GameManager : MonoBehaviour
         }
         Unit.DisablePlate();
         block = false;
+        QuestManage quest = new QuestManage();
+        quest.SetQuest();
     }
 
 
@@ -177,25 +185,23 @@ public class GameManager : MonoBehaviour
                 float pointMax = -99;
                 float point;
                 MovePlate movePlateBest = new MovePlate();
+
+                //item.GetAttackPlates();
+
                 foreach (var platemove in outlt)
                 {
                     int d1 = 0, d2 = 0, d3 = 0;
 
                     if (item.UnitTarget != null)
-                    {
                         d1 = Math.Abs(item.UnitTarget.x - platemove.x) + Math.Abs(item.UnitTarget.y - platemove.y) - item.Range;
-                    }
+
                     if (item.HouseTarget != null)
-                    {
                         d2 = item.Dijkstra(platemove, item.HouseTarget);
-                    }
+
                     if (item.CastleTarget != null)
-                    {
-                        d3 = item.Dijkstra(platemove, item.HouseTarget);
-                    }
+                        d3 = item.Dijkstra(platemove, item.CastleTarget);
 
                     point = d1 <= 0 ? (10 + d1) : (10 - d1) + d2 == 0 ? 20 : (20 - (int)Math.Ceiling((double)d2 / item.Move) * 5);
-                    //+ d3 == 0 ? 30 : (15 - d3 / item.Move * 5);
                     if (point > pointMax)
                     {
                         pointMax = point;
@@ -203,15 +209,14 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                bot.rest = false;
                 item.isMove = false;
-                movePlateBest.Click();
-                block = false;
+                Queue<IPlateAction> plateActions = new Queue<IPlateAction>();
+                bot.rest = block = false;
                 return;
             }
         }
     }
-    
+
     public void EndGame()
     {
         if (!player.hasGeneral && player.CountOccupiedCastle == 0)

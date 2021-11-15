@@ -25,11 +25,11 @@ public class MapTile
 
     public List<Castle> GetListCastle()
     {
-        return null;
+        return castles;
     }
 
     public List<House> GetListHouse()
     {
-        return null;
+        return houses;
     }
 }
