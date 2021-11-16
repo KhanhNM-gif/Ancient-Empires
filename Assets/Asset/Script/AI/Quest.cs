@@ -49,6 +49,8 @@ public class QuestBot
     public List<UnitDistanst> ltUnitPlayer;         // List quân tham gia cuộc chiến
     public List<UnitDistanst> ltUnitBot;            // List quân địch tham gia cuộc chiến
     public float feasibility;                       // Độ khả thi thành công 
+    public bool isEligible;
+    public int NumberUnitOrCanOccupied;
 
     public QuestBot()
     {
@@ -138,6 +140,8 @@ public class QuestManage
                 QuestBot questSelect = null;
                 foreach (var quest in ltQuest)
                 {
+
+
                     int d = (int)Math.Round((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
                     if (minD > d)
                     {
@@ -149,6 +153,8 @@ public class QuestManage
                 if (questSelect != null)
                 {
                     questSelect.ltUnitBot.Add(new UnitDistanst(item, minD));
+                    if (((questSelect.TypeQuest == eTypeQuest.OccupyEmptyHouse || questSelect.TypeQuest == eTypeQuest.OccupyEnemyHouse) && item.canOccupiedHouse) || (questSelect.TypeQuest == eTypeQuest.OccupyCastle && item.canOccupiedCastle)) questSelect.NumberUnitOrCanOccupied++;
+
                     switch (item.labelUnit)
                     {
                         case LabelUnit.Soldier: questSelect.feasibility += 8; break;
@@ -162,13 +168,28 @@ public class QuestManage
             ltQuest = new LinkedList<QuestBot>(ltQuest.OrderBy(x => x.feasibility).ToList());
             listUnitBot = new List<Unit>(ltQuest.Last.Value.ltUnitBot.Select(x => x.unit));
             ltQuest.RemoveLast();
+
+            bool canComplete = true;
+            UnitDistanst unitDistanstRemove;
+            foreach (var quest in ltQuest)
+            {
+                if (quest.TypeQuest == eTypeQuest.OccupyEmptyHouse || quest.TypeQuest == eTypeQuest.OccupyEnemyHouse || quest.TypeQuest == eTypeQuest.OccupyCastle)
+                    if (quest.NumberUnitOrCanOccupied == 0) canComplete = false;
+
+                if (quest.feasibility > 10)
+                {
+                    if (quest.NumberUnitOrCanOccupied > 1) unitDistanstRemove = quest.ltUnitBot.OrderBy(x => x.distance).First();
+                    else unitDistanstRemove = quest.ltUnitBot.Where(x => x.unit.canOccupiedCastle).OrderBy(x => x.distance).First();
+                    listUnitBot.Add(unitDistanstRemove.unit);
+                    quest.ltUnitBot.Remove(unitDistanstRemove);
+                }
+
+                if (quest > 0)
+            }
         }
 
 
         //loại bỏ các nhiệm vụ bất khả thi 
-
-
-
     }
     private void AddToListTile(IMatrixCoordi matrixCoordi, List<BaseTile> matrixCoordis, List<TileDistance> add)
     {
