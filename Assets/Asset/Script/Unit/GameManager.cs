@@ -113,6 +113,7 @@ public class GameManager : MonoBehaviour
         Unit.DisablePlate();
         block = false;
         QuestManage quest = new QuestManage();
+        quest.BuyUnit();
         quest.SetQuest();
     }
 
@@ -167,7 +168,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Status == eStatus.Turn_Bot && bot.rest && !block)
+        /*if (Status == eStatus.Turn_Bot && bot.rest && !block)
         {
             block = true;
             queue = new Queue<Unit>();
@@ -214,7 +215,7 @@ public class GameManager : MonoBehaviour
                 bot.rest = block = false;
                 return;
             }
-        }
+        }*/
     }
 
     public void EndGame()

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using static TypeQuest;
 using static Unit;
 
@@ -16,16 +17,33 @@ public class TypeQuest
         GuardHouse,
         AttackEnemy,
     }
+    public static bool isOccupyQuest(eTypeQuest eTypeQuest)
+    {
+        return eTypeQuest == eTypeQuest.OccupyCastle || eTypeQuest == eTypeQuest.OccupyEmptyHouse || eTypeQuest == eTypeQuest.OccupyEnemyHouse;
+    }
+    public static bool isOccupyHouseQuest(eTypeQuest eTypeQuest)
+    {
+        return eTypeQuest == eTypeQuest.OccupyEmptyHouse || eTypeQuest == eTypeQuest.OccupyEnemyHouse;
+    }
+    public static bool isOccupyCastleQuest(eTypeQuest eTypeQuest)
+    {
+        return eTypeQuest == eTypeQuest.OccupyCastle;
+    }
 }
 public class UnitDistanst
 {
     public Unit unit;
     public int distance;
+    public float point;
+    public float factorAttack;
+    public float factorOccupy;
+    public float factorSafe;
 
-    public UnitDistanst(Unit unit, int distance)
+    public UnitDistanst(Unit unit, int distance, float point)
     {
         this.unit = unit;
         this.distance = distance;
+        this.point = point;
     }
 }
 public class TileDistance
@@ -65,10 +83,116 @@ public class QuestManage
 {
     LinkedList<QuestBot> ltQuest;
 
-
-    public void Handle2()
+    public void Handle(Queue<Unit> outqueue)
     {
-        CalcularFeasibility();
+        outqueue = new Queue<Unit>();
+        foreach (var quest in ltQuest)
+        {
+            foreach (var unitDistanst in quest.ltUnitBot)
+            {
+                unitDistanst.unit.GetListMovePlates(out List<MovePlate> outlt);
+                float pointMax = -99;
+
+                float point;
+
+                MovePlate movePlateBest = null;
+                AttackPlate attackPlateBest = null;
+
+                AttackPlate attackPlateBestMove = null;
+                AttackPlate attackPlateBestStand = null;
+                float pointMaxAttackMaxMove = 0;
+                float pointMaxAttackMaxStand = 0;
+
+                float pointPlateMove, d = 0;
+
+                unitDistanst.unit.GetAttackPlates(unitDistanst.unit, out List<AttackPlate> outAttackPlate);
+                foreach (var attackPlate in outAttackPlate)
+                {
+                    var unitplayer = quest.ltUnitPlayer.Where(x => attackPlate.reference == x.unit).FirstOrDefault();
+                    d = unitplayer == null ? 4 : unitplayer.point;
+
+                    if (d > pointMaxAttackMaxStand)
+                    {
+                        pointMaxAttackMaxStand = d;
+                        attackPlateBestStand = attackPlate;
+                    }
+                }
+
+                foreach (var platemove in outlt)
+                {
+                    pointPlateMove = 0; d = 0; pointMaxAttackMaxMove = 0;
+
+                    unitDistanst.unit.GetAttackPlates(platemove, out outAttackPlate);
+                    foreach (var attackPlate in outAttackPlate)
+                    {
+                        var unitplayer = quest.ltUnitPlayer.Where(x => attackPlate.reference == x.unit).FirstOrDefault();
+                        d = unitplayer == null ? 4 : unitplayer.point;
+
+                        if (d > pointMaxAttackMaxMove)
+                        {
+                            pointMaxAttackMaxMove = d;
+                            attackPlateBestMove = attackPlate;
+                        }
+                    }
+
+                    pointPlateMove = unitDistanst.unit.Dijkstra(platemove, quest.ConstructionTarget);
+
+                    point = Mathf.Max(pointMaxAttackMaxMove, pointMaxAttackMaxStand) * unitDistanst.factorAttack + pointPlateMove * unitDistanst.factorOccupy;
+                    if (point > pointMax)
+                    {
+                        pointMax = point;
+                        movePlateBest = platemove;
+                        attackPlateBest = pointMaxAttackMaxMove > pointMaxAttackMaxStand ? attackPlateBestMove : attackPlateBestStand;
+                    }
+                }
+
+                Queue<IPlateAction> plateActions = new Queue<IPlateAction>();
+                if (attackPlateBest == attackPlateBestMove)
+                {
+                    plateActions.Enqueue(attackPlateBest);
+                    plateActions.Enqueue(movePlateBest);
+                }
+                else
+                {
+                    plateActions.Enqueue(movePlateBest);
+                    plateActions.Enqueue(attackPlateBest);
+                }
+                unitDistanst.unit.actions = plateActions;
+
+                outqueue.Enqueue(unitDistanst.unit);
+
+                return;
+            }
+        }
+    }
+    public void BuyUnit()
+    {
+        BaseTile bt = GameManager.Instance.bot.listOccupied.FirstOrDefault();
+        GameManager.shop.x = bt.x;
+        GameManager.shop.y = bt.y;
+
+        while (true)
+        {
+            if (!GameManager.Instance.bot.CheckLimitUnit()) return;
+            if (GameManager.Instance.bot.arrListUnit.Count(x => x.labelUnit == LabelUnit.Soldier) <= 3)
+            {
+                if (GameManager.Instance.bot.Gold < Const.ConstGame.COST_SOLIDER) return;
+                GameManager.shop.Buy(Const.NameUnit.RED_SOLDIER);
+            }
+            else
+            {
+                if (GameManager.Instance.bot.arrListUnit.Count(x => x.labelUnit == LabelUnit.Archer) <= 3)
+                {
+                    if (GameManager.Instance.bot.Gold < Const.ConstGame.COST_ARCHER) return;
+                    GameManager.shop.Buy(Const.NameUnit.RED_ARCHER);
+                }
+                else
+                {
+                    if (GameManager.Instance.bot.Gold < Const.ConstGame.COST_CAPUTAL) return;
+                    GameManager.shop.Buy(Const.NameUnit.RED_CATAPULT);
+                }
+            }
+        }
     }
 
     public void SetQuest()
@@ -106,16 +230,15 @@ public class QuestManage
         {
             foreach (var quest in ltQuest)
             {
-                double d = Math.Round((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
+                float d = (float)Math.Ceiling((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
                 if (d <= 2)
                 {
-                    quest.ltUnitPlayer.Add(new UnitDistanst(item, (int)d));
                     switch (item.labelUnit)
                     {
-                        case LabelUnit.Soldier: quest.feasibility -= 8; break;
-                        case LabelUnit.Archer: quest.feasibility -= 10; break;
-                        case LabelUnit.Catapult: quest.feasibility -= 14; break;
-                        case LabelUnit.General: quest.feasibility -= 20; break;
+                        case LabelUnit.Soldier: quest.ltUnitPlayer.Add(new UnitDistanst(item, (int)d, 8 * (3 - d))); ; quest.feasibility -= 8 * (3 - d); break;
+                        case LabelUnit.Archer: quest.ltUnitPlayer.Add(new UnitDistanst(item, (int)d, 10 * (3 - d))); quest.feasibility -= 10 * (3 - d); break;
+                        case LabelUnit.Catapult: quest.ltUnitPlayer.Add(new UnitDistanst(item, (int)d, 14 * (3 - d))); quest.feasibility -= 14 * (3 - d); break;
+                        case LabelUnit.General: quest.ltUnitPlayer.Add(new UnitDistanst(item, (int)d, 20 * (3 - d))); quest.feasibility -= 20 * (3 - d); break;
                     }
                 }
             }
@@ -128,21 +251,17 @@ public class QuestManage
         foreach (var item in questBotRemove)
             ltQuest.Remove(item);
 
-
-
-        ltQuest = new LinkedList<QuestBot>(ltQuest.OrderBy(x => x.feasibility).ToList());
-        while (ltQuest.Count > 4)
+        ltQuest = new LinkedList<QuestBot>(ltQuest.OrderByDescending(x => x.feasibility).ToList());
+        while (ltQuest.Count > 1)
         {
             foreach (var item in listUnitBot)
             {
                 int minD = 99;
 
                 QuestBot questSelect = null;
-                foreach (var quest in ltQuest)
+                foreach (var quest in ltQuest.Where(x => !x.isEligible))
                 {
-
-
-                    int d = (int)Math.Round((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
+                    int d = (int)Math.Ceiling((float)item.Dijkstra(null, quest.ConstructionTarget) / item.Move);
                     if (minD > d)
                     {
                         minD = d;
@@ -152,102 +271,80 @@ public class QuestManage
 
                 if (questSelect != null)
                 {
-                    questSelect.ltUnitBot.Add(new UnitDistanst(item, minD));
-                    if (((questSelect.TypeQuest == eTypeQuest.OccupyEmptyHouse || questSelect.TypeQuest == eTypeQuest.OccupyEnemyHouse) && item.canOccupiedHouse) || (questSelect.TypeQuest == eTypeQuest.OccupyCastle && item.canOccupiedCastle)) questSelect.NumberUnitOrCanOccupied++;
+                    if (((questSelect.TypeQuest == eTypeQuest.OccupyEmptyHouse || questSelect.TypeQuest == eTypeQuest.OccupyEnemyHouse) && item.canOccupiedHouse) || (questSelect.TypeQuest == eTypeQuest.OccupyCastle && item.canOccupiedCastle))
+                        questSelect.NumberUnitOrCanOccupied++;
 
                     switch (item.labelUnit)
                     {
-                        case LabelUnit.Soldier: questSelect.feasibility += 8; break;
-                        case LabelUnit.Archer: questSelect.feasibility += 10; break;
-                        case LabelUnit.Catapult: questSelect.feasibility += 14; break;
-                        case LabelUnit.General: questSelect.feasibility += 20; break;
+                        case LabelUnit.Soldier: questSelect.ltUnitBot.Add(new UnitDistanst(item, minD, 8 * (3.5f - minD))); ; questSelect.feasibility += 8 * (3.5f - minD); break;
+                        case LabelUnit.Archer: questSelect.ltUnitBot.Add(new UnitDistanst(item, minD, 10 * (3.5f - minD))); questSelect.feasibility += 10 * (3.5f - minD); break;
+                        case LabelUnit.Catapult: questSelect.ltUnitBot.Add(new UnitDistanst(item, minD, 14 * (3.5f - minD))); questSelect.feasibility += 14 * (3.5f - minD); break;
+                        case LabelUnit.General: questSelect.ltUnitBot.Add(new UnitDistanst(item, minD, 20 * (3.5f - minD))); questSelect.feasibility += 20 * (3.5f - minD); break;
                     }
                 }
             }
 
-            ltQuest = new LinkedList<QuestBot>(ltQuest.OrderBy(x => x.feasibility).ToList());
+            if (ltQuest.Count(x => x.feasibility < 0) == 0) return;
+
+            ltQuest = new LinkedList<QuestBot>(ltQuest.OrderByDescending(x => x.feasibility).ToList());
             listUnitBot = new List<Unit>(ltQuest.Last.Value.ltUnitBot.Select(x => x.unit));
             ltQuest.RemoveLast();
 
-            bool canComplete = true;
             UnitDistanst unitDistanstRemove;
             foreach (var quest in ltQuest)
             {
-                if (quest.TypeQuest == eTypeQuest.OccupyEmptyHouse || quest.TypeQuest == eTypeQuest.OccupyEnemyHouse || quest.TypeQuest == eTypeQuest.OccupyCastle)
-                    if (quest.NumberUnitOrCanOccupied == 0) canComplete = false;
-
-                if (quest.feasibility > 10)
+                if (quest.feasibility > 0)
                 {
-                    if (quest.NumberUnitOrCanOccupied > 1) unitDistanstRemove = quest.ltUnitBot.OrderBy(x => x.distance).First();
-                    else unitDistanstRemove = quest.ltUnitBot.Where(x => x.unit.canOccupiedCastle).OrderBy(x => x.distance).First();
-                    listUnitBot.Add(unitDistanstRemove.unit);
-                    quest.ltUnitBot.Remove(unitDistanstRemove);
-                }
+                    if (isOccupyQuest(quest.TypeQuest) && quest.NumberUnitOrCanOccupied <= 1)
+                    {
+                        if (isOccupyCastleQuest(quest.TypeQuest))
+                        {
+                            unitDistanstRemove = quest.ltUnitBot.Where(x => !x.unit.canOccupiedCastle && x.point < quest.feasibility).OrderByDescending(x => x.distance).FirstOrDefault();
+                            if (unitDistanstRemove != null && unitDistanstRemove.unit.canOccupiedCastle) quest.NumberUnitOrCanOccupied--;
+                        }
+                        else
+                        {
+                            unitDistanstRemove = quest.ltUnitBot.Where(x => !x.unit.canOccupiedHouse && x.point < quest.feasibility).OrderByDescending(x => x.distance).FirstOrDefault();
+                            if (unitDistanstRemove != null && unitDistanstRemove.unit.canOccupiedHouse) quest.NumberUnitOrCanOccupied--;
+                        }
+                    }
+                    else unitDistanstRemove = quest.ltUnitBot.Where(x => x.point < quest.feasibility).OrderByDescending(x => x.distance).FirstOrDefault();
 
-                if (quest > 0)
+                    if (unitDistanstRemove != null)
+                    {
+                        quest.feasibility -= unitDistanstRemove.point;
+                        quest.ltUnitBot.Remove(unitDistanstRemove);
+                    }
+                    quest.isEligible = true;
+                }
             }
         }
-
-
-        //loại bỏ các nhiệm vụ bất khả thi 
     }
-    private void AddToListTile(IMatrixCoordi matrixCoordi, List<BaseTile> matrixCoordis, List<TileDistance> add)
+
+    public class ActUnit
     {
-        foreach (var item in matrixCoordis)
+        public Unit unit;
+        public Queue<Act> queueActs;
+
+        public enum eAct
         {
-            int d = item.Distance(matrixCoordi);
-            if (d > 3) add.Add(new TileDistance(item, d));
+            Move,
+            Attack
         }
     }
-
-    private void AddToListUnit(IMatrixCoordi matrixCoordi, List<Unit> matrixCoordis, List<UnitDistanst> add)
+    public class Act
     {
-        foreach (var item in matrixCoordis)
+        public void Handle()
         {
-            int d = item.Distance(matrixCoordi);
-            if (d > 3) add.Add(new UnitDistanst(item, d));
+
         }
     }
-    private void CalcularFeasibility()
-    {
-        foreach (var item in ltQuest)
-        {
-            //Tính mức độ khả thi tương đối
-        }
-    }
-
-    private void DivisionUnit()
-    {
-        //Với các nv có độ khả thì 'quá cao' phân chia lại quân vào các nhiệm vụ khác
-        //với các nhiệm vụ bất khả thi bỏ nhiệm vụ
-        //Phân chia đến khi đạt độ ổn định
-    }
-
-}
-
-public class ActUnit
-{
-    public Unit unit;
-    public Queue<Act> queueActs;
-
-    public enum eAct
-    {
-        Move,
-        Attack
-    }
-}
-public class Act
-{
-    public void Handle()
+    public class ActMove : Act
     {
 
     }
-}
-public class ActMove : Act
-{
+    public class ActAttack : Act
+    {
 
-}
-public class ActAttack : Act
-{
-
+    }
 }

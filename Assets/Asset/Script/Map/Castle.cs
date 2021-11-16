@@ -26,10 +26,14 @@ public class Castle : BaseTile
         {
             case 1:
                 GameManager.Instance.player.CountOccupiedCastle++;
+                GameManager.Instance.player.listOccupied.Add(this);
+                GameManager.Instance.bot.listOccupied.Remove(this);
                 this.GetComponent<SpriteRenderer>().sprite = sprites[0];
                 break;
             case 2:
                 GameManager.Instance.bot.CountOccupiedCastle++;
+                GameManager.Instance.bot.listOccupied.Add(this);
+                GameManager.Instance.player.listOccupied.Remove(this);
                 this.GetComponent<SpriteRenderer>().sprite = sprites[2];
                 break;
         }

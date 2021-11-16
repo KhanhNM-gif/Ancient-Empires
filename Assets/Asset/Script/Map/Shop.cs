@@ -171,7 +171,7 @@ public class Shop : MonoBehaviour, IMatrixCoordi
                 if(GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2,
                     GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot))
                 {
-                    GameManager.Instance.player.Gold -= goldBuyUnit;
+                    playerHandle.Gold -= goldBuyUnit;
                     UIManager.Instance.UpdateGold(GameManager.Instance.player.Gold);
                     MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble = false;
                     ActiveBuyUnit();

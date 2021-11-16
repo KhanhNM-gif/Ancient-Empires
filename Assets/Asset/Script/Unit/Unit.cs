@@ -50,12 +50,12 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public Transform firePoint;
     public Transform DustPoint;
 
-    private Queue<IPlateAction> actions;
+    public Queue<IPlateAction> actions;
     private bool isActions;
 
 
-    public Unit UnitTarget;
-    public House HouseTarget;
+    //public Unit UnitTarget;
+    //public House HouseTarget;
     public Castle CastleTarget;
 
     public bool isBlockAnimation;
@@ -482,7 +482,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
         return Math.Abs(mc.x - x) + Math.Abs(mc.y - y);
     }
 
-    public void SetTagetBot()
+    /*public void SetTagetBot()
     {
         this.UnitTarget = null;
         this.HouseTarget = null;
@@ -531,7 +531,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 }
             }
         }
-    }
+    }*/
 
     /// <summary>
     /// 
@@ -556,7 +556,8 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
             matrixCoordi = s.Item1; cost = s.Item2;
 
-            if (s.Item1.Equals(baseTileFinish)) return cost;
+            if (s.Item1.Equals(baseTileFinish)) 
+                return cost;
 
             foreach (var item in Const.Unit.STEP_MOVE)
             {
