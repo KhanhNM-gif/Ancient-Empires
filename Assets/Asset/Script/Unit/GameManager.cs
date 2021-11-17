@@ -1,5 +1,3 @@
-using Assets.Asset.Model;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
@@ -111,10 +109,11 @@ public class GameManager : MonoBehaviour
             item.EnableColor();
         }
         Unit.DisablePlate();
-        block = false;
         QuestManage quest = new QuestManage();
-        quest.BuyUnit();
         quest.SetQuest();
+        quest.BuyUnitAuto();
+        quest.Handle(out queue);
+        block = false;
     }
 
 
@@ -134,18 +133,20 @@ public class GameManager : MonoBehaviour
         if (x < 0 || y < 0) return;
         PositionUnit[x, y] = null;
     }
-    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y, bool isEnemy)
+    public bool addUnit(PlayerHandle playerHandle, string name, int x, int y, bool isEnemy, out Unit outUnit)
     {
+        outUnit = null;
+
         if (playerHandle.CheckLimitUnit())
         {
-            Unit newUnit = Create(name, x, y, isEnemy);
-            if (newUnit.isGeneral)
+            outUnit = Create(name, x, y, isEnemy);
+            if (outUnit.isGeneral)
             {
                 player.hasGeneral = true;
             }
-            playerHandle.AddUnit(newUnit);
-            if (newUnit)
-                SetPosition(newUnit);
+            playerHandle.AddUnit(outUnit);
+            if (outUnit)
+                SetPosition(outUnit);
             return true;
         }
         else
@@ -168,6 +169,10 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (!block)
+        {
+
+        }
         /*if (Status == eStatus.Turn_Bot && bot.rest && !block)
         {
             block = true;

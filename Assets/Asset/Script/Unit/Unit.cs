@@ -58,7 +58,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     //public House HouseTarget;
     public Castle CastleTarget;
 
-    public bool isBlockAnimation;
+    public bool isBlockAnimation { get; set; };
 
     public virtual void Start()
     {
@@ -537,10 +537,11 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     /// 
     /// </summary>
     /// <param name="baseTileFinish"></param>
-    public int Dijkstra(IMatrixCoordi nextCoordi, BaseTile baseTileFinish)
+    public int Dijkstra(IMatrixCoordi nextCoordi, BaseTile baseTileFinish, out List<List<IMatrixCoordi>> outltImportantTile, bool discardOut = true)
     {
+        outltImportantTile = new List<List<IMatrixCoordi>>();
         LinkedList<Tuple<BaseTile, int>> linkedList = new LinkedList<Tuple<BaseTile, int>>();
-        ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int, int>> wayDictionary = new ConcurrentDictionary<BaseTile, Tuple<IMatrixCoordi, int, int>>();
+        ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int, int>> wayDictionary = new ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int, int>>();
 
         if (nextCoordi == null) nextCoordi = this;
 
@@ -556,8 +557,13 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
             matrixCoordi = s.Item1; cost = s.Item2;
 
-            if (s.Item1.Equals(baseTileFinish)) 
-                return cost;
+            if (s.Item1.Equals(baseTileFinish))
+            {
+                if (discardOut || Math.Ceiling((float)cost / Move) < Math.Ceiling((float)linkedList.First().Item2 / Move)) return cost;
+
+                ImportantTile(wayDictionary, matrixCoordi, baseTileFinish, out List<IMatrixCoordi> outImportantTileNew);
+                outltImportantTile.Add(outImportantTileNew);
+            }
 
             foreach (var item in Const.Unit.STEP_MOVE)
             {
@@ -589,6 +595,16 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
         return 99;
 
+    }
+
+    public void ImportantTile(ConcurrentDictionary<IMatrixCoordi, Tuple<IMatrixCoordi, int, int>> dictionnary, IMatrixCoordi p, IMatrixCoordi e, out List<IMatrixCoordi> way)
+    {
+        if (dictionnary.ContainsKey(p) && dictionnary[p].Item2 <= Move)
+        {
+            ImportantTile(dictionnary, dictionnary[p].Item1, e, out way);
+            way.Add(p);
+        }
+        else way = new List<IMatrixCoordi>();
     }
 
     public void GetAttackPlates(IMatrixCoordi point, out List<AttackPlate> outList)

@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Assets.Asset.Model;
-using UnityEngine.UI;
 using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Shop : MonoBehaviour, IMatrixCoordi
 {
@@ -131,12 +129,12 @@ public class Shop : MonoBehaviour, IMatrixCoordi
     /// BinhBH Mua quan xung quan vi tri thanh,
     /// </summary>
     /// <param name="nameUnit"> ten quan muon mua</param>
-    public void Buy(string nameUnit)
+    public Unit Buy(string nameUnit)
     {
         showNumberOfUnit();
         if (GameManager.Instance.getNumberUnit() == Const.ConstGame.MAX_UNIT)
         {
-            return;
+            return null;
         }
         int goldBuyUnit = 0;
         switch (nameUnit)
@@ -168,8 +166,8 @@ public class Shop : MonoBehaviour, IMatrixCoordi
         {
             if (MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble == true)
             {
-                if(GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2,
-                    GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot))
+                if (GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2,
+                    GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot, out Unit unit))
                 {
                     playerHandle.Gold -= goldBuyUnit;
                     UIManager.Instance.UpdateGold(GameManager.Instance.player.Gold);
@@ -177,10 +175,12 @@ public class Shop : MonoBehaviour, IMatrixCoordi
                     ActiveBuyUnit();
                     showNumberOfUnit();
                 }
-                return;
+                return unit;
             }
         }
-        
+
+        return null;
+
 
     }
 
