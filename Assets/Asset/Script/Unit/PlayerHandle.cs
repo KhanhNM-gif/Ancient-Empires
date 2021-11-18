@@ -51,9 +51,8 @@ public class PlayerHandle : MonoBehaviour
                 Destroy(h, h.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
                 GameObject heal = Instantiate(AssetManage.i.HealUp, item.firePoint.position, Quaternion.identity);
                 Destroy(heal, heal.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
-
             }
-
+            item.virtualHP = item.CurrentHP;
         }
     }
     public virtual void AddUnit(Unit unit)

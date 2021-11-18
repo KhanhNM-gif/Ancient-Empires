@@ -129,22 +129,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac7132be282e5784e998af178c17ab94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHP: 0
-  HP: 0
-  Attack: 0
-  Armor: 0
-  BaseArmor: 0
-  Range: 0
-  BaseRange: 0
-  Move: 0
-  MoveSpeed: 0
-  Lv: 0
+  labelUnit: 0
+  CurrentHP: 200
+  HP: 200
+  Attack: 50
+  Armor: 15
+  BaseArmor: 150
+  Range: 3
+  BaseRange: 3
+  Move: 3
+  MoveSpeed: 3
+  Lv: 1
   isEnemy: 1
+  isMove: 0
   canOccupiedCastle: 0
   canOccupiedHouse: 0
   isGeneral: 0
   firePoint: {fileID: 3518779452490893104}
   DustPoint: {fileID: 861526537946953530}
+  CastleTarget: {fileID: 0}
   rock: {fileID: 4795212602549913846, guid: a6c03becd5d69ac44a85261cda1ce2cc, type: 3}
 --- !u!61 &3935841692977683858
 BoxCollider2D:

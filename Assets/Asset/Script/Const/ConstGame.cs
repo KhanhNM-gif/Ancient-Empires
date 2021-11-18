@@ -9,14 +9,14 @@ namespace Const
     public static class ConstGame
     {
         public const int FRAME = 60;
-        public const int MAX_UNIT = 8;
-        public const int GOLD_START_GAME = 500;
-        public const int GOLD_PER_CONTRUCTION = 75;
+        public const int MAX_UNIT = 6;
+        public const int GOLD_START_GAME = 350;
+        public const int GOLD_PER_CONTRUCTION = 50;
         public const int GOLD_PER_TURN_DEFAULT = 50;
         public const int COST_ARCHER = 250;
-        public const int COST_SOLIDER = 150;
-        public const int COST_GENERAL = 600;
-        public const int COST_CAPUTAL = 450;
+        public const int COST_SOLIDER = 200;
+        public const int COST_GENERAL = 500;
+        public const int COST_CAPUTAL = 400;
     }
     public static class NameUnit
     {
@@ -43,6 +43,15 @@ namespace Const
     }
     public static class PlayerHandle
     {
-        public const int NUMBER_UNIT_LIMIT = 8;
+        public const int NUMBER_UNIT_LIMIT = 6;
     }
+
+    public static class PowerUnit
+    {
+        public const int ARCHER_POWER = 8;
+        public const int CATAPULT_POWER = 9;
+        public const int GENERAL_POWER = 12;
+        public const int SOLDIER_POWER = 13;
+    }
+
 }

@@ -9,13 +9,16 @@ public class AttackPlate : MonoBehaviour, IMatrixCoordi,IPlateAction
 {
     public GameObject controller;
     public Unit reference { get; set; }
-    Unit target = null;
+    public Unit target = null;
+    float damage;
 
     public int x { get; set; }
     public int y { get; set; }
 
     public void OnMouseDown()
     {
+        Unit.DisablePlate();
+        Prepare();
         Handle();
     }
 
@@ -35,10 +38,20 @@ public class AttackPlate : MonoBehaviour, IMatrixCoordi,IPlateAction
     public void Handle()
     {
         Unit.DisablePlate();
-        MapManager.map.arrTile[reference.x, reference.y].AttackAble = true;
-        MapManager.map.arrTile[this.x, this.y].AttackAble = false;
-        reference.SetIsAttack(false);
-        reference.AttackToUnit(target, out float damage);
         reference.AnimationAttack(target, damage);
+        reference.AddExp(damage);
+        if (reference.CheckDisable()) reference.DisableUnit();
+    }
+
+    public void Prepare()
+    {
+        reference.SetIsAttack(false);
+        reference.AttackToUnit(target, out damage);
+        reference.virtualHP -= damage;
+        if (reference.virtualHP <= 0)
+        {
+            MapManager.map.arrTile[reference.x, reference.y].MoveAble = true;
+            reference.isDead = true;
+        }
     }
 }

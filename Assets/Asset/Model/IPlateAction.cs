@@ -10,5 +10,6 @@ namespace Assets.Asset.Model
     {
         Unit reference { get; set; }
         void Handle();
+        void Prepare();
     }
 }

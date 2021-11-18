@@ -12,7 +12,7 @@ public class BaseTile : MonoBehaviour, IMatrixCoordi
     public bool MoveAble;
     public bool IsHouse;
     public bool IsCastle;
-    public bool AttackAble;
+    public int point;
 
     public int Distance(IMatrixCoordi mc)
     {

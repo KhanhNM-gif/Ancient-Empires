@@ -1,5 +1,7 @@
+using Assets.Asset.Model;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using static Unit;
 
@@ -21,16 +23,14 @@ public class GameManager : MonoBehaviour
     public Unit UnitSelected;
     public static Shop shop;
     public static eStatus Status = eStatus.Turn_Player;
-    public Queue<Unit> queue;
-
-
+    public Queue<IPlateAction> queue;
+    QuestManage quest = new QuestManage();
     public string MapName;
-
-    //x=4-tầm đánh y=4-tầm đánh x4+tầm đánh y=4+tầm đánh  |xi-x||yi-y+|<=tầm đánh
 
     private void Awake()
     {
         Instance = this;
+        block = true;
     }
 
 
@@ -44,15 +44,13 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < arrUnit.Length; i++)
             UnitDictionary[arrUnit[i].name] = arrUnit[i];
         player = new Player(Const.ConstGame.GOLD_START_GAME, 200);
-        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 3, false));
+        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_GENERAL, 5, 4, false));
         player.hasGeneral = true;
-        player.arrListUnit.Add(Create(Const.NameUnit.BLUE_SOLDIER, 2, 3, false));
         foreach (var item in player.arrListUnit) SetPosition(item);
 
         bot = new Bot(Const.ConstGame.GOLD_START_GAME, 200);
-        bot.arrListUnit.Add(Create(Const.NameUnit.RED_GENERAL, 8, 8, true));
+        bot.arrListUnit.Add(Create(Const.NameUnit.RED_GENERAL, 10, 8, true));
         bot.hasGeneral = true;
-        bot.arrListUnit.Add(Create(Const.NameUnit.RED_SOLDIER, 6, 8, true));
         foreach (var item in bot.arrListUnit) SetPosition(item);
 
 
@@ -102,20 +100,23 @@ public class GameManager : MonoBehaviour
         PositionUnit[x, y] = obj;
     }
 
-    public void EndTurn()
+    public async void EndTurn()
     {
         foreach (var item in player.arrListUnit)
         {
             item.EnableColor();
         }
         Unit.DisablePlate();
-        QuestManage quest = new QuestManage();
         quest.SetQuest();
         quest.BuyUnitAuto();
+        await Task.Run(() => AI(quest));
+    }
+    public void AI(QuestManage quest)
+    {
+        quest.SetWeightListQuest();
         quest.Handle(out queue);
         block = false;
     }
-
 
     public void StartTurn()
     {
@@ -147,6 +148,8 @@ public class GameManager : MonoBehaviour
             playerHandle.AddUnit(outUnit);
             if (outUnit)
                 SetPosition(outUnit);
+
+            outUnit.DisableUnit2();
             return true;
         }
         else
@@ -171,68 +174,26 @@ public class GameManager : MonoBehaviour
     {
         if (!block)
         {
-
-        }
-        /*if (Status == eStatus.Turn_Bot && bot.rest && !block)
-        {
             block = true;
-            queue = new Queue<Unit>();
-            if (!bot.arrListUnit.Exists(x => x.isMove == true))
+            if (queue.Count == 0)
             {
+                quest.BuyUnitAuto();
                 StartTurn();
-                return;
             }
-
-            foreach (var item in bot.arrListUnit)
-            {
-                if (!item.isMove) continue;
-                item.GetListMovePlates(out List<MovePlate> outlt);
-                item.SetTagetBot();
-                float pointMax = -99;
-                float point;
-                MovePlate movePlateBest = new MovePlate();
-
-                //item.GetAttackPlates();
-
-                foreach (var platemove in outlt)
-                {
-                    int d1 = 0, d2 = 0, d3 = 0;
-
-                    if (item.UnitTarget != null)
-                        d1 = Math.Abs(item.UnitTarget.x - platemove.x) + Math.Abs(item.UnitTarget.y - platemove.y) - item.Range;
-
-                    if (item.HouseTarget != null)
-                        d2 = item.Dijkstra(platemove, item.HouseTarget);
-
-                    if (item.CastleTarget != null)
-                        d3 = item.Dijkstra(platemove, item.CastleTarget);
-
-                    point = d1 <= 0 ? (10 + d1) : (10 - d1) + d2 == 0 ? 20 : (20 - (int)Math.Ceiling((double)d2 / item.Move) * 5);
-                    if (point > pointMax)
-                    {
-                        pointMax = point;
-                        movePlateBest = platemove;
-                    }
-                }
-
-                item.isMove = false;
-                Queue<IPlateAction> plateActions = new Queue<IPlateAction>();
-                bot.rest = block = false;
-                return;
-            }
-        }*/
+            else queue.Dequeue().Handle();
+        }
     }
 
     public void EndGame()
     {
-        if (!player.hasGeneral && player.CountOccupiedCastle == 0)
-        {
-            UIManager.Instance.ShowEndGame(false);
-            DisableAll();
-        }
-        else if (!bot.hasGeneral && bot.CountOccupiedCastle == 0)
+        if (player.CountOccupiedCastle == MapManager.map.castles.Count+ MapManager.map.houses.Count)
         {
             UIManager.Instance.ShowEndGame(true);
+            DisableAll();
+        }
+        else if (bot.CountOccupiedCastle == MapManager.map.castles.Count + MapManager.map.houses.Count)
+        {
+            UIManager.Instance.ShowEndGame(false);
             DisableAll();
         }
     }
@@ -244,11 +205,4 @@ public class GameManager : MonoBehaviour
         Unit.DisablePlate();
         SkipTurn.Instance.HideNotification();
     }
-}
-
-class SX
-{
-    public MovePlate movePlate { get; set; }
-    public int cost { get; set; }
-    public int MinDestinationFinish { get; set; }
 }

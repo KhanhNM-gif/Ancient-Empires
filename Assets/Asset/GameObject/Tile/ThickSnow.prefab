@@ -102,3 +102,4 @@ MonoBehaviour:
   MoveAble: 1
   IsHouse: 0
   IsCastle: 0
+  point: 1

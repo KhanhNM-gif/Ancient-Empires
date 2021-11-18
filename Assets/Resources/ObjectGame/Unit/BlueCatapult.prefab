@@ -178,27 +178,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac7132be282e5784e998af178c17ab94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  labelUnit: 0
   CurrentHP: 150
   HP: 150
   Attack: 400
   Armor: 30
-  Range: 5
+  BaseArmor: 0
+  Range: 3
+  BaseRange: 3
   Move: 4
   MoveSpeed: 5
-  Lv: 0
+  Lv: 1
   isEnemy: 0
-  movePlates: {fileID: 3549605085202346706, guid: f543c257300b09f4bb83e92323a73f99, type: 3}
-  attackPlates: {fileID: 1956548991492092144, guid: 5f42076f1f5d1c3468eea917c76c7ae4, type: 3}
-  dust: {fileID: 638546194192704375, guid: 131cb42beccb50d47a615112fa035359, type: 3}
-  Explo: {fileID: 4416846523397566388, guid: 610300a4afee84048a89df0f009f72b4, type: 3}
-  LeverUp: {fileID: 5689016964487636928, guid: 2c04091317685c34daaf45471118e859, type: 3}
-  Flame: {fileID: 7027992603683702201, guid: 66a03e472c35e5a45ae5a7a1197b957e, type: 3}
-  Heal: {fileID: 0}
+  isMove: 0
   canOccupiedCastle: 0
   canOccupiedHouse: 0
   isGeneral: 0
   firePoint: {fileID: 9089118955187409284}
   DustPoint: {fileID: 1614391585796578478}
+  CastleTarget: {fileID: 0}
   rock: {fileID: 4795212602549913846, guid: a6c03becd5d69ac44a85261cda1ce2cc, type: 3}
 --- !u!61 &6219196518884075795
 BoxCollider2D:

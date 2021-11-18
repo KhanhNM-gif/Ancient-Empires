@@ -43,4 +43,30 @@ public class House : BaseTile
                 break;
         }
     }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            House c = null;
+            int i, j;
+            Vector2 vector = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
+            i = (int)System.Math.Round(vector.x);
+            j = (int)System.Math.Round(vector.y);
+            if (i != x || j != y)
+            {
+                return;
+            }
+
+            if (MapManager.map.arrTile[i, j].IsHouse)
+            {
+                c = ((House)MapManager.map.arrTile[i, j]);
+            }
+
+            if (c != null && c.isOwnerBy == 1 && GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player)
+            {
+                GameManager.shop.showShop(x, y);
+            }
+        }
+    }
 }

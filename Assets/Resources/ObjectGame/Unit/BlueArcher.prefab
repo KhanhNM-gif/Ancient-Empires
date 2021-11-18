@@ -204,20 +204,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c680793346609499de06c8ec85278c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  labelUnit: 0
   CurrentHP: 150
   HP: 150
-  Attack: 400
-  Armor: 10
-  BaseArmor: 0
-  Range: 4
-  BaseRange: 0
-  Move: 4
-  MoveSpeed: 4
-  Lv: 0
+  Attack: 30
+  Armor: 15
+  BaseArmor: 15
+  Range: 2
+  BaseRange: 2
+  Move: 3
+  MoveSpeed: 3
+  Lv: 1
   isEnemy: 0
+  isMove: 0
   canOccupiedCastle: 0
   canOccupiedHouse: 0
   isGeneral: 0
   firePoint: {fileID: 2322816060229110139}
   DustPoint: {fileID: 2488045227641758523}
+  CastleTarget: {fileID: 0}
   arrow: {fileID: 5582277826130572005, guid: f0179ff2e19f9fa4f996c7b691c7a554, type: 3}

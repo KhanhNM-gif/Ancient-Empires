@@ -1,5 +1,6 @@
 using Assets.Asset.Model;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,7 +79,7 @@ public class Shop : MonoBehaviour, IMatrixCoordi
             ButtonBuyCatapultr.gameObject.SetActive(false);
             ButtonBuyValadorn.gameObject.SetActive(false);
         }
-        else if (gold < Const.ConstGame.COST_GENERAL)
+        else if (gold < Const.ConstGame.COST_GENERAL || GameManager.Instance.player.arrListUnit.Exists(x => x.isGeneral))
         {
             ButtonBuySolider.gameObject.SetActive(true);
             ButtonBuyArcher.gameObject.SetActive(true);
@@ -120,18 +121,84 @@ public class Shop : MonoBehaviour, IMatrixCoordi
     public static Tuple<int, int>[] POSITION_SPAWN = new Tuple<int, int>[]
          {
             new Tuple<int, int>(0,0),
-            new Tuple<int, int>(1,0),
-            new Tuple<int, int>(0,1),
-            new Tuple<int, int>(-1,0),
-            new Tuple<int, int>(0,-1),
+            //new Tuple<int, int>(1,0),
+            //new Tuple<int, int>(0,1),
+            //new Tuple<int, int>(-1,0),
+            //new Tuple<int, int>(0,-1),
          };
     /// <summary>
     /// BinhBH Mua quan xung quan vi tri thanh,
     /// </summary>
     /// <param name="nameUnit"> ten quan muon mua</param>
-    public Unit Buy(string nameUnit)
+    public void Buy(string nameUnit)
     {
-        showNumberOfUnit();
+        //showNumberOfUnit();
+        if (GameManager.Instance.getNumberUnit() == Const.ConstGame.MAX_UNIT)
+        {
+            SkipTurn.Instance.Notification_Show("Number unit max limit");
+            return ;
+        }
+        int goldBuyUnit = 0;
+        switch (nameUnit)
+        {
+            case Const.NameUnit.BLUE_ARCHER:
+                TextCountBuyArcher.text = "[" + ++CountArcher + "]";
+                goldBuyUnit = Const.ConstGame.COST_ARCHER;
+                break;
+            case Const.NameUnit.BLUE_SOLDIER:
+                TextCountBuySolider.text = "[" + ++CountSolider + "]";
+                goldBuyUnit = Const.ConstGame.COST_SOLIDER;
+                break;
+            case Const.NameUnit.BLUE_CATAPULT:
+                TextCountBuyCatapultr.text = "[" + ++CountCatapult + "]";
+                goldBuyUnit = Const.ConstGame.COST_CAPUTAL;
+                break;
+            case Const.NameUnit.BLUE_GENERAL:
+                TextCountBuyValadorn.text = "[" + ++CountValadorn + "]";
+                goldBuyUnit = Const.ConstGame.COST_GENERAL;
+                break;
+            case Const.NameUnit.RED_ARCHER:
+                goldBuyUnit = Const.ConstGame.COST_ARCHER;
+                break;
+            case Const.NameUnit.RED_SOLDIER:
+                goldBuyUnit = Const.ConstGame.COST_SOLIDER;
+                break;
+            case Const.NameUnit.RED_CATAPULT:
+                goldBuyUnit = Const.ConstGame.COST_CAPUTAL;
+                break;
+            case Const.NameUnit.RED_GENERAL:
+                goldBuyUnit = Const.ConstGame.COST_GENERAL;
+                break;
+        }
+
+        PlayerHandle playerHandle;
+        if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player) playerHandle = GameManager.Instance.player;
+        else playerHandle = GameManager.Instance.bot;
+
+        foreach (var item in POSITION_SPAWN)
+        {
+            if (MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble == true)
+            {
+                if (GameManager.Instance.addUnit(playerHandle, nameUnit, x + item.Item1, y + item.Item2,
+                    GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Bot, out _))
+                {
+                    playerHandle.Gold -= goldBuyUnit;
+                    UIManager.Instance.UpdateGold(GameManager.Instance.player.Gold);
+                    MapManager.map.arrTile[x + item.Item1, y + item.Item2].MoveAble = false;
+                    ActiveBuyUnit();
+                    showNumberOfUnit();
+                    HideShop();
+                }
+            }
+            else {
+                SkipTurn.Instance.Notification_Show("The building is cramped");
+            }
+        }
+    }
+
+    public Unit BuyBot(string nameUnit)
+    {
+        //showNumberOfUnit();
         if (GameManager.Instance.getNumberUnit() == Const.ConstGame.MAX_UNIT)
         {
             return null;
@@ -155,9 +222,19 @@ public class Shop : MonoBehaviour, IMatrixCoordi
                 TextCountBuyValadorn.text = "[" + ++CountValadorn + "]";
                 goldBuyUnit = Const.ConstGame.COST_GENERAL;
                 break;
+            case Const.NameUnit.RED_ARCHER:
+                goldBuyUnit = Const.ConstGame.COST_ARCHER;
+                break;
+            case Const.NameUnit.RED_SOLDIER:
+                goldBuyUnit = Const.ConstGame.COST_SOLIDER;
+                break;
+            case Const.NameUnit.RED_CATAPULT:
+                goldBuyUnit = Const.ConstGame.COST_CAPUTAL;
+                break;
+            case Const.NameUnit.RED_GENERAL:
+                goldBuyUnit = Const.ConstGame.COST_GENERAL;
+                break;
         }
-
-
         PlayerHandle playerHandle;
         if (GameManager.Instance.GetStatus() == GameManager.eStatus.Turn_Player) playerHandle = GameManager.Instance.player;
         else playerHandle = GameManager.Instance.bot;
@@ -178,10 +255,7 @@ public class Shop : MonoBehaviour, IMatrixCoordi
                 return unit;
             }
         }
-
         return null;
-
-
     }
 
 

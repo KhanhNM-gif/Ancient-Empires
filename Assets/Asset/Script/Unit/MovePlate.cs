@@ -16,22 +16,24 @@ public class MovePlate : MonoBehaviour, IMatrixCoordi,IPlateAction
 
     public void OnMouseDown()
     {
+        Prepare();
         Handle();
+        Unit.DisablePlate();
     }
 
     public void Handle()
     {
-        //BinhBh khi di chuyen den thi set vi tri day khong di chuyen dc nua de nhung unit khac khong di vao dc
-        //Khi di ra thi set co the di chuyen dc
+        reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
+        reference.SetAttack();
+    }
+
+    public void Prepare()
+    {
         MapManager.map.arrTile[reference.x, reference.y].MoveAble = true;
         MapManager.map.arrTile[this.x, this.y].MoveAble = false;
-        //BinhBH end
         reference.x = this.x;
         reference.y = this.y;
         reference.SetIsMove(false);
-        reference.SetStackMove(queueWay);//kích hoạt event di chuyển đến x,y mới
-        reference.SetAttack();
-        Unit.DisablePlate();
     }
 
     /// <summary>
@@ -45,4 +47,19 @@ public class MovePlate : MonoBehaviour, IMatrixCoordi,IPlateAction
         this.y = y;
     }
     public void SetStackWay(Queue<IMatrixCoordi> queue) => queueWay = queue;
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    public override bool Equals(object other)
+    {
+        return base.Equals(other);
+    }
+
+    public override string ToString()
+    {
+        return base.ToString();
+    }
 }

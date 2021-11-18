@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static GameManager;
 
 public class Unit : MonoBehaviour, IMatrixCoordi
 {
@@ -24,6 +25,8 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public int y { get; set; }
     public LabelUnit labelUnit;
     public float CurrentHP;
+    public float virtualHP { get; set; }
+    public bool isDead { get; set; }
     public float HP;
     public float Attack;
     public float Armor;
@@ -51,24 +54,23 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public Transform DustPoint;
 
     public Queue<IPlateAction> actions;
-    private bool isActions;
 
 
     //public Unit UnitTarget;
     //public House HouseTarget;
     public Castle CastleTarget;
 
-    public bool isBlockAnimation { get; set; };
+    public bool isBlockAnimation { get; set; }
 
     public virtual void Start()
     {
         BaseArmor = Armor;
         BaseRange = Range;
         MapManager.map.arrTile[x, y].MoveAble = false;
-        MapManager.map.arrTile[x, y].AttackAble = false;
 
         isAttack = true;
         isMove = true;
+        isDead = false;
 
         //Delay time spawn smoke
         InvokeRepeating("MoveEffect", 0.2f, 0.2f);
@@ -283,15 +285,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
     public virtual void Update()
     {
-        if (!isBlockAnimation)
-        {
-            UpdatePossion();
-
-        }
-        else
-        {
-
-        }
+        UpdatePossion();
     }
 
     protected void UpdatePossion()
@@ -324,7 +318,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 Range = BaseRange + MapManager.map.arrTile[x, y].ShootingRange;
                 UIManager.Instance.UpdateStatus(this);
                 if (CheckDisable()) DisableUnit();
-                GameManager.Instance.bot.rest = true;
+                if (GameManager.Instance.GetStatus() == eStatus.Turn_Bot) GameManager.Instance.block = false;
             }
         }
     }
@@ -370,9 +364,6 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public void AttackToUnit(Unit unitTarget, out float damage)
     {
         damage = (float)Math.Round(Attack * (100f / (100 + unitTarget.Armor)));
-        //unitTarget.TakeDame(damage);
-        AddExp(damage);
-        if (CheckDisable()) DisableUnit();
     }
 
     public void TakeDame(float damage)
@@ -413,7 +404,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     {
         PopupDamage.CreatePopupDamage(100f, transform.position);
     }
-    private bool CheckDisable() => !isAttack && !isMove;
+    public bool CheckDisable() => !isAttack && !isMove;
 
     public void DisableUnit()
     {
@@ -425,6 +416,13 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     {
         //isDisable = false;
         isAttack = isMove = true;
+    }
+
+    public void DisableUnit2()
+    {
+        isAttack = isMove = false;
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(0.3137255f, 0.3137255f, 0.2784314f, 1f);
+        GetComponent<Animator>().enabled = false;
     }
     public void EnableColor()
     {
@@ -466,7 +464,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
             LvUp();
     }
 
-    void AddExp(float damage)
+    public void AddExp(float damage)
     {
         exp += damage;
         Exp();
@@ -549,6 +547,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
         IMatrixCoordi matrixCoordi;
 
         int cost;
+        int costMin = 99;
 
         while (linkedList.Count > 0)
         {
@@ -559,11 +558,14 @@ public class Unit : MonoBehaviour, IMatrixCoordi
 
             if (s.Item1.Equals(baseTileFinish))
             {
-                if (discardOut || Math.Ceiling((float)cost / Move) < Math.Ceiling((float)linkedList.First().Item2 / Move)) return cost;
+                if (discardOut) return cost;
 
+                if (costMin == 99) costMin = cost;
                 ImportantTile(wayDictionary, matrixCoordi, baseTileFinish, out List<IMatrixCoordi> outImportantTileNew);
                 outltImportantTile.Add(outImportantTileNew);
             }
+
+            if (Math.Ceiling((float)costMin / Move) < Math.Ceiling((float)cost / Move)) return costMin;
 
             foreach (var item in Const.Unit.STEP_MOVE)
             {
@@ -576,7 +578,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 int minCostFinish = newCost + Math.Abs(x - baseTileFinish.x) + Math.Abs(y - baseTileFinish.y);
                 BaseTile tile = MapManager.map.arrTile[x, y];
 
-                if (!(x == nextCoordi.x && y == nextCoordi.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item3 > minCostFinish) && tile.MoveAble)//Check dk ra khoi map
+                if (!(x == nextCoordi.x && y == nextCoordi.y) && (!wayDictionary.ContainsKey(tile) || wayDictionary[tile].Item3 > minCostFinish) && (tile.MoveAble || tile.Equals(baseTileFinish)))//Check dk ra khoi map
                 {
                     linkedList.AddLast(new Tuple<BaseTile, int>(MapManager.map.arrTile[x, y], newCost));
                     wayDictionary[tile] = new Tuple<IMatrixCoordi, int, int>(MapManager.map.arrTile[matrixCoordi.x, matrixCoordi.y], newCost, minCostFinish);
@@ -610,7 +612,7 @@ public class Unit : MonoBehaviour, IMatrixCoordi
     public void GetAttackPlates(IMatrixCoordi point, out List<AttackPlate> outList)
     {
         outList = new List<AttackPlate>();
-        foreach (var item in GameManager.Instance.bot.arrListUnit)
+        foreach (var item in GameManager.Instance.player.arrListUnit.Where(x => !x.isDead))
         {
             if (Math.Abs(point.x - item.x) + Math.Abs(point.y - item.y) <= Range)
             {
@@ -618,6 +620,8 @@ public class Unit : MonoBehaviour, IMatrixCoordi
                 apScript.reference = this;
                 apScript.SetCoords(item.x, item.y);
                 apScript.SetTarget(item);
+
+                outList.Add(apScript);
             }
         }
     }

@@ -130,15 +130,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   labelUnit: 0
-  CurrentHP: 200
-  HP: 200
+  CurrentHP: 300
+  HP: 300
   Attack: 40
-  Armor: 20
-  BaseArmor: 20
+  Armor: 40
+  BaseArmor: 40
   Range: 1
   BaseRange: 1
   Move: 4
-  MoveSpeed: 3
+  MoveSpeed: 4
   Lv: 1
   isEnemy: 1
   isMove: 1
@@ -147,9 +147,6 @@ MonoBehaviour:
   isGeneral: 1
   firePoint: {fileID: 6542667713539337229}
   DustPoint: {fileID: 7092267571677108453}
-  isAct: 0
-  UnitTarget: {fileID: 0}
-  HouseTarget: {fileID: 0}
   CastleTarget: {fileID: 0}
   attack: {fileID: 1147931926519157571, guid: a3206e1912089e046a58cef0cdba4300, type: 3}
 --- !u!61 &-5197290547039610730

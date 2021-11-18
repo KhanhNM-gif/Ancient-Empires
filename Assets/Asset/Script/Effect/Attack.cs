@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static GameManager;
 
 namespace Assets.Asset.Script.Effect
 {
@@ -41,6 +42,7 @@ namespace Assets.Asset.Script.Effect
 
             PopupDamage.CreatePopupDamage(DamageSuffered, lastPos);
             UnitTarget.TakeDame(DamageSuffered);
+            if (GameManager.Instance.GetStatus()==eStatus.Turn_Bot) GameManager.Instance.block = false;
         }
 
         public virtual void Update()
